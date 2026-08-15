@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity LigneCommande.
+    -->
+    <changeSet id="20260815005111-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="variante_id"
+                                 baseTableName="ligne_commande"
+                                 constraintName="fk_ligne_commande__variante_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="variante_produit"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="commande_id"
+                                 baseTableName="ligne_commande"
+                                 constraintName="fk_ligne_commande__commande_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="commande"
+                                 />
+    </changeSet>
+</databaseChangeLog>

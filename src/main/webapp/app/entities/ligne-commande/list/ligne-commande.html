@@ -1,0 +1,118 @@
+<div>
+  <h2 id="page-heading" data-cy="LigneCommandeHeading">
+    <span jhiTranslate="modivaApp.ligneCommande.home.title">LigneCommandes</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="modivaApp.ligneCommande.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-ligne-commande"
+        [routerLink]="['/ligne-commande/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="modivaApp.ligneCommande.home.createLabel">Créer un nouveau Ligne Commande</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (ligneCommandes().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="modivaApp.ligneCommande.home.notFound">Aucun Ligne Commande trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="quantite">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.ligneCommande.quantite">Quantite</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="prixUnitaire">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.ligneCommande.prixUnitaire">Prix Unitaire</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="variante.id">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.ligneCommande.variante">Variante</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commande.id">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.ligneCommande.commande">Commande</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (ligneCommande of ligneCommandes(); track trackId(ligneCommande)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/ligne-commande', ligneCommande.id, 'view']">{{ ligneCommande.id }}</a>
+              </td>
+              <td>{{ ligneCommande.quantite }}</td>
+              <td>{{ ligneCommande.prixUnitaire }}</td>
+              <td>
+                @if (ligneCommande.variante) {
+                  <div>
+                    <a [routerLink]="['/variante-produit', ligneCommande.variante.id, 'view']">{{ ligneCommande.variante.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (ligneCommande.commande) {
+                  <div>
+                    <a [routerLink]="['/commande', ligneCommande.commande.id, 'view']">{{ ligneCommande.commande.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/ligne-commande', ligneCommande.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/ligne-commande', ligneCommande.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(ligneCommande)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (varianteProduit(); as varianteProduitRef) {
+      <div>
+        <h2 data-cy="varianteProduitDetailsHeading"><span jhiTranslate="modivaApp.varianteProduit.detail.title">Variante Produit</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ varianteProduitRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.varianteProduit.stock">Stock</span></dt>
+          <dd>
+            <span>{{ varianteProduitRef.stock }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.varianteProduit.taille">Taille</span></dt>
+          <dd>
+            @if (varianteProduit()!.taille) {
+              <div>
+                <a [routerLink]="['/taille', varianteProduit()!.taille?.id, 'view']">{{ varianteProduitRef.taille?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="modivaApp.varianteProduit.couleur">Couleur</span></dt>
+          <dd>
+            @if (varianteProduit()!.couleur) {
+              <div>
+                <a [routerLink]="['/couleur', varianteProduit()!.couleur?.id, 'view']">{{ varianteProduitRef.couleur?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="modivaApp.varianteProduit.produit">Produit</span></dt>
+          <dd>
+            @if (varianteProduit()!.produit) {
+              <div>
+                <a [routerLink]="['/produit', varianteProduit()!.produit?.id, 'view']">{{ varianteProduitRef.produit?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/variante-produit', varianteProduitRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

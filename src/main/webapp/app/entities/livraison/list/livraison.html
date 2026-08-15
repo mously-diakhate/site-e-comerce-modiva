@@ -1,0 +1,135 @@
+<div>
+  <h2 id="page-heading" data-cy="LivraisonHeading">
+    <span jhiTranslate="modivaApp.livraison.home.title">Livraisons</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="modivaApp.livraison.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-livraison"
+        [routerLink]="['/livraison/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="modivaApp.livraison.home.createLabel">Créer un nouveau Livraison</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (livraisons().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="modivaApp.livraison.home.notFound">Aucun Livraison trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="adresse">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.adresse">Adresse</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ville">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.ville">Ville</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="quartier">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.quartier">Quartier</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="telephone">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.telephone">Telephone</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fraisLivraison">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.fraisLivraison">Frais Livraison</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statutLivraison">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.livraison.statutLivraison">Statut Livraison</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (livraison of livraisons(); track trackId(livraison)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/livraison', livraison.id, 'view']">{{ livraison.id }}</a>
+              </td>
+              <td>{{ livraison.adresse }}</td>
+              <td>{{ livraison.ville }}</td>
+              <td>{{ livraison.quartier }}</td>
+              <td>{{ livraison.telephone }}</td>
+              <td>{{ livraison.fraisLivraison }}</td>
+              <td [jhiTranslate]="'modivaApp.StatutLivraison.' + (livraison.statutLivraison ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    EN_ATTENTE: 'EN_ATTENTE',
+                    EN_PREPARATION: 'EN_PREPARATION',
+                    EXPEDIEE: 'EXPEDIEE',
+                    EN_COURS: 'EN_COURS',
+                    LIVREE: 'LIVREE',
+                  }[livraison.statutLivraison ?? 'null']
+                }}
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/livraison', livraison.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/livraison', livraison.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(livraison)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

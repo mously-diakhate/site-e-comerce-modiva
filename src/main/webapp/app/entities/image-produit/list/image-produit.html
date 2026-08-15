@@ -1,0 +1,105 @@
+<div>
+  <h2 id="page-heading" data-cy="ImageProduitHeading">
+    <span jhiTranslate="modivaApp.imageProduit.home.title">ImageProduits</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="modivaApp.imageProduit.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-image-produit"
+        [routerLink]="['/image-produit/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="modivaApp.imageProduit.home.createLabel">Créer un nouveau Image Produit</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (imageProduits().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="modivaApp.imageProduit.home.notFound">Aucun Image Produit trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="url">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.imageProduit.url">Url</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="ordre">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.imageProduit.ordre">Ordre</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="produit.id">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.imageProduit.produit">Produit</span>
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
+          @for (imageProduit of imageProduits(); track trackId(imageProduit)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/image-produit', imageProduit.id, 'view']">{{ imageProduit.id }}</a>
+              </td>
+              <td>{{ imageProduit.url }}</td>
+              <td>{{ imageProduit.ordre }}</td>
+              <td>
+                @if (imageProduit.produit) {
+                  <div>
+                    <a [routerLink]="['/produit', imageProduit.produit.id, 'view']">{{ imageProduit.produit.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/image-produit', imageProduit.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/image-produit', imageProduit.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(imageProduit)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

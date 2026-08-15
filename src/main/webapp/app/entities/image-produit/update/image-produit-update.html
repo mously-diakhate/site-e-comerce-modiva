@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-image-produit-heading"
+        data-cy="ImageProduitCreateUpdateHeading"
+        jhiTranslate="modivaApp.imageProduit.home.createOrEditLabel"
+      >
+        Créer ou éditer un Image Produit
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let urlRef = editForm.get('url')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_url" jhiTranslate="modivaApp.imageProduit.url">Url</label>
+          <input type="text" class="form-control" name="url" id="field_url" data-cy="url" formControlName="url" />
+          @if (urlRef.invalid && (urlRef.dirty || urlRef.touched)) {
+            <div>
+              @if (editForm.get('url')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_ordre" jhiTranslate="modivaApp.imageProduit.ordre">Ordre</label>
+          <input type="number" class="form-control" name="ordre" id="field_ordre" data-cy="ordre" formControlName="ordre" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_produit" jhiTranslate="modivaApp.imageProduit.produit">Produit</label>
+          <select
+            class="form-control"
+            id="field_produit"
+            data-cy="produit"
+            name="produit"
+            formControlName="produit"
+            [compareWith]="compareProduit"
+          >
+            @if (editForm.get(['produit'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (produitOption of produitsSharedCollection(); track $index) {
+              <option [ngValue]="produitOption">{{ produitOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['produit'])!.invalid && (editForm.get(['produit'])!.dirty || editForm.get(['produit'])!.touched)) {
+          <div>
+            @if (editForm.get(['produit'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

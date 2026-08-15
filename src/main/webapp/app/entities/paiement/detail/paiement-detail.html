@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (paiement(); as paiementRef) {
+      <div>
+        <h2 data-cy="paiementDetailsHeading"><span jhiTranslate="modivaApp.paiement.detail.title">Paiement</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ paiementRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.paiement.montant">Montant</span></dt>
+          <dd>
+            <span>{{ paiementRef.montant }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.paiement.datePaiement">Date Paiement</span></dt>
+          <dd>
+            <span>{{ paiementRef.datePaiement | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.paiement.moyenPaiement">Moyen Paiement</span></dt>
+          <dd>
+            <span>{{ paiementRef.moyenPaiement }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.paiement.referenceTransaction">Reference Transaction</span></dt>
+          <dd>
+            <span>{{ paiementRef.referenceTransaction }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.paiement.statutPaiement">Statut Paiement</span></dt>
+          <dd>
+            <span [jhiTranslate]="'modivaApp.StatutPaiement.' + (paiementRef.statutPaiement ?? 'null')">{{
+              { null: '', EN_ATTENTE: 'EN_ATTENTE', REUSSI: 'REUSSI', ECHOUE: 'ECHOUE', REMBOURSE: 'REMBOURSE' }[
+                paiementRef.statutPaiement ?? 'null'
+              ]
+            }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/paiement', paiementRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,30 @@
+{
+  "modivaApp": {
+    "livraison": {
+      "home": {
+        "title": "Livraisons",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Livraison",
+        "createOrEditLabel": "Créer ou éditer un Livraison",
+        "notFound": "Aucun Livraison trouvé"
+      },
+      "created": "Un nouveau Livraison a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Livraison avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Livraison avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Livraison {{ id }} ?"
+      },
+      "detail": {
+        "title": "Livraison"
+      },
+      "id": "ID",
+      "adresse": "Adresse",
+      "ville": "Ville",
+      "quartier": "Quartier",
+      "telephone": "Telephone",
+      "fraisLivraison": "Frais Livraison",
+      "statutLivraison": "Statut Livraison",
+      "commande": "Commande"
+    }
+  }
+}

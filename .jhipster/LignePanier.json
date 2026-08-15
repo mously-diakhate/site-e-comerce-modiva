@@ -1,0 +1,36 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004911"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "quantite",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    }
+  ],
+  "name": "LignePanier",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "varianteProduit",
+      "relationshipName": "variante",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "panier",
+      "otherEntityRelationshipName": "ligne",
+      "relationshipName": "panier",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

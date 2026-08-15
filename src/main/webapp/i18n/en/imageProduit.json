@@ -1,0 +1,26 @@
+{
+  "modivaApp": {
+    "imageProduit": {
+      "home": {
+        "title": "Image Produits",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Image Produit",
+        "createOrEditLabel": "Create or edit a Image Produit",
+        "notFound": "No Image Produits found"
+      },
+      "created": "A new Image Produit is created with identifier {{ param }}",
+      "updated": "A Image Produit is updated with identifier {{ param }}",
+      "deleted": "A Image Produit is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Image Produit {{ id }}?"
+      },
+      "detail": {
+        "title": "Image Produit"
+      },
+      "id": "ID",
+      "url": "Url",
+      "ordre": "Ordre",
+      "produit": "Produit"
+    }
+  }
+}

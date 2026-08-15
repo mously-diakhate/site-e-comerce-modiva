@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="floatType" value="float" dbms="mysql"/>
+    <property name="clobType" value="clob" dbms="mysql"/>
+    <property name="blobType" value="longblob" dbms="mysql"/>
+    <property name="uuidType" value="varchar(36)" dbms="mysql"/>
+    <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
+    <property name="timeType" value="time(6)" dbms="mysql"/>
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004011_added_entity_ClienteProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004111_added_entity_Adresse.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004211_added_entity_Categorie.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004311_added_entity_Produit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004411_added_entity_ImageProduit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004511_added_entity_Taille.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004611_added_entity_Couleur.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004711_added_entity_VarianteProduit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004811_added_entity_Panier.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004911_added_entity_LignePanier.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005011_added_entity_Commande.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005111_added_entity_LigneCommande.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005211_added_entity_Paiement.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005311_added_entity_Livraison.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005411_added_entity_Promotion.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20260815004011_added_entity_constraints_ClienteProfile.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004111_added_entity_constraints_Adresse.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004311_added_entity_constraints_Produit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004411_added_entity_constraints_ImageProduit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004711_added_entity_constraints_VarianteProduit.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815004911_added_entity_constraints_LignePanier.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005011_added_entity_constraints_Commande.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260815005111_added_entity_constraints_LigneCommande.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+</databaseChangeLog>

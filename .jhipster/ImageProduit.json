@@ -1,0 +1,32 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004411"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "url",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "ordre",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "ImageProduit",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "produit",
+      "otherEntityRelationshipName": "image",
+      "relationshipName": "produit",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

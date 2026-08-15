@@ -1,0 +1,65 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (produit(); as produitRef) {
+      <div>
+        <h2 data-cy="produitDetailsHeading"><span jhiTranslate="modivaApp.produit.detail.title">Produit</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ produitRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.nom">Nom</span></dt>
+          <dd>
+            <span>{{ produitRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.description">Description</span></dt>
+          <dd>
+            <span>{{ produitRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.prix">Prix</span></dt>
+          <dd>
+            <span>{{ produitRef.prix }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.statut">Statut</span></dt>
+          <dd>
+            <span [jhiTranslate]="'modivaApp.StatutProduit.' + (produitRef.statut ?? 'null')">{{
+              { null: '', ACTIF: 'ACTIF', INACTIF: 'INACTIF' }[produitRef.statut ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.promotion">Promotion</span></dt>
+          <dd>
+            @for (promotion of produitRef.promotions; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/promotion', promotion.id, 'view']">{{ promotion?.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+          <dt><span jhiTranslate="modivaApp.produit.categorie">Categorie</span></dt>
+          <dd>
+            @if (produit()!.categorie) {
+              <div>
+                <a [routerLink]="['/categorie', produit()!.categorie?.id, 'view']">{{ produitRef.categorie?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/produit', produitRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

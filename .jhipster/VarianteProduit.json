@@ -1,0 +1,44 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004711"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "stock",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "VarianteProduit",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "taille",
+      "relationshipName": "taille",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "couleur",
+      "relationshipName": "couleur",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "produit",
+      "otherEntityRelationshipName": "variante",
+      "relationshipName": "produit",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

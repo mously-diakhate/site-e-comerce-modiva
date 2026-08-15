@@ -1,0 +1,18 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004511"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    }
+  ],
+  "name": "Taille",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

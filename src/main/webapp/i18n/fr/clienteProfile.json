@@ -1,0 +1,29 @@
+{
+  "modivaApp": {
+    "clienteProfile": {
+      "home": {
+        "title": "ClienteProfiles",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Cliente Profile",
+        "createOrEditLabel": "Créer ou éditer un Cliente Profile",
+        "notFound": "Aucun Cliente Profile trouvé"
+      },
+      "created": "Un nouveau Cliente Profile a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Cliente Profile avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Cliente Profile avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Cliente Profile {{ id }} ?"
+      },
+      "detail": {
+        "title": "Cliente Profile"
+      },
+      "id": "ID",
+      "telephone": "Telephone",
+      "actif": "Actif",
+      "user": "User",
+      "panier": "Panier",
+      "adresse": "Adresse",
+      "commande": "Commande"
+    }
+  }
+}

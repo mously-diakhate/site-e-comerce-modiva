@@ -1,0 +1,26 @@
+{
+  "modivaApp": {
+    "lignePanier": {
+      "home": {
+        "title": "Ligne Paniers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Ligne Panier",
+        "createOrEditLabel": "Create or edit a Ligne Panier",
+        "notFound": "No Ligne Paniers found"
+      },
+      "created": "A new Ligne Panier is created with identifier {{ param }}",
+      "updated": "A Ligne Panier is updated with identifier {{ param }}",
+      "deleted": "A Ligne Panier is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Ligne Panier {{ id }}?"
+      },
+      "detail": {
+        "title": "Ligne Panier"
+      },
+      "id": "ID",
+      "quantite": "Quantite",
+      "variante": "Variante",
+      "panier": "Panier"
+    }
+  }
+}

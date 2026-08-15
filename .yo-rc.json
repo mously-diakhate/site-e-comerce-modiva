@@ -1,0 +1,37 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "modiva",
+    "buildTool": "maven",
+    "cacheProvider": "ehcache",
+    "clientFramework": "angular",
+    "clientTheme": "none",
+    "devDatabaseType": "mysql",
+    "entities": [
+      "ClienteProfile",
+      "Adresse",
+      "Categorie",
+      "Produit",
+      "ImageProduit",
+      "Taille",
+      "Couleur",
+      "VarianteProduit",
+      "Panier",
+      "LignePanier",
+      "Commande",
+      "LigneCommande",
+      "Paiement",
+      "Livraison",
+      "Promotion"
+    ],
+    "jhipsterVersion": "9.0.0",
+    "jwtSecretKey": "MjE5MDdhZjU3YzFmYmI3NzYyY2U1YjU4MWNkOTNmMjNkM2Y4NWRhMGUzN2YwZDVjYzNhNzg5MTg4ZTNiODExNjJjZDA3NTNmODFlMGY2OWJhYTZlZmU2NDMzODM5ZDhlZGZmMzQ2MzU5ZTg4NWI4NDY1NzRmZDM4MTExNTU1ZTY=",
+    "languages": ["fr", "en"],
+    "lastLiquibaseTimestamp": 1786755251000,
+    "nativeLanguage": "fr",
+    "packageName": "sn.modiva.app",
+    "prodDatabaseType": "mysql",
+    "testFrameworks": ["cypress"]
+  }
+}

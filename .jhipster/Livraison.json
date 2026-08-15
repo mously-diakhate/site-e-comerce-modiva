@@ -1,0 +1,41 @@
+{
+  "annotations": {
+    "changelogDate": "20260815005311"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "ville",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "quartier",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fraisLivraison",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "statutLivraison",
+      "fieldType": "StatutLivraison",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "EN_ATTENTE,EN_PREPARATION,EXPEDIEE,EN_COURS,LIVREE"
+    }
+  ],
+  "name": "Livraison",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

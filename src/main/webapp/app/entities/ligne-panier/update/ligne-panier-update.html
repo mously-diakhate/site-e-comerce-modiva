@@ -1,0 +1,116 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-ligne-panier-heading"
+        data-cy="LignePanierCreateUpdateHeading"
+        jhiTranslate="modivaApp.lignePanier.home.createOrEditLabel"
+      >
+        Créer ou éditer un Ligne Panier
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let quantiteRef = editForm.get('quantite')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_quantite" jhiTranslate="modivaApp.lignePanier.quantite">Quantite</label>
+          <input type="number" class="form-control" name="quantite" id="field_quantite" data-cy="quantite" formControlName="quantite" />
+          @if (quantiteRef.invalid && (quantiteRef.dirty || quantiteRef.touched)) {
+            <div>
+              @if (editForm.get('quantite')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('quantite')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >Ce champ doit être supérieur à 1.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('quantite')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_variante" jhiTranslate="modivaApp.lignePanier.variante">Variante</label>
+          <select
+            class="form-control"
+            id="field_variante"
+            data-cy="variante"
+            name="variante"
+            formControlName="variante"
+            [compareWith]="compareVarianteProduit"
+          >
+            @if (!editForm.get('variante')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (varianteProduitOption of varianteProduitsSharedCollection(); track $index) {
+              <option [ngValue]="varianteProduitOption">{{ varianteProduitOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['variante'])!.invalid && (editForm.get(['variante'])!.dirty || editForm.get(['variante'])!.touched)) {
+          <div>
+            @if (editForm.get(['variante'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_panier" jhiTranslate="modivaApp.lignePanier.panier">Panier</label>
+          <select
+            class="form-control"
+            id="field_panier"
+            data-cy="panier"
+            name="panier"
+            formControlName="panier"
+            [compareWith]="comparePanier"
+          >
+            @if (editForm.get(['panier'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (panierOption of paniersSharedCollection(); track $index) {
+              <option [ngValue]="panierOption">{{ panierOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['panier'])!.invalid && (editForm.get(['panier'])!.dirty || editForm.get(['panier'])!.touched)) {
+          <div>
+            @if (editForm.get(['panier'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,192 @@
+application {
+  config {
+    baseName modiva
+    applicationType monolith
+    packageName sn.modiva.app
+    authenticationType jwt
+    prodDatabaseType mysql
+    devDatabaseType mysql
+    cacheProvider ehcache
+    buildTool maven
+    clientFramework angular
+    clientTheme none
+    nativeLanguage fr
+    languages [fr, en]
+    testFrameworks [cypress]
+  }
+  entities *
+}
+
+// =====================================================
+// ENUMERATIONS
+// =====================================================
+
+enum StatutProduit {
+  ACTIF, INACTIF
+}
+
+enum StatutCommande {
+  EN_ATTENTE, CONFIRMEE, EN_PREPARATION, EXPEDIEE, LIVREE, ANNULEE
+}
+
+enum StatutPaiement {
+  EN_ATTENTE, REUSSI, ECHOUE, REMBOURSE
+}
+
+enum StatutLivraison {
+  EN_ATTENTE, EN_PREPARATION, EXPEDIEE, EN_COURS, LIVREE
+}
+
+// =====================================================
+// PROFIL CLIENTE (lie a l'entite User native de JHipster)
+// =====================================================
+
+entity ClienteProfile {
+  telephone String
+  actif Boolean
+}
+
+entity Adresse {
+  libelle String
+  adresse String required
+  ville String required
+  quartier String
+  telephone String
+  parDefaut Boolean
+}
+
+// =====================================================
+// CATALOGUE
+// =====================================================
+
+entity Categorie {
+  nom String required unique
+  description String
+}
+
+entity Produit {
+  nom String required
+  description TextBlob
+  prix BigDecimal required min(0)
+  statut StatutProduit required
+}
+
+entity ImageProduit {
+  url String required
+  ordre Integer
+}
+
+entity Taille {
+  libelle String required unique
+}
+
+entity Couleur {
+  libelle String required unique
+  codeHex String
+}
+
+entity VarianteProduit {
+  stock Integer required min(0)
+}
+
+// =====================================================
+// PANIER
+// =====================================================
+
+entity Panier {
+  dateCreation Instant
+}
+
+entity LignePanier {
+  quantite Integer required min(1)
+}
+
+// =====================================================
+// COMMANDE
+// =====================================================
+
+entity Commande {
+  numero String required unique
+  dateCommande Instant required
+  montantTotal BigDecimal required
+  modePaiement String
+  statutCommande StatutCommande required
+}
+
+entity LigneCommande {
+  quantite Integer required min(1)
+  prixUnitaire BigDecimal required
+}
+
+entity Paiement {
+  montant BigDecimal required
+  datePaiement Instant
+  moyenPaiement String
+  referenceTransaction String
+  statutPaiement StatutPaiement required
+}
+
+entity Livraison {
+  adresse String required
+  ville String required
+  quartier String
+  telephone String
+  fraisLivraison BigDecimal
+  statutLivraison StatutLivraison required
+}
+
+// =====================================================
+// PROMOTIONS
+// =====================================================
+
+entity Promotion {
+  nom String required
+  reduction BigDecimal required min(0)
+  dateDebut Instant required
+  dateFin Instant required
+}
+
+// =====================================================
+// RELATIONS
+// =====================================================
+
+relationship OneToOne {
+  ClienteProfile{user(login) required} to User with builtInEntity
+  ClienteProfile{panier} to Panier{clienteProfile}
+  Commande{paiement} to Paiement{commande}
+  Commande{livraison(id) required} to Livraison
+}
+
+relationship OneToMany {
+  ClienteProfile{adresse} to Adresse{clienteProfile required}
+  ClienteProfile{commande} to Commande{clienteProfile required}
+  Categorie{produit} to Produit{categorie required}
+  Produit{image} to ImageProduit{produit required}
+  Produit{variante} to VarianteProduit{produit required}
+  Panier{ligne} to LignePanier{panier required}
+  Commande{ligne} to LigneCommande{commande required}
+}
+
+relationship ManyToOne {
+  LignePanier{variante required} to VarianteProduit
+  LigneCommande{variante required} to VarianteProduit
+  VarianteProduit{taille required} to Taille
+  VarianteProduit{couleur required} to Couleur
+}
+
+relationship ManyToMany {
+  Produit{promotion} to Promotion{produit}
+}
+
+// =====================================================
+// OPTIONS
+// =====================================================
+
+paginate Produit, Commande, ClienteProfile, Categorie with pagination
+paginate ImageProduit, VarianteProduit, LignePanier, LigneCommande, Adresse with infinite-scroll
+
+service Produit, Commande, Paiement, Livraison, Promotion, VarianteProduit, ClienteProfile with serviceImpl
+
+dto * with mapstruct
+
+filter Produit, Commande, VarianteProduit, ClienteProfile

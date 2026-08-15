@@ -1,0 +1,66 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004311"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "TextBlob"
+    },
+    {
+      "fieldName": "prix",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "StatutProduit",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ACTIF,INACTIF"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Produit",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "imageProduit",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "image",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "varianteProduit",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "variante",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "promotion",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "promotion",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "categorie",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "categorie",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

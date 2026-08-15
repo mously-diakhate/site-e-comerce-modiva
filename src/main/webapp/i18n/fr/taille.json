@@ -1,0 +1,24 @@
+{
+  "modivaApp": {
+    "taille": {
+      "home": {
+        "title": "Tailles",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Taille",
+        "createOrEditLabel": "Créer ou éditer un Taille",
+        "notFound": "Aucun Taille trouvé"
+      },
+      "created": "Un nouveau Taille a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Taille avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Taille avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Taille {{ id }} ?"
+      },
+      "detail": {
+        "title": "Taille"
+      },
+      "id": "ID",
+      "libelle": "Libelle"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (livraison(); as livraisonRef) {
+      <div>
+        <h2 data-cy="livraisonDetailsHeading"><span jhiTranslate="modivaApp.livraison.detail.title">Livraison</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ livraisonRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.adresse">Adresse</span></dt>
+          <dd>
+            <span>{{ livraisonRef.adresse }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.ville">Ville</span></dt>
+          <dd>
+            <span>{{ livraisonRef.ville }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.quartier">Quartier</span></dt>
+          <dd>
+            <span>{{ livraisonRef.quartier }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.telephone">Telephone</span></dt>
+          <dd>
+            <span>{{ livraisonRef.telephone }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.fraisLivraison">Frais Livraison</span></dt>
+          <dd>
+            <span>{{ livraisonRef.fraisLivraison }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.livraison.statutLivraison">Statut Livraison</span></dt>
+          <dd>
+            <span [jhiTranslate]="'modivaApp.StatutLivraison.' + (livraisonRef.statutLivraison ?? 'null')">{{
+              {
+                null: '',
+                EN_ATTENTE: 'EN_ATTENTE',
+                EN_PREPARATION: 'EN_PREPARATION',
+                EXPEDIEE: 'EXPEDIEE',
+                EN_COURS: 'EN_COURS',
+                LIVREE: 'LIVREE',
+              }[livraisonRef.statutLivraison ?? 'null']
+            }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/livraison', livraisonRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

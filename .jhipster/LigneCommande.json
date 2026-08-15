@@ -1,0 +1,41 @@
+{
+  "annotations": {
+    "changelogDate": "20260815005111"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "quantite",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "prixUnitaire",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "LigneCommande",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "varianteProduit",
+      "relationshipName": "variante",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "ligne",
+      "relationshipName": "commande",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,24 @@
+@if (panier) {
+  <form name="deleteForm" (ngSubmit)="confirmDelete(panier.id!)">
+    <div class="modal-header">
+      <h4 class="modal-title" data-cy="panierDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirmation de suppression</h4>
+    </div>
+
+    <div class="modal-body">
+      <jhi-alert-error />
+      <p id="jhi-delete-panier-heading" jhiTranslate="modivaApp.panier.delete.question" [translateValues]="{ id: panier.id }">
+        Êtes-vous certain de vouloir supprimer le Panier {{ panier.id }} ?
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+        <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+      </button>
+
+      <button id="jhi-confirm-delete-panier" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+        <fa-icon icon="times" />&nbsp;<span jhiTranslate="entity.action.delete">Supprimer</span>
+      </button>
+    </div>
+  </form>
+}

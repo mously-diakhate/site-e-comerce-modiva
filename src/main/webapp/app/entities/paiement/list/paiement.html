@@ -1,0 +1,122 @@
+<div>
+  <h2 id="page-heading" data-cy="PaiementHeading">
+    <span jhiTranslate="modivaApp.paiement.home.title">Paiements</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
+        <span jhiTranslate="modivaApp.paiement.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-paiement"
+        [routerLink]="['/paiement/new']"
+      >
+        <fa-icon icon="plus" />
+        <span jhiTranslate="modivaApp.paiement.home.createLabel">Créer un nouveau Paiement</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (paiements().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="modivaApp.paiement.home.notFound">Aucun Paiement trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="montant">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.paiement.montant">Montant</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="datePaiement">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.paiement.datePaiement">Date Paiement</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="moyenPaiement">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.paiement.moyenPaiement">Moyen Paiement</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="referenceTransaction">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.paiement.referenceTransaction">Reference Transaction</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statutPaiement">
+              <div class="d-flex">
+                <span jhiTranslate="modivaApp.paiement.statutPaiement">Statut Paiement</span>
+
+                <fa-icon class="p-1" icon="sort" />
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (paiement of paiements(); track trackId(paiement)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/paiement', paiement.id, 'view']">{{ paiement.id }}</a>
+              </td>
+              <td>{{ paiement.montant }}</td>
+              <td>{{ paiement.datePaiement | formatMediumDatetime }}</td>
+              <td>{{ paiement.moyenPaiement }}</td>
+              <td>{{ paiement.referenceTransaction }}</td>
+              <td [jhiTranslate]="'modivaApp.StatutPaiement.' + (paiement.statutPaiement ?? 'null')">
+                {{
+                  { null: '', EN_ATTENTE: 'EN_ATTENTE', REUSSI: 'REUSSI', ECHOUE: 'ECHOUE', REMBOURSE: 'REMBOURSE' }[
+                    paiement.statutPaiement ?? 'null'
+                  ]
+                }}
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/paiement', paiement.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/paiement', paiement.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(paiement)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times" />
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

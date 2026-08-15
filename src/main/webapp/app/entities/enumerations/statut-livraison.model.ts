@@ -1,0 +1,11 @@
+export enum StatutLivraison {
+  EN_ATTENTE = 'EN_ATTENTE',
+
+  EN_PREPARATION = 'EN_PREPARATION',
+
+  EXPEDIEE = 'EXPEDIEE',
+
+  EN_COURS = 'EN_COURS',
+
+  LIVREE = 'LIVREE',
+}

@@ -1,0 +1,28 @@
+{
+  "modivaApp": {
+    "promotion": {
+      "home": {
+        "title": "Promotions",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Promotion",
+        "createOrEditLabel": "Créer ou éditer un Promotion",
+        "notFound": "Aucun Promotion trouvé"
+      },
+      "created": "Un nouveau Promotion a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Promotion avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Promotion avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Promotion {{ id }} ?"
+      },
+      "detail": {
+        "title": "Promotion"
+      },
+      "id": "ID",
+      "nom": "Nom",
+      "reduction": "Reduction",
+      "dateDebut": "Date Debut",
+      "dateFin": "Date Fin",
+      "produit": "Produit"
+    }
+  }
+}

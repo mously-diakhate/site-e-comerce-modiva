@@ -1,0 +1,25 @@
+{
+  "modivaApp": {
+    "couleur": {
+      "home": {
+        "title": "Couleurs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Couleur",
+        "createOrEditLabel": "Create or edit a Couleur",
+        "notFound": "No Couleurs found"
+      },
+      "created": "A new Couleur is created with identifier {{ param }}",
+      "updated": "A Couleur is updated with identifier {{ param }}",
+      "deleted": "A Couleur is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Couleur {{ id }}?"
+      },
+      "detail": {
+        "title": "Couleur"
+      },
+      "id": "ID",
+      "libelle": "Libelle",
+      "codeHex": "Code Hex"
+    }
+  }
+}

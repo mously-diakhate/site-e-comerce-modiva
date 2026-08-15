@@ -1,0 +1,49 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004111"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "adresse",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "ville",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "quartier",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "telephone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "parDefaut",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Adresse",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "otherEntityName": "clienteProfile",
+      "otherEntityRelationshipName": "adresse",
+      "relationshipName": "clienteProfile",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

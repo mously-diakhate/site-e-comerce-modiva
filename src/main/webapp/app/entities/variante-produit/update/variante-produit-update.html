@@ -1,0 +1,139 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-variante-produit-heading"
+        data-cy="VarianteProduitCreateUpdateHeading"
+        jhiTranslate="modivaApp.varianteProduit.home.createOrEditLabel"
+      >
+        Créer ou éditer un Variante Produit
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let stockRef = editForm.get('stock')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_stock" jhiTranslate="modivaApp.varianteProduit.stock">Stock</label>
+          <input type="number" class="form-control" name="stock" id="field_stock" data-cy="stock" formControlName="stock" />
+          @if (stockRef.invalid && (stockRef.dirty || stockRef.touched)) {
+            <div>
+              @if (editForm.get('stock')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('stock')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >Ce champ doit être supérieur à 0.</small
+                >
+              }
+              <small class="form-text text-danger" [hidden]="!editForm.get('stock')?.errors?.number" jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_taille" jhiTranslate="modivaApp.varianteProduit.taille">Taille</label>
+          <select
+            class="form-control"
+            id="field_taille"
+            data-cy="taille"
+            name="taille"
+            formControlName="taille"
+            [compareWith]="compareTaille"
+          >
+            @if (!editForm.get('taille')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (tailleOption of taillesSharedCollection(); track $index) {
+              <option [ngValue]="tailleOption">{{ tailleOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['taille'])!.invalid && (editForm.get(['taille'])!.dirty || editForm.get(['taille'])!.touched)) {
+          <div>
+            @if (editForm.get(['taille'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_couleur" jhiTranslate="modivaApp.varianteProduit.couleur">Couleur</label>
+          <select
+            class="form-control"
+            id="field_couleur"
+            data-cy="couleur"
+            name="couleur"
+            formControlName="couleur"
+            [compareWith]="compareCouleur"
+          >
+            @if (!editForm.get('couleur')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (couleurOption of couleursSharedCollection(); track $index) {
+              <option [ngValue]="couleurOption">{{ couleurOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['couleur'])!.invalid && (editForm.get(['couleur'])!.dirty || editForm.get(['couleur'])!.touched)) {
+          <div>
+            @if (editForm.get(['couleur'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_produit" jhiTranslate="modivaApp.varianteProduit.produit">Produit</label>
+          <select
+            class="form-control"
+            id="field_produit"
+            data-cy="produit"
+            name="produit"
+            formControlName="produit"
+            [compareWith]="compareProduit"
+          >
+            @if (editForm.get(['produit'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (produitOption of produitsSharedCollection(); track $index) {
+              <option [ngValue]="produitOption">{{ produitOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['produit'])!.invalid && (editForm.get(['produit'])!.dirty || editForm.get(['produit'])!.touched)) {
+          <div>
+            @if (editForm.get(['produit'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

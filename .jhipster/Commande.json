@@ -1,0 +1,71 @@
+{
+  "annotations": {
+    "changelogDate": "20260815005011"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "numero",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "dateCommande",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "montantTotal",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "modePaiement",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "statutCommande",
+      "fieldType": "StatutCommande",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "EN_ATTENTE,CONFIRMEE,EN_PREPARATION,EXPEDIEE,LIVREE,ANNULEE"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Commande",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "paiement",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "paiement",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "livraison",
+      "relationshipName": "livraison",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityName": "ligneCommande",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "ligne",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "clienteProfile",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "clienteProfile",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

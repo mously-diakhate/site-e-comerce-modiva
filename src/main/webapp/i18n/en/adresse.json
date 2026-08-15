@@ -1,0 +1,30 @@
+{
+  "modivaApp": {
+    "adresse": {
+      "home": {
+        "title": "Adresses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Adresse",
+        "createOrEditLabel": "Create or edit a Adresse",
+        "notFound": "No Adresses found"
+      },
+      "created": "A new Adresse is created with identifier {{ param }}",
+      "updated": "A Adresse is updated with identifier {{ param }}",
+      "deleted": "A Adresse is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Adresse {{ id }}?"
+      },
+      "detail": {
+        "title": "Adresse"
+      },
+      "id": "ID",
+      "libelle": "Libelle",
+      "adresse": "Adresse",
+      "ville": "Ville",
+      "quartier": "Quartier",
+      "telephone": "Telephone",
+      "parDefaut": "Par Defaut",
+      "clienteProfile": "Cliente Profile"
+    }
+  }
+}

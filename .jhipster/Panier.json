@@ -1,0 +1,32 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004811"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "dateCreation",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Panier",
+  "relationships": [
+    {
+      "otherEntityName": "lignePanier",
+      "otherEntityRelationshipName": "panier",
+      "relationshipName": "ligne",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "clienteProfile",
+      "otherEntityRelationshipName": "panier",
+      "relationshipName": "clienteProfile",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

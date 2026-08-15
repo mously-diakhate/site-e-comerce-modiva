@@ -1,0 +1,22 @@
+{
+  "annotations": {
+    "changelogDate": "20260815004611"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "libelle",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "codeHex",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Couleur",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

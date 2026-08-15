@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (clienteProfile(); as clienteProfileRef) {
+      <div>
+        <h2 data-cy="clienteProfileDetailsHeading"><span jhiTranslate="modivaApp.clienteProfile.detail.title">Cliente Profile</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ clienteProfileRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.clienteProfile.telephone">Telephone</span></dt>
+          <dd>
+            <span>{{ clienteProfileRef.telephone }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.clienteProfile.actif">Actif</span></dt>
+          <dd>
+            <span>{{ clienteProfileRef.actif }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.clienteProfile.user">User</span></dt>
+          <dd>
+            <span>{{ clienteProfileRef.user?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.clienteProfile.panier">Panier</span></dt>
+          <dd>
+            @if (clienteProfile()!.panier) {
+              <div>
+                <a [routerLink]="['/panier', clienteProfile()!.panier?.id, 'view']">{{ clienteProfileRef.panier?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/cliente-profile', clienteProfileRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

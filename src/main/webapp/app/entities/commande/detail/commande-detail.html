@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (commande(); as commandeRef) {
+      <div>
+        <h2 data-cy="commandeDetailsHeading"><span jhiTranslate="modivaApp.commande.detail.title">Commande</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ commandeRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.numero">Numero</span></dt>
+          <dd>
+            <span>{{ commandeRef.numero }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.dateCommande">Date Commande</span></dt>
+          <dd>
+            <span>{{ commandeRef.dateCommande | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.montantTotal">Montant Total</span></dt>
+          <dd>
+            <span>{{ commandeRef.montantTotal }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.modePaiement">Mode Paiement</span></dt>
+          <dd>
+            <span>{{ commandeRef.modePaiement }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.statutCommande">Statut Commande</span></dt>
+          <dd>
+            <span [jhiTranslate]="'modivaApp.StatutCommande.' + (commandeRef.statutCommande ?? 'null')">{{
+              {
+                null: '',
+                EN_ATTENTE: 'EN_ATTENTE',
+                CONFIRMEE: 'CONFIRMEE',
+                EN_PREPARATION: 'EN_PREPARATION',
+                EXPEDIEE: 'EXPEDIEE',
+                LIVREE: 'LIVREE',
+                ANNULEE: 'ANNULEE',
+              }[commandeRef.statutCommande ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.paiement">Paiement</span></dt>
+          <dd>
+            @if (commande()!.paiement) {
+              <div>
+                <a [routerLink]="['/paiement', commande()!.paiement?.id, 'view']">{{ commandeRef.paiement?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.livraison">Livraison</span></dt>
+          <dd>
+            @if (commande()!.livraison) {
+              <div>
+                <a [routerLink]="['/livraison', commande()!.livraison?.id, 'view']">{{ commandeRef.livraison?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="modivaApp.commande.clienteProfile">Cliente Profile</span></dt>
+          <dd>
+            @if (commande()!.clienteProfile) {
+              <div>
+                <a [routerLink]="['/cliente-profile', commande()!.clienteProfile?.id, 'view']">{{ commandeRef.clienteProfile?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/commande', commandeRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

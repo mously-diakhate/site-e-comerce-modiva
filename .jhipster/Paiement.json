@@ -1,0 +1,44 @@
+{
+  "annotations": {
+    "changelogDate": "20260815005211"
+  },
+  "applications": ["modiva"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "montant",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "datePaiement",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "moyenPaiement",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "referenceTransaction",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "statutPaiement",
+      "fieldType": "StatutPaiement",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "EN_ATTENTE,REUSSI,ECHOUE,REMBOURSE"
+    }
+  ],
+  "name": "Paiement",
+  "relationships": [
+    {
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "paiement",
+      "relationshipName": "commande",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

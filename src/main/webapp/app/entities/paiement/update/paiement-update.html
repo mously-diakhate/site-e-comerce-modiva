@@ -1,0 +1,120 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-paiement-heading" data-cy="PaiementCreateUpdateHeading" jhiTranslate="modivaApp.paiement.home.createOrEditLabel">
+        Créer ou éditer un Paiement
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let montantRef = editForm.get('montant')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_montant" jhiTranslate="modivaApp.paiement.montant">Montant</label>
+          <input type="number" class="form-control" name="montant" id="field_montant" data-cy="montant" formControlName="montant" />
+          @if (montantRef.invalid && (montantRef.dirty || montantRef.touched)) {
+            <div>
+              @if (editForm.get('montant')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('montant')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_datePaiement" jhiTranslate="modivaApp.paiement.datePaiement">Date Paiement</label>
+          <div class="d-flex">
+            <input
+              id="field_datePaiement"
+              data-cy="datePaiement"
+              type="datetime-local"
+              class="form-control"
+              name="datePaiement"
+              formControlName="datePaiement"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_moyenPaiement" jhiTranslate="modivaApp.paiement.moyenPaiement">Moyen Paiement</label>
+          <input
+            type="text"
+            class="form-control"
+            name="moyenPaiement"
+            id="field_moyenPaiement"
+            data-cy="moyenPaiement"
+            formControlName="moyenPaiement"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_referenceTransaction" jhiTranslate="modivaApp.paiement.referenceTransaction"
+            >Reference Transaction</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="referenceTransaction"
+            id="field_referenceTransaction"
+            data-cy="referenceTransaction"
+            formControlName="referenceTransaction"
+          />
+        </div>
+
+        @let statutPaiementRef = editForm.get('statutPaiement')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_statutPaiement" jhiTranslate="modivaApp.paiement.statutPaiement">Statut Paiement</label>
+          <select
+            class="form-control"
+            name="statutPaiement"
+            formControlName="statutPaiement"
+            id="field_statutPaiement"
+            data-cy="statutPaiement"
+          >
+            <option [ngValue]="null">{{ 'modivaApp.StatutPaiement.null' | translate }}</option>
+            @for (statutPaiement of statutPaiementValues; track $index) {
+              <option [value]="statutPaiement">{{ 'modivaApp.StatutPaiement.' + statutPaiement | translate }}</option>
+            }
+          </select>
+          @if (statutPaiementRef.invalid && (statutPaiementRef.dirty || statutPaiementRef.touched)) {
+            <div>
+              @if (editForm.get('statutPaiement')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

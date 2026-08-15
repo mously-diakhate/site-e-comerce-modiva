@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (adresse(); as adresseRef) {
+      <div>
+        <h2 data-cy="adresseDetailsHeading"><span jhiTranslate="modivaApp.adresse.detail.title">Adresse</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ adresseRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.libelle">Libelle</span></dt>
+          <dd>
+            <span>{{ adresseRef.libelle }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.adresse">Adresse</span></dt>
+          <dd>
+            <span>{{ adresseRef.adresse }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.ville">Ville</span></dt>
+          <dd>
+            <span>{{ adresseRef.ville }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.quartier">Quartier</span></dt>
+          <dd>
+            <span>{{ adresseRef.quartier }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.telephone">Telephone</span></dt>
+          <dd>
+            <span>{{ adresseRef.telephone }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.parDefaut">Par Defaut</span></dt>
+          <dd>
+            <span>{{ adresseRef.parDefaut }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.adresse.clienteProfile">Cliente Profile</span></dt>
+          <dd>
+            @if (adresse()!.clienteProfile) {
+              <div>
+                <a [routerLink]="['/cliente-profile', adresse()!.clienteProfile?.id, 'view']">{{ adresseRef.clienteProfile?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/adresse', adresseRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

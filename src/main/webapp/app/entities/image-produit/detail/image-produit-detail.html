@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (imageProduit(); as imageProduitRef) {
+      <div>
+        <h2 data-cy="imageProduitDetailsHeading"><span jhiTranslate="modivaApp.imageProduit.detail.title">Image Produit</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ imageProduitRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.imageProduit.url">Url</span></dt>
+          <dd>
+            <span>{{ imageProduitRef.url }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.imageProduit.ordre">Ordre</span></dt>
+          <dd>
+            <span>{{ imageProduitRef.ordre }}</span>
+          </dd>
+          <dt><span jhiTranslate="modivaApp.imageProduit.produit">Produit</span></dt>
+          <dd>
+            @if (imageProduit()!.produit) {
+              <div>
+                <a [routerLink]="['/produit', imageProduit()!.produit?.id, 'view']">{{ imageProduitRef.produit?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/image-produit', imageProduitRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

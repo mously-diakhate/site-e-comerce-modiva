@@ -1,0 +1,13 @@
+export enum StatutCommande {
+  EN_ATTENTE = 'EN_ATTENTE',
+
+  CONFIRMEE = 'CONFIRMEE',
+
+  EN_PREPARATION = 'EN_PREPARATION',
+
+  EXPEDIEE = 'EXPEDIEE',
+
+  LIVREE = 'LIVREE',
+
+  ANNULEE = 'ANNULEE',
+}

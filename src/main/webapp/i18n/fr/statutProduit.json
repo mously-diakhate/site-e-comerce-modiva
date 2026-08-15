@@ -1,0 +1,9 @@
+{
+  "modivaApp": {
+    "StatutProduit": {
+      "null": "",
+      "ACTIF": "ACTIF",
+      "INACTIF": "INACTIF"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "modivaApp": {
+    "varianteProduit": {
+      "home": {
+        "title": "Variante Produits",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Variante Produit",
+        "createOrEditLabel": "Create or edit a Variante Produit",
+        "notFound": "No Variante Produits found"
+      },
+      "created": "A new Variante Produit is created with identifier {{ param }}",
+      "updated": "A Variante Produit is updated with identifier {{ param }}",
+      "deleted": "A Variante Produit is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Variante Produit {{ id }}?"
+      },
+      "detail": {
+        "title": "Variante Produit"
+      },
+      "id": "ID",
+      "stock": "Stock",
+      "taille": "Taille",
+      "couleur": "Couleur",
+      "produit": "Produit"
+    }
+  }
+}

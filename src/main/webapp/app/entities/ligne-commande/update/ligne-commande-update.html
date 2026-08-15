@@ -1,0 +1,142 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-ligne-commande-heading"
+        data-cy="LigneCommandeCreateUpdateHeading"
+        jhiTranslate="modivaApp.ligneCommande.home.createOrEditLabel"
+      >
+        Créer ou éditer un Ligne Commande
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let quantiteRef = editForm.get('quantite')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_quantite" jhiTranslate="modivaApp.ligneCommande.quantite">Quantite</label>
+          <input type="number" class="form-control" name="quantite" id="field_quantite" data-cy="quantite" formControlName="quantite" />
+          @if (quantiteRef.invalid && (quantiteRef.dirty || quantiteRef.touched)) {
+            <div>
+              @if (editForm.get('quantite')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('quantite')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >Ce champ doit être supérieur à 1.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('quantite')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let prixUnitaireRef = editForm.get('prixUnitaire')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_prixUnitaire" jhiTranslate="modivaApp.ligneCommande.prixUnitaire">Prix Unitaire</label>
+          <input
+            type="number"
+            class="form-control"
+            name="prixUnitaire"
+            id="field_prixUnitaire"
+            data-cy="prixUnitaire"
+            formControlName="prixUnitaire"
+          />
+          @if (prixUnitaireRef.invalid && (prixUnitaireRef.dirty || prixUnitaireRef.touched)) {
+            <div>
+              @if (editForm.get('prixUnitaire')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('prixUnitaire')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_variante" jhiTranslate="modivaApp.ligneCommande.variante">Variante</label>
+          <select
+            class="form-control"
+            id="field_variante"
+            data-cy="variante"
+            name="variante"
+            formControlName="variante"
+            [compareWith]="compareVarianteProduit"
+          >
+            @if (!editForm.get('variante')!.value) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (varianteProduitOption of varianteProduitsSharedCollection(); track $index) {
+              <option [ngValue]="varianteProduitOption">{{ varianteProduitOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['variante'])!.invalid && (editForm.get(['variante'])!.dirty || editForm.get(['variante'])!.touched)) {
+          <div>
+            @if (editForm.get(['variante'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_commande" jhiTranslate="modivaApp.ligneCommande.commande">Commande</label>
+          <select
+            class="form-control"
+            id="field_commande"
+            data-cy="commande"
+            name="commande"
+            formControlName="commande"
+            [compareWith]="compareCommande"
+          >
+            @if (editForm.get(['commande'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (commandeOption of commandesSharedCollection(); track $index) {
+              <option [ngValue]="commandeOption">{{ commandeOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['commande'])!.invalid && (editForm.get(['commande'])!.dirty || editForm.get(['commande'])!.touched)) {
+          <div>
+            @if (editForm.get(['commande'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving()"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
