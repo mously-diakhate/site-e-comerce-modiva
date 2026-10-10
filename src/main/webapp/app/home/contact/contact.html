@@ -1,0 +1,70 @@
+<div class="contact-page">
+  <section class="contact-section">
+    <div class="contact-grid">
+      <!-- TEXTE + INFOS -->
+      <div class="contact-intro">
+        <span class="eyebrow">Contact</span>
+        <h1>Parlons de votre tenue</h1>
+        <p class="contact-subtitle">
+          Une question sur une taille, une couleur ou une livraison ? Écrivez-nous, nous vous répondons rapidement.
+        </p>
+
+        <ul class="contact-infos">
+          @for (info of infos; track info.text) {
+            <li>
+              <fa-icon [icon]="info.icon" />
+              <span>{{ info.text }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- FORMULAIRE -->
+      <div class="contact-form-card">
+        <h2>Formulaire de contact</h2>
+        <form (ngSubmit)="submitContact()">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="contact-nom">Nom</label>
+              <input id="contact-nom" type="text" name="nom" autocomplete="name" [(ngModel)]="nom" placeholder="Votre nom" required />
+            </div>
+            <div class="form-field">
+              <label for="contact-telephone">Téléphone</label>
+              <!-- inputmode="tel" : affiche le clavier numérique sur téléphone -->
+              <input
+                id="contact-telephone"
+                type="tel"
+                name="telephone"
+                autocomplete="tel"
+                inputmode="tel"
+                [(ngModel)]="telephone"
+                placeholder="77 000 00 00"
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="contact-email">E-mail</label>
+            <input
+              id="contact-email"
+              type="email"
+              name="email"
+              autocomplete="email"
+              inputmode="email"
+              [(ngModel)]="email"
+              placeholder="vous@exemple.com"
+              required
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" rows="5" [(ngModel)]="message" placeholder="Votre message..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-envoyer">Envoyer</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>

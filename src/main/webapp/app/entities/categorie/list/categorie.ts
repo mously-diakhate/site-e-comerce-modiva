@@ -23,6 +23,7 @@ import { CategorieService } from '../service/categorie.service';
 @Component({
   selector: 'jhi-categorie',
   templateUrl: './categorie.html',
+  styleUrl: './categorie.scss',
   imports: [
     RouterLink,
     FormsModule,
@@ -81,7 +82,6 @@ export class Categorie implements OnInit {
   delete(categorie: ICategorie): void {
     const modalRef = this.modalService.open(CategorieDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.categorie = categorie;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),

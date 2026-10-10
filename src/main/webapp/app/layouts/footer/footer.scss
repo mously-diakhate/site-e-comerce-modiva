@@ -1,0 +1,212 @@
+.home-footer {
+  background: #1b1015;
+  color: #e6cdd3;
+
+  // ---------- STRUCTURE ----------
+  .footer-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(40px, 7vw, 70px) clamp(16px, 4vw, 24px) clamp(24px, 4vw, 40px);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: clamp(28px, 4vw, 40px);
+  }
+
+  // ---------- MARQUE + NEWSLETTER ----------
+  .footer-brand {
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      color: #fff;
+
+      span {
+        color: #e11d74;
+      }
+    }
+
+    .footer-tagline {
+      font-style: italic;
+      color: #f1c9d4;
+      margin: 6px 0 20px;
+      font-size: 14px;
+    }
+
+    .footer-newsletter-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #cdb3ba;
+      max-width: 320px;
+      margin-bottom: 18px;
+    }
+  }
+
+  .footer-newsletter-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    max-width: 320px;
+    padding-bottom: 8px;
+
+    input {
+      flex: 1;
+      min-width: 0; // permet au champ de rétrécir au lieu de déborder
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 13px;
+      padding: 6px 0;
+
+      &::placeholder {
+        color: #a98891;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: #e11d74;
+      font-size: 12px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 6px 0;
+
+      &:hover {
+        color: #f1c9d4;
+      }
+    }
+
+    &:focus-within {
+      border-bottom-color: #e11d74; // retour visuel quand on tape
+    }
+  }
+
+  // ---------- COLONNES DE LIENS ----------
+  .footer-col {
+    h5 {
+      font-family: 'Jost', sans-serif;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    a {
+      display: block;
+      font-size: 13.5px;
+      color: #cdb3ba;
+      margin-bottom: 12px;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #f1c9d4;
+      }
+    }
+  }
+
+  // ---------- RÉSEAUX SOCIAUX ----------
+  .footer-social {
+    display: flex;
+    flex-wrap: wrap; // passe à la ligne si l'espace manque
+    gap: 12px;
+
+    a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 0;
+      transition:
+        background 0.2s,
+        border-color 0.2s;
+
+      &:hover {
+        background: #e11d74;
+        border-color: #e11d74;
+      }
+    }
+  }
+
+  // ---------- BARRE DU BAS ----------
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 18px clamp(16px, 4vw, 24px);
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 1280px;
+    margin: 0 auto;
+    font-size: 12px;
+    color: #a98891;
+  }
+
+  // ---------- TABLETTE : marque en haut, 2 colonnes dessous ----------
+  @media (max-width: 900px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-brand {
+      grid-column: 1 / -1; // la marque prend toute la largeur
+    }
+
+    .footer-newsletter-form,
+    .footer-newsletter-text {
+      max-width: 480px;
+    }
+  }
+
+  // ---------- MOBILE ----------
+  @media (max-width: 600px) {
+    .footer-newsletter-form {
+      max-width: 100%; // le champ occupe toute la largeur
+      input {
+        font-size: 16px; // évite le zoom automatique sur iPhone
+      }
+      button {
+        min-height: 44px; // zone tactile confortable
+      }
+    }
+
+    .footer-newsletter-text {
+      max-width: 100%;
+    }
+
+    .footer-col a {
+      padding: 4px 0; // liens plus faciles à toucher
+      margin-bottom: 6px;
+    }
+
+    .footer-social a {
+      width: 44px;
+      height: 44px;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  // ---------- TRÈS PETIT ÉCRAN : tout en une colonne ----------
+  @media (max-width: 380px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+}

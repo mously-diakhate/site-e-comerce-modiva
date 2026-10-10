@@ -1,0 +1,266 @@
+// Styles du composant NotreUnivers — page "Notre univers" (à propos).
+// Reprend les variables et la charte graphique du reste du site public.
+//
+// RESPONSIVE : fichier autonome (aucun @use / import à configurer).
+// Points de rupture :
+//   ≤ 900px     → hero plus compact, voile de lisibilité sur toute l'image
+//   ≤ 767.98px  → atouts en 1 colonne (icône à gauche, texte à droite)
+//   ≤ 479.98px  → boutons du bandeau final en pleine largeur
+
+.notre-univers {
+  --home-noir: #1b1015;
+  --home-creme: #fbf4ef;
+  --home-rose: #e11d74;
+  --home-bordeaux: #7a1c3c;
+  --home-or: #b9895a;
+  --home-rose-poudre: #f1c9d4;
+  --home-texte: #2b1b20;
+
+  // Espacements fluides : s'adaptent tout seuls à la largeur de l'écran
+  --gutter: clamp(16px, 4vw, 24px);
+
+  font-family: 'Jost', sans-serif;
+  color: var(--home-texte);
+  background: var(--home-creme);
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+  }
+
+  // ---------- HERO ----------
+  .univers-hero {
+    position: relative;
+    min-height: 60vh;
+    min-height: 60svh; // svh : tient compte de la barre d'adresse mobile
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    // Dégradé affiché tant qu'aucune photo n'est déposée dans
+    // src/main/webapp/content/images/notre-univers/ (voir heroImageUrl).
+    background: linear-gradient(155deg, #8a6b70 0%, var(--home-bordeaux) 100%);
+
+    .hero-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(27, 16, 21, 0.55) 0%, rgba(27, 16, 21, 0.15) 55%, transparent 80%);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      padding-block: clamp(40px, 6vw, 60px);
+      padding-inline: clamp(var(--gutter), 7vw, 80px);
+      max-width: 640px;
+
+      .eyebrow {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #fff;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: clamp(32px, 5vw, 56px);
+        line-height: 1.1;
+        color: #fff;
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  // ---------- TEXTE DE PRÉSENTATION ----------
+  .univers-intro {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(48px, 9vw, 80px) var(--gutter);
+
+    p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(17px, 2.2vw, 19px);
+      line-height: 1.7;
+      color: var(--home-texte);
+      margin-bottom: clamp(20px, 3vw, 28px);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // ---------- ATOUTS ----------
+  .univers-atouts {
+    background: #fce9dd;
+    padding: clamp(44px, 8vw, 70px) var(--gutter);
+  }
+
+  .atouts-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(32px, 5vw, 48px);
+  }
+
+  .atout {
+    min-width: 0;
+
+    fa-icon {
+      display: block;
+      color: var(--home-rose);
+      font-size: 26px;
+      margin-bottom: 16px;
+    }
+
+    .atout-titre {
+      font-size: 19px;
+      color: var(--home-noir);
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #5a4249;
+      margin: 0;
+    }
+  }
+
+  // ---------- CTA ----------
+  .univers-cta {
+    background: var(--home-bordeaux);
+    color: #fff;
+    text-align: center;
+    padding: clamp(48px, 9vw, 80px) var(--gutter);
+
+    h2 {
+      font-size: clamp(28px, 3.5vw, 38px);
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 15px;
+      color: var(--home-rose-poudre);
+      margin-bottom: clamp(24px, 4vw, 32px);
+    }
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta-solid,
+  .btn-cta-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 15px 30px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+
+    &:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px;
+    }
+  }
+
+  .btn-cta-solid {
+    background: #fff;
+    color: var(--home-noir);
+    transition: background 0.25s ease;
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--home-rose-poudre);
+      }
+    }
+  }
+
+  .btn-cta-outline {
+    border: 1px solid #fff;
+    color: #fff;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+
+    @media (hover: hover) {
+      &:hover {
+        background: #fff;
+        color: var(--home-bordeaux);
+      }
+    }
+  }
+
+  // =====================================================================
+  // RESPONSIVE
+  // =====================================================================
+
+  // ---------- TABLETTE + MOBILE ----------
+  @media (max-width: 900px) {
+    .univers-hero {
+      min-height: 50vh;
+      min-height: 50svh;
+
+      // Sur mobile, le texte occupe presque toute la largeur : le voile ne peut plus
+      // être limité au côté gauche, sinon le titre blanc devient illisible sur une photo claire.
+      .hero-overlay {
+        background: linear-gradient(180deg, rgba(27, 16, 21, 0.35) 0%, rgba(27, 16, 21, 0.6) 100%);
+      }
+    }
+  }
+
+  // ---------- MOBILE ----------
+  @media (max-width: 767.98px) {
+    .atouts-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    // Icône à gauche, texte à droite : plus compact qu'une icône au-dessus du texte
+    .atout {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      column-gap: 16px;
+      align-items: start;
+
+      fa-icon {
+        margin-bottom: 0;
+        padding-top: 2px;
+      }
+    }
+  }
+
+  // ---------- PETIT MOBILE ----------
+  @media (max-width: 479.98px) {
+    .cta-buttons {
+      flex-direction: column;
+    }
+
+    .btn-cta-solid,
+    .btn-cta-outline {
+      width: 100%;
+    }
+  }
+}

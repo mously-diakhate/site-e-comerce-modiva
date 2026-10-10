@@ -1,0 +1,260 @@
+$ink: #1b1015;
+$cream: #fbf4ef;
+$rose: #e11d74;
+$line: rgba(27, 16, 21, 0.12);
+$text-muted: #5a4249;
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(27, 16, 21, 0.35);
+  z-index: 1050;
+  animation: modiva-drawer-fade-in 0.25s ease;
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(420px, 100vw);
+  height: 100vh;
+  height: 100dvh; // tient compte de la barre d'adresse mobile
+  background: $cream;
+  z-index: 1051;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -12px 0 40px rgba(27, 16, 21, 0.18);
+  animation: modiva-drawer-slide-in 0.25s ease;
+}
+
+@keyframes modiva-drawer-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes modiva-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Respecte les utilisateurs qui désactivent les animations
+@media (prefers-reduced-motion: reduce) {
+  .drawer-backdrop,
+  .drawer-panel {
+    animation: none;
+  }
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px clamp(16px, 4vw, 24px) 12px clamp(16px, 4vw, 24px);
+  min-height: 64px;
+  border-bottom: 1px solid $line;
+  flex-shrink: 0;
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(21px, 5vw, 24px);
+    font-weight: 500;
+    color: $ink;
+    margin: 0;
+  }
+}
+
+.drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px; // aligne visuellement l'icône avec la marge du contenu
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: $ink;
+  cursor: pointer;
+
+  &:hover {
+    color: $rose;
+  }
+}
+
+.drawer-empty {
+  padding: 40px clamp(16px, 4vw, 24px);
+  color: $text-muted;
+  font-size: 14px;
+  text-align: center;
+}
+
+.drawer-lines {
+  flex: 1;
+  min-height: 0; // indispensable pour que overflow-y fonctionne dans un flex
+  overflow-y: auto;
+  overscroll-behavior: contain; // le scroll ne "traverse" pas vers la page derrière
+  -webkit-overflow-scrolling: touch;
+  padding: 8px clamp(16px, 4vw, 24px);
+}
+
+.drawer-line {
+  display: flex;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid $line;
+}
+
+.line-img {
+  width: 64px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.line-img-empty {
+  background: #f1e3da;
+}
+
+.line-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.line-nom {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: $ink;
+  overflow-wrap: anywhere; // un nom très long ne fait plus déborder la ligne
+}
+
+.line-variante {
+  font-size: 12px;
+  color: $text-muted;
+  margin: 2px 0 6px;
+}
+
+.line-prix {
+  font-size: 13px;
+  color: $ink;
+  margin-bottom: 8px;
+}
+
+.line-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid $line;
+  border-radius: 2px;
+  padding: 0 4px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: $ink;
+    width: 32px;
+    height: 32px;
+
+    &:hover {
+      color: $rose;
+    }
+  }
+
+  span {
+    font-size: 13px;
+    min-width: 20px;
+    text-align: center;
+  }
+}
+
+.line-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -8px -10px 0 0;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: #a98891;
+  cursor: pointer;
+  align-self: flex-start;
+  font-size: 14px;
+
+  &:hover {
+    color: $rose;
+  }
+}
+
+.drawer-footer {
+  flex-shrink: 0; // le total et le bouton restent toujours visibles
+  padding: 16px clamp(16px, 4vw, 24px) calc(20px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid $line;
+  background: $cream;
+}
+
+.drawer-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 14px;
+  color: $ink;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.drawer-note {
+  font-size: 11.5px;
+  color: $text-muted;
+  margin-bottom: 14px;
+}
+
+.btn-voir-panier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  text-align: center;
+  background: $rose;
+  color: #fff;
+  padding: 0 15px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+
+  &:hover {
+    background: #c81765;
+    color: #fff;
+  }
+}
+
+// ---------- TRÈS PETIT ÉCRAN ----------
+@media (max-width: 380px) {
+  .drawer-line {
+    gap: 10px;
+  }
+
+  .line-img {
+    width: 56px;
+    height: 74px;
+  }
+}

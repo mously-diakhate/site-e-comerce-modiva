@@ -13,12 +13,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import sn.modiva.app.domain.LignePanier;
 import sn.modiva.app.repository.LignePanierRepository;
+import sn.modiva.app.repository.PanierRepository;
+import sn.modiva.app.security.AuthoritiesConstants;
+import sn.modiva.app.security.SecurityUtils;
 import sn.modiva.app.service.LignePanierService;
 import sn.modiva.app.service.dto.LignePanierDTO;
+import sn.modiva.app.service.mapper.LignePanierMapper;
 import sn.modiva.app.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -42,13 +49,30 @@ public class LignePanierResource {
 
     private final LignePanierRepository lignePanierRepository;
 
-    public LignePanierResource(LignePanierService lignePanierService, LignePanierRepository lignePanierRepository) {
+    private final PanierRepository panierRepository;
+
+    private final LignePanierMapper lignePanierMapper;
+
+    public LignePanierResource(
+        LignePanierService lignePanierService,
+        LignePanierRepository lignePanierRepository,
+        PanierRepository panierRepository,
+        LignePanierMapper lignePanierMapper
+    ) {
         this.lignePanierService = lignePanierService;
         this.lignePanierRepository = lignePanierRepository;
+        this.panierRepository = panierRepository;
+        this.lignePanierMapper = lignePanierMapper;
     }
 
     /**
      * {@code POST  /ligne-paniers} : Create a new lignePanier.
+     *
+     * Vérifie que le panier ciblé (lignePanierDTO.panier.id) appartient bien
+     * à l'utilisatrice connectée avant toute création — sinon n'importe
+     * quelle cliente authentifiée pourrait ajouter des lignes au panier
+     * d'une autre en devinant son id de panier. L'admin n'est pas soumis à
+     * cette restriction.
      *
      * @param lignePanierDTO the lignePanierDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new lignePanierDTO, or with status {@code 400 (Bad Request)} if the lignePanier has already an ID.
@@ -60,6 +84,7 @@ public class LignePanierResource {
         if (lignePanierDTO.getId() != null) {
             throw new BadRequestAlertException("A new lignePanier cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        assertOwnsTargetPanier(lignePanierDTO);
         lignePanierDTO = lignePanierService.save(lignePanierDTO);
         return ResponseEntity.created(new URI("/api/ligne-paniers/" + lignePanierDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, lignePanierDTO.getId().toString()))
@@ -92,6 +117,8 @@ public class LignePanierResource {
         if (!lignePanierRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        assertOwnsExistingLigne(id);
+        assertOwnsTargetPanier(lignePanierDTO);
 
         lignePanierDTO = lignePanierService.update(lignePanierDTO);
         return ResponseEntity.ok()
@@ -126,6 +153,7 @@ public class LignePanierResource {
         if (!lignePanierRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        assertOwnsExistingLigne(id);
 
         Optional<LignePanierDTO> result = lignePanierService.partialUpdate(lignePanierDTO);
 
@@ -133,6 +161,27 @@ public class LignePanierResource {
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, lignePanierDTO.getId().toString())
         );
+    }
+
+    /**
+     * {@code GET  /ligne-paniers/mine} : get the lines of the Panier
+     * belonging to the currently authenticated user.
+     *
+     * Self-service : la résolution se fait uniquement via le login présent
+     * dans le token JWT, jamais via un paramètre fourni par le client.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of the current user's own LignePaniers in body.
+     */
+    @GetMapping("/mine")
+    public ResponseEntity<List<LignePanierDTO>> getMyLignePaniers() {
+        LOG.debug("REST request to get the current user's own LignePaniers");
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
+        if (login.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<LignePanier> lignes = lignePanierRepository.findAllByPanier_ClienteProfile_User_Login(login.get());
+        List<LignePanierDTO> content = lignes.stream().map(lignePanierMapper::toDto).toList();
+        return ResponseEntity.ok(content);
     }
 
     /**
@@ -171,9 +220,54 @@ public class LignePanierResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLignePanier(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete LignePanier : {}", id);
+        assertOwnsExistingLigne(id);
         lignePanierService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * Empêche une cliente non-admin de créer/modifier une ligne rattachée au
+     * panier d'une autre personne, en comparant le login courant à celui de
+     * la cliente propriétaire du panier ciblé par lignePanierDTO.panier.id.
+     * Vérifie directement via PanierRepository (et non via les lignes déjà
+     * présentes) pour rester correct même sur un panier tout juste créé,
+     * encore vide. Ne fait rien pour l'admin (elle doit pouvoir tout gérer).
+     */
+    private void assertOwnsTargetPanier(LignePanierDTO lignePanierDTO) {
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            return;
+        }
+        Long panierId = lignePanierDTO.getPanier() != null ? lignePanierDTO.getPanier().getId() : null;
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AccessDeniedException("Not authenticated"));
+        boolean owns =
+            panierId != null &&
+            panierRepository
+                .findOneByClienteProfile_User_Login(login)
+                .map(panier -> Objects.equals(panier.getId(), panierId))
+                .orElse(false);
+        if (!owns) {
+            throw new AccessDeniedException("You do not own this panier");
+        }
+    }
+
+    /**
+     * Empêche une cliente non-admin de modifier/supprimer une ligne qui ne
+     * lui appartient pas, en vérifiant que la ligne ciblée par id fait bien
+     * partie de son propre panier.
+     */
+    private void assertOwnsExistingLigne(Long ligneId) {
+        if (SecurityUtils.hasCurrentUserThisAuthority(AuthoritiesConstants.ADMIN)) {
+            return;
+        }
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new AccessDeniedException("Not authenticated"));
+        boolean owns = lignePanierRepository
+            .findAllByPanier_ClienteProfile_User_Login(login)
+            .stream()
+            .anyMatch(l -> Objects.equals(l.getId(), ligneId));
+        if (!owns) {
+            throw new AccessDeniedException("You do not own this lignePanier");
+        }
     }
 }

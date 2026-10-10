@@ -1,0 +1,248 @@
+// Page Connexion / Inscription.
+//
+// RESPONSIVE : fichier autonome (aucun @use / import à configurer).
+// - Marges, carte et titre : valeurs fluides (clamp), qui s'adaptent seules à l'écran.
+// - Écrans tactiles ou ≤ 767px : champs à 16px (évite le zoom automatique de l'iPhone)
+//   et zones tactiles d'au moins 44-52px.
+
+$ink: #211611;
+$ink-soft: #3a2a24;
+$cream: #fbf4f1;
+$card: #ffffff;
+$rose: #e11d74;
+$line: #eadfda;
+$text-muted: #8b7a73;
+$danger: #b3453f;
+$danger-bg: #fbe4e2;
+$success: #2f7a4f;
+$success-bg: #e3f3ea;
+
+:host {
+  display: block;
+  background: $cream;
+}
+
+.modiva-auth-wrap {
+  // La page est déjà entourée d'une navbar et d'un footer : 100vh forçait un défilement inutile.
+  min-height: 75vh;
+  min-height: 75svh; // svh : tient compte de la barre d'adresse mobile
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  padding: clamp(24px, 6vw, 40px) clamp(16px, 4vw, 24px);
+}
+
+.modiva-auth-card {
+  background: $card;
+  border: 1px solid $line;
+  border-radius: 4px;
+  padding: clamp(28px, 6vw, 44px) clamp(20px, 6vw, 40px);
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 50px rgba(33, 22, 17, 0.05);
+}
+
+.auth-eyebrow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: $rose;
+  margin: 0 0 8px;
+}
+
+.auth-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 7vw, 34px);
+  font-weight: 500;
+  color: $ink;
+  text-align: center;
+  margin: 0 0 clamp(20px, 4vw, 28px);
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: clamp(20px, 4vw, 28px);
+  border: 1px solid $ink;
+}
+
+.auth-tab {
+  flex: 1;
+  min-height: 48px; // zone tactile confortable
+  border: none;
+  background: $card;
+  color: $ink;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 14px 0;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid $rose;
+    outline-offset: -4px;
+  }
+
+  &.active {
+    background: $ink;
+    color: #fff;
+  }
+}
+
+.auth-alert {
+  font-size: 12.5px;
+  line-height: 1.5;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
+
+  &.danger {
+    background: $danger-bg;
+    color: $danger;
+  }
+
+  &.success {
+    background: $success-bg;
+    color: $success;
+  }
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: $ink-soft;
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid $line;
+  border-radius: 2px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: $ink;
+  background: $cream;
+
+  &:focus {
+    outline: none;
+    border-color: $rose;
+    box-shadow: 0 0 0 3px rgba(225, 29, 116, 0.12);
+  }
+}
+
+.auth-remember {
+  display: flex;
+  align-items: center;
+  margin: 4px 0 20px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px; // toute la ligne est cliquable, pas seulement la petite case
+    font-size: 12.5px;
+    color: $text-muted;
+    cursor: pointer;
+  }
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    accent-color: $rose;
+  }
+}
+
+.auth-submit {
+  width: 100%;
+  min-height: 52px;
+  border: none;
+  border-radius: 2px;
+  padding: 15px 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid $ink;
+    outline-offset: 2px;
+  }
+}
+
+.btn-modiva-primary {
+  background: $rose;
+  color: #fff;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, $rose 90%, black);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.auth-footer-link,
+.auth-help {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12.5px;
+  color: $text-muted;
+
+  a {
+    display: inline-block;
+    padding: 6px 2px; // zone tactile plus grande pour les liens
+    color: $text-muted;
+    font-weight: 600;
+    text-decoration: underline;
+
+    @media (hover: hover) {
+      &:hover {
+        color: $rose;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid $rose;
+      outline-offset: 2px;
+    }
+  }
+}
+
+// =====================================================================
+// RESPONSIVE
+// =====================================================================
+
+// Écrans tactiles ou étroits : 16px minimum dans les champs, sinon l'iPhone
+// zoome automatiquement sur la page au moment de toucher un champ.
+@media (pointer: coarse), (max-width: 767.98px) {
+  .form-control {
+    font-size: 16px;
+    min-height: 50px;
+  }
+}

@@ -17,6 +17,7 @@ import { TailleFormGroup, TailleFormService } from './taille-form.service';
 @Component({
   selector: 'jhi-taille-update',
   templateUrl: './taille-update.html',
+  styleUrl: './taille-update.scss',
   imports: [TranslateDirective, TranslateModule, FontAwesomeModule, AlertError, ReactiveFormsModule],
 })
 export class TailleUpdate implements OnInit {

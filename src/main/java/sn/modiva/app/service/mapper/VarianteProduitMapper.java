@@ -23,11 +23,14 @@ public interface VarianteProduitMapper extends EntityMapper<VarianteProduitDTO, 
     @Named("tailleId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "libelle", source = "libelle")
     TailleDTO toDtoTailleId(Taille taille);
 
     @Named("couleurId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "libelle", source = "libelle")
+    @Mapping(target = "codeHex", source = "codeHex")
     CouleurDTO toDtoCouleurId(Couleur couleur);
 
     @Named("produitId")

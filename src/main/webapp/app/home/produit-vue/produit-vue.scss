@@ -1,0 +1,555 @@
+// Styles du composant ProduitVue — page produit publique.
+// Reprend les variables et la charte graphique du reste du site.
+//
+// RESPONSIVE : fichier autonome (aucun @use / import à configurer).
+// Points de rupture :
+//   ≤ 900px     → image au-dessus, infos en dessous ; suggestions sur 2 colonnes
+//   ≤ 900px     → barre "Ajouter au panier" collée en bas de l'écran
+//   ≤ 575.98px  → dans cette barre, seul "Ajouter au panier" reste (le panier est dans la navbar)
+
+.produit-vue {
+  --home-noir: #1b1015;
+  --home-creme: #fbf4ef;
+  --home-rose: #e11d74;
+  --home-bordeaux: #7a1c3c;
+  --home-or: #b9895a;
+  --home-rose-poudre: #f1c9d4;
+  --home-texte: #2b1b20;
+
+  // Espacements fluides : s'adaptent tout seuls à la largeur de l'écran
+  --gutter: clamp(16px, 4vw, 24px);
+  --grid-gap: clamp(12px, 2vw, 24px);
+
+  font-family: 'Jost', sans-serif;
+  color: var(--home-texte);
+  background: var(--home-creme);
+  min-height: 60vh;
+
+  h1,
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    color: var(--home-noir);
+  }
+
+  .produit-introuvable {
+    text-align: center;
+    padding: clamp(60px, 12vw, 100px) var(--gutter);
+    color: #5a4249;
+  }
+
+  .produit-section {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(16px, 3vw, 30px) var(--gutter) clamp(56px, 10vw, 100px);
+  }
+
+  // ---------- FIL D'ARIANE ----------
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap; // un nom de catégorie long passe à la ligne au lieu de déborder
+    align-items: center;
+    gap: 4px 8px;
+    font-size: 11.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: clamp(18px, 3vw, 30px);
+
+    a {
+      color: var(--home-rose);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    span {
+      color: #a98891;
+    }
+  }
+
+  // ---------- GRILLE PRINCIPALE ----------
+  .produit-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(28px, 5vw, 60px);
+    margin-bottom: clamp(56px, 9vw, 90px);
+  }
+
+  .produit-image {
+    aspect-ratio: 3 / 4;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #f1e3da;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 45%;
+        height: auto;
+      }
+
+      .sil-fill {
+        fill: rgba(122, 28, 60, 0.14);
+      }
+    }
+  }
+
+  // ---------- INFOS PRODUIT ----------
+  .produit-infos {
+    min-width: 0; // évite qu'un long nom élargisse la colonne
+
+    .badge-eyebrow {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--home-rose);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 3.4vw, 40px);
+      line-height: 1.15;
+      margin-bottom: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .prix {
+      font-size: clamp(18px, 2.4vw, 20px);
+      color: var(--home-texte);
+      margin-bottom: 22px;
+    }
+
+    .description {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #5a4249;
+      margin-bottom: 30px;
+    }
+  }
+
+  // ---------- SÉLECTEURS TAILLE / COULEUR ----------
+  .option-group {
+    margin-bottom: 26px;
+  }
+
+  .option-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--home-texte);
+    margin-bottom: 12px;
+  }
+
+  .option-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .option-pill {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    color: var(--home-texte);
+    background: #fff;
+    border: 1px solid rgba(27, 16, 21, 0.22);
+    border-radius: 2px;
+    padding: 10px 16px;
+    min-height: 44px; // zone tactile confortable
+    min-width: 48px;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background 0.2s ease;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--home-noir);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--home-rose);
+      outline-offset: 2px;
+    }
+
+    &.active {
+      border-color: var(--home-rose);
+      background: var(--home-rose-poudre);
+    }
+  }
+
+  .couleur-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .couleur-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(27, 16, 21, 0.15);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .validation-error {
+    font-size: 13px;
+    color: var(--home-rose);
+    margin-bottom: 18px;
+  }
+
+  // ---------- BOUTONS D'ACTION ----------
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+  }
+
+  .btn-ajouter {
+    flex: 1;
+    min-width: 200px;
+    min-height: 52px;
+    background: var(--home-rose);
+    color: #fff;
+    border: none;
+    padding: 16px 24px;
+    font-family: 'Jost', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.25s ease;
+
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        background: var(--home-bordeaux);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--home-noir);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      background: #d9b8c4;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-voir-panier {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    border: 1px solid var(--home-noir);
+    color: var(--home-noir);
+    padding: 16px 24px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition:
+      background 0.25s ease,
+      color 0.25s ease;
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--home-noir);
+        color: #fff;
+      }
+    }
+  }
+
+  // ---------- NOTE LIVRAISON ----------
+  .livraison-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #5a4249;
+    border-top: 1px solid rgba(27, 16, 21, 0.12);
+    border-bottom: 1px solid rgba(27, 16, 21, 0.12);
+    padding: 16px 0;
+    margin-bottom: 26px;
+
+    fa-icon {
+      color: var(--home-rose);
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+  }
+
+  // ---------- DÉTAILS ----------
+  .details-block {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      font-size: 14px;
+      color: var(--home-texte);
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+
+      &::before {
+        content: '• ';
+        color: var(--home-rose);
+      }
+    }
+  }
+
+  // ---------- SUGGESTIONS ("Vous aimerez aussi") ----------
+  .suggestions {
+    h2 {
+      font-size: clamp(24px, 3vw, 32px);
+      margin-bottom: clamp(20px, 4vw, 32px);
+    }
+  }
+
+  .suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--grid-gap);
+  }
+
+  .suggestion-card {
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+
+    &:focus-visible {
+      outline: 2px solid var(--home-rose);
+      outline-offset: 3px;
+    }
+
+    .ph {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      border-radius: 3px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      isolation: isolate;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+
+      // Survol uniquement sur les appareils avec souris
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 32px rgba(27, 16, 21, 0.2);
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        filter: url(#produit-grain);
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+      }
+    }
+
+    .ph-illustration {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.75;
+      z-index: 0;
+
+      svg {
+        width: clamp(56px, 12vw, 80px);
+        height: auto;
+      }
+    }
+
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.2vw, 17px);
+      line-height: 1.25;
+      color: var(--home-noir);
+      overflow-wrap: anywhere;
+    }
+
+    .price {
+      font-size: 13px;
+      color: #5a4249;
+      margin-top: 2px;
+    }
+
+    .suggestion-couleurs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .couleur-swatch {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1px solid rgba(27, 16, 21, 0.15);
+      box-shadow: 0 0 0 1px #fff;
+      display: inline-block;
+    }
+  }
+
+  // ---------- TONS (identiques à shop-home / shop-catalog) ----------
+  .p-tone-1 {
+    background: linear-gradient(155deg, #f1c9d4 0%, var(--home-rose) 65%, var(--home-bordeaux) 140%);
+  }
+  .p-tone-2 {
+    background: linear-gradient(155deg, #f7e3e4 0%, #e7b9c9 55%, var(--home-or) 140%);
+  }
+  .p-tone-3 {
+    background: linear-gradient(155deg, #2b1620 0%, var(--home-noir) 55%, #3a2129 140%);
+  }
+  .p-tone-4 {
+    background: linear-gradient(155deg, #e7b9c9 0%, #c9a8ae 50%, var(--home-bordeaux) 150%);
+  }
+
+  // ---------- PRODUIT ÉPUISÉ : image floutée + pastille "Épuisé" centrée ----------
+  .produit-image,
+  .suggestion-card .ph {
+    position: relative;
+  }
+
+  .produit-image.epuise,
+  .suggestion-card .ph.epuise {
+    img,
+    .image-fallback,
+    .ph-illustration {
+      filter: blur(2px) grayscale(0.25);
+      opacity: 0.75;
+      transition:
+        filter 0.2s ease,
+        opacity 0.2s ease;
+    }
+  }
+
+  .badge-epuise {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background: #fff;
+    color: #211611;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    padding: 8px 22px;
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgba(33, 22, 17, 0.12);
+    pointer-events: none;
+  }
+
+  .suggestion-card .badge-epuise {
+    font-size: 12px;
+    padding: 6px 16px;
+  }
+
+  // =====================================================================
+  // RESPONSIVE
+  // =====================================================================
+
+  // ---------- TABLETTE + MOBILE ----------
+  @media (max-width: 900px) {
+    // Image au-dessus, infos dessous
+    .produit-grid {
+      grid-template-columns: 1fr;
+    }
+
+    // Format un peu moins haut pour ne pas "manger" tout l'écran
+    .produit-image {
+      aspect-ratio: 4 / 5;
+      max-height: 75vh;
+      max-height: 75svh;
+    }
+
+    .suggestions-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    // BARRE D'ACHAT COLLÉE EN BAS DE L'ÉCRAN
+    // Le bouton "Ajouter au panier" reste toujours accessible, même quand on
+    // fait défiler la description. Elle reprend sa place normale une fois
+    // la fin des infos produit atteinte.
+    .cta-row {
+      position: sticky;
+      bottom: 0;
+      z-index: 10; // sous la navbar/les menus (1000+) et sous le tiroir panier (1050)
+      flex-wrap: nowrap;
+      gap: 10px;
+      margin-inline: calc(var(--gutter) * -1); // la barre va jusqu'aux bords de l'écran
+      margin-bottom: 20px;
+      padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom, 0px));
+      background: var(--home-creme);
+      border-top: 1px solid rgba(27, 16, 21, 0.12);
+      box-shadow: 0 -6px 18px rgba(27, 16, 21, 0.06);
+    }
+
+    .btn-ajouter {
+      min-width: 0;
+    }
+  }
+
+  // ---------- PETIT MOBILE ----------
+  @media (max-width: 575.98px) {
+    // Le panier est déjà dans la navbar, et le tiroir s'ouvre après chaque ajout :
+    // on garde toute la largeur pour le bouton principal.
+    .btn-voir-panier {
+      display: none;
+    }
+
+    .breadcrumb {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-epuise {
+      font-size: 13px;
+      padding: 7px 18px;
+    }
+  }
+}

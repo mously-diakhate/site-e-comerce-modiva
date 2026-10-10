@@ -1,0 +1,151 @@
+<div class="shop-catalog">
+  <!-- Filtre de grain partagé, comme sur la page d'accueil -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <filter id="catalog-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0" />
+    </filter>
+  </svg>
+
+  <section class="catalog-section">
+    <!-- BANDEAU TITRE -->
+    <div class="catalog-intro">
+      <span class="eyebrow">La boutique</span>
+      <h1>Toutes nos pièces</h1>
+      <p class="catalog-subtitle">Choisissez votre taille et votre couleur sur chaque article. Livraison partout au Sénégal.</p>
+    </div>
+
+    <!-- RECHERCHE -->
+    <div class="catalog-search" role="search">
+      <fa-icon icon="magnifying-glass" />
+      <input
+        type="text"
+        placeholder="Rechercher une robe, un ensemble..."
+        aria-label="Rechercher un produit"
+        autocomplete="off"
+        enterkeyhint="search"
+        [(ngModel)]="searchInput"
+        (keyup.enter)="onSearch()"
+      />
+      <button type="button" class="search-submit" (click)="onSearch()">Chercher</button>
+    </div>
+
+    <!-- FILTRES CATÉGORIE -->
+    <div class="cat-pills" role="group" aria-label="Filtrer par catégorie">
+      <button
+        type="button"
+        class="cat-pill"
+        [class.active]="selectedCategorieId() === null"
+        [attr.aria-pressed]="selectedCategorieId() === null"
+        (click)="selectCategorie(null)"
+      >
+        Tout
+      </button>
+      @for (cat of categories(); track cat.id) {
+        <button
+          type="button"
+          class="cat-pill"
+          [class.active]="selectedCategorieId() === cat.id"
+          [attr.aria-pressed]="selectedCategorieId() === cat.id"
+          (click)="selectCategorie(cat.id ?? null)"
+        >
+          {{ cat.nom }}
+        </button>
+      }
+    </div>
+
+    <!-- COMPTEUR -->
+    <div class="catalog-count" aria-live="polite">{{ totalItems() }} article{{ totalItems() > 1 ? 's' : '' }}</div>
+
+    @if (!isLoading() && produits().length === 0) {
+      <p class="catalog-empty">Aucun produit ne correspond à votre recherche.</p>
+    } @else {
+      <div class="produits-grid">
+        @for (p of produits(); track p.id) {
+          <a [routerLink]="['/produit', p.id, 'view']" class="produit">
+            <div class="ph" [ngClass]="p.tone" [class.epuise]="productEpuise()[p.id]">
+              @if (isNouveau(p.id)) {
+                <span class="badge-nouveau">Nouveau</span>
+              }
+              @if (productEpuise()[p.id]) {
+                <span class="badge-epuise">Épuisé</span>
+              }
+              @if (p.imageUrl) {
+                <img class="ph-img" [src]="p.imageUrl" [alt]="p.nom" loading="lazy" />
+              } @else {
+                <div class="ph-illustration">
+                  @switch (p.silhouette) {
+                    @case ('blazer') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 18 L38 30 L30 38 L22 110 L40 110 L44 55 L50 62 L56 55 L60 110 L78 110 L70 38 L62 30 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M38 30 L50 46 L62 30" class="sil-line" fill="none" />
+                        <circle cx="50" cy="72" r="2.2" class="sil-dot" />
+                        <circle cx="50" cy="86" r="2.2" class="sil-dot" />
+                      </svg>
+                    }
+                    @case ('chemise') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 20 L40 28 L26 34 L20 60 L30 64 L36 46 L34 112 L66 112 L64 46 L70 64 L80 60 L74 34 L60 28 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M40 28 L50 40 L60 28" class="sil-line" fill="none" />
+                        <line x1="50" y1="46" x2="50" y2="108" class="sil-line" stroke-dasharray="2 4" />
+                      </svg>
+                    }
+                    @case ('robe') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 16 C42 16 36 22 36 30 L32 60 L18 118 L38 118 L44 46 L56 46 L62 118 L82 118 L68 60 L64 30 C64 22 58 16 50 16 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M40 24 C44 18 56 18 60 24" class="sil-line" fill="none" />
+                      </svg>
+                    }
+                    @case ('ensemble') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M36 18 L28 28 L22 34 L18 66 L28 68 L32 46 L34 66 L28 118 L40 118 L46 66 L44 40 L52 40 L50 66 L56 118 L68 118 L62 66 L64 46 L68 68 L78 66 L74 34 L68 28 L60 18 Z"
+                          class="sil-fill"
+                        />
+                      </svg>
+                    }
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="name">{{ p.nom }}</div>
+            <div class="price">{{ formatFcfa(p.prix) }}</div>
+
+            @if (productCouleurs()[p.id]?.length) {
+              <div class="produit-couleurs">
+                @for (c of productCouleurs()[p.id]; track c.libelle) {
+                  <span class="couleur-swatch" [style.background]="c.codeHex" [title]="c.libelle"></span>
+                }
+              </div>
+            }
+          </a>
+        }
+      </div>
+    }
+
+    @if (produits().length > 0) {
+      <div class="catalog-pagination">
+        <jhi-item-count [params]="{ page: page(), totalItems: totalItems(), itemsPerPage: itemsPerPage() }" />
+        <ngb-pagination
+          [collectionSize]="totalItems()"
+          [page]="page()"
+          [pageSize]="itemsPerPage()"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="onPageChange($event)"
+        />
+      </div>
+    }
+  </section>
+</div>

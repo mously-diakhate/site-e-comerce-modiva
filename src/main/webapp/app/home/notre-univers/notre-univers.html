@@ -1,0 +1,54 @@
+<div class="notre-univers">
+  <!-- HERO -->
+  <section class="univers-hero">
+    @if (heroImageUrl) {
+      <!-- fetchpriority : l'image principale se charge en premier (affichage plus rapide sur mobile) -->
+      <img [src]="heroImageUrl" alt="MODIVA — Notre univers" class="hero-img" fetchpriority="high" />
+    }
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <span class="eyebrow">Notre univers</span>
+      <h1>L'élégance, simplement</h1>
+    </div>
+  </section>
+
+  <!-- TEXTE DE PRÉSENTATION -->
+  <section class="univers-intro">
+    <p>MODIVA est née de l'envie d'habiller la femme active avec des pièces belles, confortables et faciles à assortir.</p>
+    <p>
+      Nos collections s'écrivent autour de quelques essentiels : le blazer qui structure, la robe qui accompagne un rendez-vous comme un
+      dîner, l'ensemble coordonné que l'on porte séparément. Chaque saison, nous ajoutons des pièces pensées pour se mêler à celles que vous
+      avez déjà, sans jamais rien remplacer.
+    </p>
+    <p>
+      Nous travaillons en petites séries avec des ateliers proches de nous, pour garder un œil sur les finitions et rester disponibles pour
+      chacune de nos clientes, dans toutes les régions.
+    </p>
+  </section>
+
+  <!-- ATOUTS -->
+  <section class="univers-atouts">
+    <div class="atouts-grid">
+      @for (atout of atouts; track atout.titre) {
+        <div class="atout">
+          <fa-icon [icon]="atout.icon" />
+          <div class="atout-texte">
+            <!-- h2 (et non h3) : la hiérarchie des titres reste logique après le h1 du hero -->
+            <h2 class="atout-titre">{{ atout.titre }}</h2>
+            <p>{{ atout.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="univers-cta">
+    <h2>Découvrez la collection</h2>
+    <p>Des pièces à choisir selon votre taille et votre couleur préférée.</p>
+    <div class="cta-buttons">
+      <a routerLink="/collection" class="btn-cta-solid">Aller à la boutique</a>
+      <a routerLink="/contact" class="btn-cta-outline">Nous écrire</a>
+    </div>
+  </section>
+</div>

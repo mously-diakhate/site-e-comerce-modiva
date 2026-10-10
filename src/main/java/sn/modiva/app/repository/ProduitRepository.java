@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import sn.modiva.app.domain.Produit;
 
@@ -29,4 +30,9 @@ public interface ProduitRepository
     default Page<Produit> findAllWithEagerRelationships(Pageable pageable) {
         return this.fetchBagRelationships(this.findAll(pageable));
     }
+
+    List<Produit> findAllByPromotionsId(Long promotionId);
+
+    @Query("select distinct p from Produit p left join fetch p.promotions where p.id in :ids")
+    List<Produit> findAllByIdInWithPromotions(@Param("ids") List<Long> ids);
 }

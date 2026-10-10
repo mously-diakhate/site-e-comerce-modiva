@@ -1,5 +1,6 @@
 # This configuration is intended for development purpose, it's **your** responsibility to harden it for production
 name: modiva
+
 services:
   mysql:
     image: mysql:9.6.0
@@ -8,13 +9,27 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_DATABASE=modiva
-    # If you want to expose these ports outside your dev PC,
-    # remove the "127.0.0.1:" prefix
     ports:
-      - 127.0.0.1:3306:3306
+      - 127.0.0.1:13306:3306
     command: mysqld --lower_case_table_names=1 --skip-mysqlx --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
     healthcheck:
       test: ['CMD-SHELL', 'mysql -e "SHOW DATABASES;" && sleep 5']
       interval: 5s
       timeout: 10s
       retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - 127.0.0.1:8082:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    depends_on:
+      - mysql
+
+  maildev:
+    image: maildev/maildev
+    ports:
+      - 127.0.0.1:1080:1080
+      - 127.0.0.1:1025:1025

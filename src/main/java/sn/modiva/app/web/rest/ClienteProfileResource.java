@@ -16,7 +16,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import sn.modiva.app.domain.ClienteProfile;
 import sn.modiva.app.repository.ClienteProfileRepository;
+import sn.modiva.app.security.SecurityUtils;
 import sn.modiva.app.service.ClienteProfileQueryService;
 import sn.modiva.app.service.ClienteProfileService;
 import sn.modiva.app.service.criteria.ClienteProfileCriteria;
@@ -143,6 +145,32 @@ public class ClienteProfileResource {
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, clienteProfileDTO.getId().toString())
         );
+    }
+
+    /**
+     * {@code GET  /cliente-profiles/me} : get the ClienteProfile of the currently
+     * authenticated user.
+     *
+     * Self-service : ne dépend d'aucun paramètre venant du client, la
+     * résolution se fait uniquement via le login présent dans le token JWT.
+     * Une cliente ne peut donc jamais consulter le profil d'une autre via cet
+     * endpoint. Doit rester déclaré AVANT {@code /cliente-profiles/:id} dans ce
+     * fichier par lisibilité (Spring privilégie de toute façon les segments
+     * littéraux comme "me" face à un {id} variable, donc l'ordre réel de
+     * résolution n'est pas ambigu).
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with
+     * body the clienteProfileDTO, or with status {@code 404 (Not Found)} if the
+     * current user has no linked profile yet.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<ClienteProfileDTO> getMyClienteProfile() {
+        LOG.debug("REST request to get the current user's own ClienteProfile");
+        Optional<ClienteProfileDTO> clienteProfileDTO = SecurityUtils.getCurrentUserLogin()
+            .flatMap(clienteProfileRepository::findOneByUserLogin)
+            .map(ClienteProfile::getId)
+            .flatMap(clienteProfileService::findOne);
+        return ResponseUtil.wrapOrNotFound(clienteProfileDTO);
     }
 
     /**

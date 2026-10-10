@@ -19,6 +19,7 @@ import { ITaille } from '../taille.model';
 @Component({
   selector: 'jhi-taille',
   templateUrl: './taille.html',
+  styleUrl: './taille.scss',
   imports: [
     RouterLink,
     FormsModule,
@@ -69,7 +70,6 @@ export class Taille implements OnInit {
   delete(taille: ITaille): void {
     const modalRef = this.modalService.open(TailleDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.taille = taille;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),

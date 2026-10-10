@@ -1,99 +1,61 @@
-<div>
-  <h2 id="page-heading" data-cy="CommandeHeading">
-    <span jhiTranslate="modivaApp.commande.home.title">Commandes</span>
+<div class="modiva-list-wrap">
+  <div class="list-topbar">
+    <h2 id="page-heading" data-cy="CommandeHeading" class="list-title">
+      <span jhiTranslate="modivaApp.commande.home.title">Commandes</span>
+    </h2>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+    <div class="list-actions">
+      <button class="btn btn-outline-modiva" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
-        <span jhiTranslate="modivaApp.commande.home.refreshListLabel">Actualiser la liste</span>
+        <span class="d-none d-md-inline" jhiTranslate="modivaApp.commande.home.refreshListLabel">Actualiser</span>
       </button>
 
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-commande"
+        class="btn btn-modiva-primary create-commande"
         [routerLink]="['/commande/new']"
       >
         <fa-icon icon="plus" />
         <span jhiTranslate="modivaApp.commande.home.createLabel">Créer un nouveau Commande</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
-  <jhi-filter [filters]="filters" />
+  @if (!cameFromCliente()) {
+    <jhi-filter [filters]="filters" />
+  }
 
   @if (commandes().length === 0) {
-    <div class="alert alert-warning" id="no-result">
+    <div class="empty-state" id="no-result">
+      <fa-icon icon="receipt" />
       <span jhiTranslate="modivaApp.commande.home.notFound">Aucun Commande trouvé</span>
     </div>
   } @else {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
+    <div class="table-card">
+      <table class="modiva-table" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
             <th scope="col" jhiSortBy="numero">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.numero">Numero</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.numero">Numero</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="dateCommande">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.dateCommande">Date Commande</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.dateCommande">Date</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="montantTotal">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.montantTotal">Montant Total</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.montantTotal">Montant</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="modePaiement">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.modePaiement">Mode Paiement</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.modePaiement">Paiement</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="statutCommande">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.statutCommande">Statut Commande</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.statutCommande">Statut</span><fa-icon icon="sort" /></div>
             </th>
-            <th scope="col" jhiSortBy="paiement.id">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.paiement">Paiement</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="livraison.id">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.livraison">Livraison</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="clienteProfile.id">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.commande.clienteProfile">Cliente Profile</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+            <th scope="col" jhiSortBy="clienteProfile.telephone">
+              <div class="th-inner"><span jhiTranslate="modivaApp.commande.clienteProfile">Cliente</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col"></th>
           </tr>
@@ -101,62 +63,36 @@
         <tbody>
           @for (commande of commandes(); track trackId(commande)) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/commande', commande.id, 'view']">{{ commande.id }}</a>
+              <td class="cell-strong">
+                <a [routerLink]="['/commande', commande.id, 'view']">{{ commande.numero }}</a>
               </td>
-              <td>{{ commande.numero }}</td>
-              <td>{{ commande.dateCommande | formatMediumDatetime }}</td>
-              <td>{{ commande.montantTotal }}</td>
-              <td>{{ commande.modePaiement }}</td>
-              <td [jhiTranslate]="'modivaApp.StatutCommande.' + (commande.statutCommande ?? 'null')">
-                {{
-                  {
-                    null: '',
-                    EN_ATTENTE: 'EN_ATTENTE',
-                    CONFIRMEE: 'CONFIRMEE',
-                    EN_PREPARATION: 'EN_PREPARATION',
-                    EXPEDIEE: 'EXPEDIEE',
-                    LIVREE: 'LIVREE',
-                    ANNULEE: 'ANNULEE',
-                  }[commande.statutCommande ?? 'null']
-                }}
-              </td>
+              <td class="cell-muted">{{ commande.dateCommande | formatMediumDatetime }}</td>
+              <td class="cell-price">{{ commande.montantTotal }} F</td>
+              <td class="cell-muted">{{ modePaiementLabel(commande.modePaiement) }}</td>
               <td>
-                @if (commande.paiement) {
-                  <div>
-                    <a [routerLink]="['/paiement', commande.paiement.id, 'view']">{{ commande.paiement.id }}</a>
-                  </div>
-                }
+                <span class="statut-badge" [ngClass]="statutClass(commande.statutCommande)">
+                  {{ statutLabel(commande.statutCommande) }}
+                </span>
               </td>
-              <td>
-                @if (commande.livraison) {
-                  <div>
-                    <a [routerLink]="['/livraison', commande.livraison.id, 'view']">{{ commande.livraison.id }}</a>
-                  </div>
-                }
-              </td>
-              <td>
+              <td class="cell-muted">
                 @if (commande.clienteProfile) {
-                  <div>
-                    <a [routerLink]="['/cliente-profile', commande.clienteProfile.id, 'view']">{{ commande.clienteProfile.id }}</a>
-                  </div>
+                  <a [routerLink]="['/cliente-profile', commande.clienteProfile.id, 'view']">
+                    {{ commande.clienteProfile.telephone ?? '#' + commande.clienteProfile.id }}
+                  </a>
+                } @else {
+                  <span class="text-muted">—</span>
                 }
               </td>
               <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/commande', commande.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <div class="table-actions">
+                  <a [routerLink]="['/commande', commande.id, 'view']" class="icon-btn" data-cy="entityDetailsButton" title="Voir">
                     <fa-icon icon="eye" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
                   </a>
-
-                  <a [routerLink]="['/commande', commande.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                  <a [routerLink]="['/commande', commande.id, 'edit']" class="icon-btn" data-cy="entityEditButton" title="Éditer">
                     <fa-icon icon="pencil-alt" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
                   </a>
-
-                  <button type="submit" (click)="delete(commande)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <button type="submit" (click)="delete(commande)" class="icon-btn danger" data-cy="entityDeleteButton" title="Supprimer">
                     <fa-icon icon="times" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
                   </button>
                 </div>
               </td>
@@ -165,7 +101,14 @@
         </tbody>
       </table>
     </div>
+
+    @if (cameFromCliente()) {
+      <div class="back-to-cliente-row">
+        <a [routerLink]="['/cliente-profile']" class="btn btn-secondary"> <fa-icon icon="arrow-left" />&nbsp;Retour </a>
+      </div>
+    }
   }
+
   @if (commandes().length > 0) {
     <div>
       <div class="d-flex justify-content-center">

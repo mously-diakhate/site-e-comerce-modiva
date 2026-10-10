@@ -12,9 +12,9 @@ export interface ICommande {
   montantTotal?: number | null;
   modePaiement?: string | null;
   statutCommande?: keyof typeof StatutCommande | null;
-  paiement?: Pick<IPaiement, 'id'> | null;
-  livraison?: Pick<ILivraison, 'id'> | null;
-  clienteProfile?: Pick<IClienteProfile, 'id'> | null;
+  paiement?: Pick<IPaiement, 'id' | 'moyenPaiement' | 'montant'> | null;
+  livraison?: Pick<ILivraison, 'id' | 'adresse' | 'ville' | 'statutLivraison'> | null;
+  clienteProfile?: Pick<IClienteProfile, 'id' | 'telephone'> | null;
 }
 
 export type NewCommande = Omit<ICommande, 'id'> & { id: null };

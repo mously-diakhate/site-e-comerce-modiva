@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -10,11 +11,12 @@ import { PasswordResetInitService } from './password-reset-init.service';
 
 @Component({
   selector: 'jhi-password-reset-init',
-  imports: [TranslateDirective, TranslateModule, AlertError, ReactiveFormsModule],
+  imports: [TranslateDirective, TranslateModule, AlertError, ReactiveFormsModule, RouterLink],
   templateUrl: './password-reset-init.html',
+  styleUrl: './password-reset-init.scss',
 })
 export default class PasswordResetInit implements AfterViewInit {
-  email = viewChild.required<ElementRef>('email');
+  email = viewChild<ElementRef>('email');
 
   readonly success = signal(false);
   resetRequestForm;
@@ -29,7 +31,7 @@ export default class PasswordResetInit implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.email().nativeElement.focus();
+    this.email()?.nativeElement.focus();
   }
 
   requestReset(): void {

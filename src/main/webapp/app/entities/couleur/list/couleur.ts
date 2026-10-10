@@ -11,7 +11,7 @@ import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigati
 import { Alert } from 'app/shared/alert/alert';
 import { AlertError } from 'app/shared/alert/alert-error';
 import { TranslateDirective } from 'app/shared/language';
-import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
+import { SortService, type SortState, sortStateSignal } from 'app/shared/sort';
 import { ICouleur } from '../couleur.model';
 import { CouleurDeleteDialog } from '../delete/couleur-delete-dialog';
 import { CouleurService } from '../service/couleur.service';
@@ -19,17 +19,8 @@ import { CouleurService } from '../service/couleur.service';
 @Component({
   selector: 'jhi-couleur',
   templateUrl: './couleur.html',
-  imports: [
-    RouterLink,
-    FormsModule,
-    FontAwesomeModule,
-    AlertError,
-    Alert,
-    SortDirective,
-    SortByDirective,
-    TranslateDirective,
-    TranslateModule,
-  ],
+  styleUrl: './couleur.scss',
+  imports: [RouterLink, FormsModule, FontAwesomeModule, AlertError, Alert, TranslateDirective, TranslateModule],
 })
 export class Couleur implements OnInit {
   subscription: Subscription | null = null;
@@ -69,7 +60,6 @@ export class Couleur implements OnInit {
   delete(couleur: ICouleur): void {
     const modalRef = this.modalService.open(CouleurDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.couleur = couleur;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),

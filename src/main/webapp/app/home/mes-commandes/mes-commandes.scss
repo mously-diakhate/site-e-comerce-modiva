@@ -1,0 +1,300 @@
+// Styles de la page "Mes commandes" (espace cliente).
+//
+// RESPONSIVE : fichier autonome (aucun @use / import à configurer).
+// Points de rupture :
+//   ≤ 575.98px  → ligne d'article en grille compacte, pied de carte empilé
+
+.mes-commandes {
+  --home-noir: #1b1015;
+  --home-creme: #fbf4ef;
+  --home-rose: #e11d74;
+  --home-bordeaux: #7a1c3c;
+  --home-or: #b9895a;
+  --home-texte: #2b1b20;
+
+  // Espacements fluides : s'adaptent tout seuls à la largeur de l'écran
+  --gutter: clamp(16px, 4vw, 24px);
+
+  font-family: 'Jost', sans-serif;
+  color: var(--home-texte);
+  background: var(--home-creme);
+  min-height: 60vh;
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    color: var(--home-noir);
+  }
+
+  .mc-section {
+    padding: clamp(32px, 6vw, 60px) var(--gutter) clamp(48px, 9vw, 90px);
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .mc-intro {
+    margin-bottom: clamp(24px, 4vw, 36px);
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--home-rose);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: clamp(28px, 3.5vw, 38px);
+      margin-bottom: 10px;
+    }
+
+    .mc-subtitle {
+      font-size: 14px;
+      color: #5a4249;
+      margin: 0;
+    }
+  }
+
+  .mc-loading {
+    text-align: center;
+    padding: 60px 0;
+    color: #5a4249;
+  }
+
+  .mc-empty {
+    text-align: center;
+    padding: clamp(48px, 9vw, 70px) var(--gutter);
+    color: #5a4249;
+
+    fa-icon {
+      font-size: 28px;
+      color: var(--home-rose);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    p {
+      margin-bottom: 20px;
+    }
+  }
+
+  .mc-list {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 3vw, 28px);
+  }
+
+  .mc-card {
+    background: #fff;
+    border: 1px solid rgba(122, 28, 60, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  // ---------- EN-TÊTE DE COMMANDE ----------
+  .mc-card-head {
+    display: flex;
+    flex-wrap: wrap; // le statut passe sous le numéro quand la place manque
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px 16px;
+    padding: 16px clamp(14px, 3vw, 20px);
+    background: #fdeee6;
+    border-bottom: 1px solid rgba(122, 28, 60, 0.15);
+
+    .mc-head-info {
+      min-width: 0;
+    }
+
+    .mc-numero {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--home-noir);
+      overflow-wrap: anywhere;
+    }
+
+    .mc-date {
+      font-size: 13px;
+      color: #7a6168;
+      margin-top: 2px;
+    }
+  }
+
+  .statut-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: #f9dfe3;
+    color: #d6316c;
+
+    &.statut-livree {
+      background: #d9f5e3;
+      color: #1f6b3a;
+    }
+    &.statut-annulee {
+      background: #f4d4d4;
+      color: #7a1c1c;
+    }
+    &.statut-en-preparation {
+      background: #f1e6cf;
+      color: #7a5a1c;
+    }
+    &.statut-confirmee {
+      background: #dfe6f1;
+      color: #1c3a7a;
+    }
+    &.statut-en-attente {
+      background: #eee6e8;
+      color: #5a4249;
+    }
+  }
+
+  // ---------- LIGNE D'ARTICLE ----------
+  .mc-ligne {
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 2.5vw, 18px);
+    padding: 16px clamp(14px, 3vw, 20px);
+    border-bottom: 1px solid rgba(122, 28, 60, 0.12);
+  }
+
+  .mc-img {
+    width: 68px;
+    height: 92px;
+    object-fit: cover;
+    border-radius: 2px;
+    flex-shrink: 0;
+    background: #efe3dc;
+  }
+
+  .mc-ligne-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mc-ligne-nom {
+    font-size: 16px;
+    color: var(--home-noir);
+    overflow-wrap: anywhere;
+  }
+
+  .mc-ligne-detail {
+    font-size: 13px;
+    color: #7a6168;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .mc-ligne-prix {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--home-noir);
+    white-space: nowrap;
+  }
+
+  // ---------- PIED DE COMMANDE ----------
+  .mc-card-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px 16px;
+    padding: 16px clamp(14px, 3vw, 20px);
+
+    .mc-foot-info {
+      font-size: 13px;
+      color: #7a6168;
+      line-height: 1.5;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .mc-total {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--home-noir);
+      white-space: nowrap;
+    }
+  }
+
+  .btn-modiva-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    background: var(--home-rose);
+    color: #fff;
+    padding: 13px 28px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.3s;
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--home-bordeaux);
+        color: #fff;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--home-noir);
+      outline-offset: 3px;
+    }
+  }
+
+  // =====================================================================
+  // RESPONSIVE
+  // =====================================================================
+
+  // ---------- MOBILE ----------
+  @media (max-width: 575.98px) {
+    // Ligne d'article : image à gauche, nom + détails + prix empilés à droite
+    // (sans ça, le nom n'aurait que ~130px de large à 360px à cause du prix sur la même ligne)
+    .mc-ligne {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      column-gap: 14px;
+      align-items: start;
+    }
+
+    .mc-img {
+      width: 60px;
+      height: 80px;
+      grid-row: 1 / span 2;
+    }
+
+    .mc-ligne-info,
+    .mc-ligne-prix {
+      grid-column: 2;
+    }
+
+    .mc-ligne-prix {
+      margin-top: 6px;
+    }
+
+    // Pied de carte : infos de paiement/livraison, puis total sur sa propre ligne
+    .mc-card-foot {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+
+      .mc-total {
+        text-align: right;
+        padding-top: 12px;
+        border-top: 1px dashed rgba(122, 28, 60, 0.2);
+      }
+    }
+
+    .btn-modiva-primary {
+      width: 100%;
+    }
+  }
+}

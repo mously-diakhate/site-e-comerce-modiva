@@ -1,11 +1,9 @@
-<jhi-page-ribbon />
-
 <div>
   <router-outlet name="navbar" />
 </div>
 
-<div class="container-fluid">
-  <div class="card jh-card">
+<div class="container-fluid" [class.has-admin-sidebar]="isAdmin()">
+  <div class="card jh-card borderless">
     <router-outlet />
   </div>
 

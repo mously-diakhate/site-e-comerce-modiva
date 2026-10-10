@@ -1,47 +1,38 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-form-wrap">
+  <div class="modiva-form-card">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-categorie-heading" data-cy="CategorieCreateUpdateHeading" jhiTranslate="modivaApp.categorie.home.createOrEditLabel">
-        Créer ou éditer un Categorie
+      <h2 id="jhi-categorie-heading" data-cy="CategorieCreateUpdateHeading" class="form-title">
+        <span jhiTranslate="modivaApp.categorie.home.createOrEditLabel">Créer ou éditer un Categorie</span>
       </h2>
 
-      <div>
-        <jhi-alert-error />
+      <jhi-alert-error />
 
-        @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
-            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+      @let nomRef = editForm.get('nom')!;
+      <div class="mb-3">
+        <label class="form-label" for="field_nom" jhiTranslate="modivaApp.categorie.nom">Nom</label>
+        <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
+        @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
+          <div>
+            @if (nomRef.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
           </div>
         }
-
-        @let nomRef = editForm.get('nom')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_nom" jhiTranslate="modivaApp.categorie.nom">Nom</label>
-          <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
-          @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
-            <div>
-              @if (editForm.get('nom')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_description" jhiTranslate="modivaApp.categorie.description">Description</label>
-          <input
-            type="text"
-            class="form-control"
-            name="description"
-            id="field_description"
-            data-cy="description"
-            formControlName="description"
-          />
-        </div>
       </div>
 
-      <div>
+      <div class="mb-3">
+        <label class="form-label" for="field_description" jhiTranslate="modivaApp.categorie.description">Description</label>
+        <input
+          type="text"
+          class="form-control"
+          name="description"
+          id="field_description"
+          data-cy="description"
+          formControlName="description"
+        />
+      </div>
+
+      <div class="form-actions">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
@@ -51,7 +42,7 @@
           id="save-entity"
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
-          class="btn btn-primary"
+          class="btn btn-modiva-primary"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

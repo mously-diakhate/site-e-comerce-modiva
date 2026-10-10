@@ -23,6 +23,7 @@ public interface PromotionMapper extends EntityMapper<PromotionDTO, Promotion> {
     @Named("produitId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "nom", source = "nom")
     ProduitDTO toDtoProduitId(Produit produit);
 
     @Named("produitIdSet")

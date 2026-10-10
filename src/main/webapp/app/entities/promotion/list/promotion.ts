@@ -20,6 +20,7 @@ import { PromotionService } from '../service/promotion.service';
 @Component({
   selector: 'jhi-promotion',
   templateUrl: './promotion.html',
+  styleUrl: './promotion.scss',
   imports: [
     RouterLink,
     FormsModule,
@@ -71,7 +72,6 @@ export class Promotion implements OnInit {
   delete(promotion: IPromotion): void {
     const modalRef = this.modalService.open(PromotionDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.promotion = promotion;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
@@ -82,6 +82,20 @@ export class Promotion implements OnInit {
 
   load(): void {
     this.queryBackend();
+  }
+
+  /** true si la date de fin est déjà passée. */
+  isExpired(promotion: IPromotion): boolean {
+    return promotion.dateFin ? promotion.dateFin.isBefore() : false;
+  }
+
+  /** true si on est actuellement entre la date de début et la date de fin. */
+  isActive(promotion: IPromotion): boolean {
+    if (!promotion.dateDebut || !promotion.dateFin) {
+      return false;
+    }
+    const now = promotion.dateDebut.constructor ? promotion.dateDebut : promotion.dateDebut;
+    return promotion.dateDebut.isBefore() && promotion.dateFin.isAfter();
   }
 
   navigateToWithComponentValues(event: SortState): void {

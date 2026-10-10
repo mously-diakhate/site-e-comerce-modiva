@@ -1,0 +1,242 @@
+$ink: #211611;
+$ink-soft: #3a2a24;
+$cream: #fbf4f1;
+$card: #ffffff;
+$rose: #e11d74;
+$rose-wash: #fbe4eb;
+$gold: #b9895a;
+$line: #eadfda;
+$text-muted: #8b7a73;
+$ok: #3f7d5c;
+$danger: #b3453f;
+
+// Couleurs de statut
+$statut-attente: #b9895a;
+$statut-attente-bg: #f7ecdf;
+$statut-confirmee: #2f6fb0;
+$statut-confirmee-bg: #e3edf7;
+$statut-preparation: #b98b0f;
+$statut-preparation-bg: #fbf0d6;
+$statut-expediee: #6f4fb0;
+$statut-expediee-bg: #ece5f7;
+$statut-livree: #3f7d5c;
+$statut-livree-bg: #e2f0e8;
+$statut-annulee: #b3453f;
+$statut-annulee-bg: #fbe4e2;
+
+.modiva-list-wrap {
+  font-family: 'Manrope', sans-serif;
+  padding: 8px 4px 40px;
+}
+
+.list-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.list-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: $ink;
+  margin: 0;
+}
+
+.list-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-outline-modiva {
+  border: 1px solid $line;
+  background: $card;
+  color: $ink-soft;
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    border-color: $rose;
+    color: $rose;
+  }
+}
+
+.btn-modiva-primary {
+  background: $rose;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 8px 18px;
+  font-size: 13px;
+
+  &:hover {
+    background: color-mix(in srgb, $rose 90%, black);
+    color: #fff;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 0;
+  color: $text-muted;
+  font-size: 13.5px;
+
+  fa-icon {
+    font-size: 28px;
+    color: $rose;
+  }
+}
+
+.table-card {
+  background: $card;
+  border: 1px solid $line;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.modiva-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  thead {
+    background: $cream;
+  }
+
+  th {
+    text-align: left;
+    padding: 12px 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: $text-muted;
+    font-weight: 700;
+    border-bottom: 1px solid $line;
+    cursor: pointer;
+  }
+
+  .th-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid $line;
+    color: $ink-soft;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover {
+    background: $rose-wash;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  a {
+    color: $ink-soft;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      color: $rose;
+    }
+  }
+}
+
+.cell-muted {
+  color: $text-muted;
+}
+
+.cell-strong {
+  font-weight: 700;
+  color: $ink;
+}
+
+.cell-price {
+  font-weight: 700;
+  color: $ink;
+}
+
+.statut-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+
+  &.statut-en-attente {
+    color: $statut-attente;
+    background: $statut-attente-bg;
+  }
+  &.statut-confirmee {
+    color: $statut-confirmee;
+    background: $statut-confirmee-bg;
+  }
+  &.statut-en-preparation {
+    color: $statut-preparation;
+    background: $statut-preparation-bg;
+  }
+  &.statut-expediee {
+    color: $statut-expediee;
+    background: $statut-expediee-bg;
+  }
+  &.statut-livree {
+    color: $statut-livree;
+    background: $statut-livree-bg;
+  }
+  &.statut-annulee {
+    color: $statut-annulee;
+    background: $statut-annulee-bg;
+  }
+}
+
+.table-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid $line;
+  background: $cream;
+  color: $ink-soft;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    border-color: $rose;
+    color: $rose;
+  }
+
+  &.danger:hover {
+    border-color: $danger;
+    color: $danger;
+  }
+}
+.back-to-cliente-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}

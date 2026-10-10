@@ -1,64 +1,112 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-detail-wrap">
+  <div class="modiva-detail-card">
     @if (produit(); as produitRef) {
       <div>
-        <h2 data-cy="produitDetailsHeading"><span jhiTranslate="modivaApp.produit.detail.title">Produit</span></h2>
-
-        <hr />
+        <h2 data-cy="produitDetailsHeading" class="detail-title">
+          <span jhiTranslate="modivaApp.produit.detail.title">Produit</span>
+        </h2>
 
         <jhi-alert-error />
-
         <jhi-alert />
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ produitRef.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.nom">Nom</span></dt>
-          <dd>
-            <span>{{ produitRef.nom }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.description">Description</span></dt>
-          <dd>
-            <span>{{ produitRef.description }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.prix">Prix</span></dt>
-          <dd>
-            <span>{{ produitRef.prix }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.statut">Statut</span></dt>
-          <dd>
-            <span [jhiTranslate]="'modivaApp.StatutProduit.' + (produitRef.statut ?? 'null')">{{
-              { null: '', ACTIF: 'ACTIF', INACTIF: 'INACTIF' }[produitRef.statut ?? 'null']
-            }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.promotion">Promotion</span></dt>
-          <dd>
-            @for (promotion of produitRef.promotions; track $index; let last = $last) {
-              <span>
-                <a [routerLink]="['/promotion', promotion.id, 'view']">{{ promotion?.id }}</a
-                >{{ last ? '' : ', ' }}
-              </span>
-            }
-          </dd>
-          <dt><span jhiTranslate="modivaApp.produit.categorie">Categorie</span></dt>
-          <dd>
-            @if (produit()!.categorie) {
-              <div>
-                <a [routerLink]="['/categorie', produit()!.categorie?.id, 'view']">{{ produitRef.categorie?.id }}</a>
+        <div class="detail-grid">
+          <!-- ======================= Galerie ======================= -->
+          <div class="gallery">
+            @if (images().length === 0) {
+              <div class="gallery-main gallery-empty">
+                <fa-icon icon="bag-shopping" />
+                <span>Aucune image</span>
+              </div>
+            } @else {
+              <div class="gallery-main">
+                <img [src]="images()[activeImageIndex()].url" alt="{{ produitRef.nom }}" />
+              </div>
+              <div class="gallery-thumbs">
+                @for (image of images(); track image.id; let i = $index) {
+                  <button type="button" class="gallery-thumb" [class.active]="i === activeImageIndex()" (click)="selectImage(i)">
+                    <img [src]="image.url" alt="" />
+                  </button>
+                }
               </div>
             }
-          </dd>
-        </dl>
+          </div>
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
-        </button>
+          <!-- ======================= Informations ======================= -->
+          <div class="info">
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="global.field.id">ID</span>
+              <span class="info-value">{{ produitRef.id }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.nom">Nom</span>
+              <span class="info-value name">{{ produitRef.nom }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.description">Description</span>
+              <span class="info-value">{{ produitRef.description }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.prix">Prix</span>
+              <span class="info-value price">{{ produitRef.prix }} F</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.statut">Statut</span>
+              <span
+                class="status-badge"
+                [class.inactif]="produitRef.statut === 'INACTIF'"
+                [jhiTranslate]="'modivaApp.StatutProduit.' + (produitRef.statut ?? 'null')"
+              >
+                {{ { null: '', ACTIF: 'ACTIF', INACTIF: 'INACTIF' }[produitRef.statut ?? 'null'] }}
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.promotion">Promotion</span>
+              <span class="info-value">
+                @for (promotion of produitRef.promotions; track $index; let last = $last) {
+                  <a [routerLink]="['/promotion', promotion.id, 'view']">{{ promotion.nom }}</a
+                  >{{ last ? '' : ', ' }}
+                }
+              </span>
+            </div>
+            <div class="info-row">
+              <span class="info-label" jhiTranslate="modivaApp.produit.categorie">Categorie</span>
+              <span class="info-value">
+                @if (produitRef.categorie) {
+                  <a [routerLink]="['/categorie', produitRef.categorie.id, 'view']">{{ produitRef.categorie.nom }}</a>
+                }
+              </span>
+            </div>
 
-        <button type="button" [routerLink]="['/produit', produitRef.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
-        </button>
+            <!-- ======================= Variantes ======================= -->
+            <div class="info-row">
+              <span class="info-label">Variantes</span>
+              <span class="info-value">
+                @if (variantes().length === 0) {
+                  <span class="text-muted">Aucune variante enregistrée</span>
+                } @else {
+                  <div class="variante-chips">
+                    @for (v of variantes(); track v.id) {
+                      <span class="variante-chip">
+                        <span class="chip-swatch" [style.background]="$any(v.couleur)?.codeHex"></span>
+                        {{ $any(v.taille)?.libelle }} — {{ $any(v.couleur)?.libelle }} (stock : {{ v.stock }})
+                      </span>
+                    }
+                  </div>
+                }
+              </span>
+            </div>
+
+            <div class="detail-actions">
+              <button type="submit" (click)="previousState()" class="btn btn-secondary" data-cy="entityDetailsBackButton">
+                <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+              </button>
+
+              <button type="button" [routerLink]="['/produit', produitRef.id, 'edit']" class="btn btn-modiva-primary">
+                <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     }
   </div>

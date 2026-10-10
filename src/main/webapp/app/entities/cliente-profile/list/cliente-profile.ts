@@ -25,6 +25,7 @@ import { ClienteProfileService } from '../service/cliente-profile.service';
 @Component({
   selector: 'jhi-cliente-profile',
   templateUrl: './cliente-profile.html',
+  styleUrl: './cliente-profile.scss',
   imports: [
     RouterLink,
     FormsModule,
@@ -75,7 +76,6 @@ export class ClienteProfile implements OnInit {
       const filterOptions = this.filterOptions();
       if (filterOptions) {
         untracked(() => {
-          // Only watch for filter changes. Other signals should be ignored.
           this.handleNavigation(1, this.sortState(), filterOptions);
         });
       }
@@ -96,13 +96,18 @@ export class ClienteProfile implements OnInit {
   delete(clienteProfile: IClienteProfile): void {
     const modalRef = this.modalService.open(ClienteProfileDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.clienteProfile = clienteProfile;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
         tap(() => this.load()),
       )
       .subscribe();
+  }
+
+  /** Bascule rapide actif/inactif, sans passer par un formulaire d'édition complet. */
+  toggleActif(clienteProfile: IClienteProfile): void {
+    const updated = { ...clienteProfile, actif: !clienteProfile.actif };
+    this.clienteProfileService.update(updated).subscribe(() => this.load());
   }
 
   load(): void {

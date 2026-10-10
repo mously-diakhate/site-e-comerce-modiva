@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,14 +14,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import sn.modiva.app.domain.Commande;
+import sn.modiva.app.domain.LigneCommande;
+import sn.modiva.app.domain.Livraison;
+import sn.modiva.app.domain.Produit;
+import sn.modiva.app.domain.VarianteProduit;
 import sn.modiva.app.repository.CommandeRepository;
+import sn.modiva.app.security.SecurityUtils;
 import sn.modiva.app.service.CommandeQueryService;
 import sn.modiva.app.service.CommandeService;
 import sn.modiva.app.service.criteria.CommandeCriteria;
 import sn.modiva.app.service.dto.CommandeDTO;
+import sn.modiva.app.service.dto.MaCommandeDTO;
+import sn.modiva.app.service.mapper.CommandeMapper;
 import sn.modiva.app.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -46,14 +57,18 @@ public class CommandeResource {
 
     private final CommandeQueryService commandeQueryService;
 
+    private final CommandeMapper commandeMapper;
+
     public CommandeResource(
         CommandeService commandeService,
         CommandeRepository commandeRepository,
-        CommandeQueryService commandeQueryService
+        CommandeQueryService commandeQueryService,
+        CommandeMapper commandeMapper
     ) {
         this.commandeService = commandeService;
         this.commandeRepository = commandeRepository;
         this.commandeQueryService = commandeQueryService;
+        this.commandeMapper = commandeMapper;
     }
 
     /**
@@ -141,6 +156,78 @@ public class CommandeResource {
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, commandeDTO.getId().toString())
+        );
+    }
+
+    /**
+     * {@code GET  /commandes/mes-commandes} : get the commandes belonging to
+     * the currently authenticated user.
+     *
+     * Self-service : la résolution se fait uniquement via le login présent
+     * dans le token JWT, jamais via un paramètre fourni par le client. Une
+     * cliente ne peut donc jamais consulter les commandes d'une autre via cet
+     * endpoint — contrairement à GET /commandes, réservé à l'admin.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of the current user's Commandes in body.
+     */
+    @GetMapping("/mes-commandes")
+    @Transactional(readOnly = true)
+    public ResponseEntity<List<MaCommandeDTO>> getMesCommandes(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get the current user's own Commandes");
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
+        if (login.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Page<Commande> page = commandeRepository.findAllByClienteProfile_User_Login(login.get(), pageable);
+        List<MaCommandeDTO> content = page.getContent().stream().map(this::toMaCommandeDTO).toList();
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(content);
+    }
+
+    private MaCommandeDTO toMaCommandeDTO(Commande commande) {
+        Livraison l = commande.getLivraison();
+        MaCommandeDTO.LivraisonInfo livraison =
+            l == null
+                ? null
+                : new MaCommandeDTO.LivraisonInfo(
+                      l.getAdresse(),
+                      l.getVille(),
+                      l.getQuartier(),
+                      l.getTelephone(),
+                      l.getFraisLivraison(),
+                      l.getStatutLivraison()
+                  );
+
+        List<MaCommandeDTO.Ligne> lignes = commande
+            .getLignes()
+            .stream()
+            .map((LigneCommande lc) -> {
+                VarianteProduit v = lc.getVariante();
+                Produit p = v.getProduit();
+                return new MaCommandeDTO.Ligne(
+                    lc.getId(),
+                    p.getId(),
+                    p.getNom(),
+                    v.getTaille().getLibelle(),
+                    v.getCouleur().getLibelle(),
+                    lc.getQuantite(),
+                    lc.getPrixUnitaire()
+                );
+            })
+            .sorted(Comparator.comparing(MaCommandeDTO.Ligne::id))
+            .toList();
+
+        return new MaCommandeDTO(
+            commande.getId(),
+            commande.getNumero(),
+            commande.getDateCommande(),
+            commande.getMontantTotal(),
+            commande.getModePaiement(),
+            commande.getStatutCommande(),
+            livraison,
+            lignes
         );
     }
 

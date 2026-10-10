@@ -1,49 +1,59 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-detail-wrap">
+  <div class="modiva-detail-card">
     @if (clienteProfile(); as clienteProfileRef) {
       <div>
-        <h2 data-cy="clienteProfileDetailsHeading"><span jhiTranslate="modivaApp.clienteProfile.detail.title">Cliente Profile</span></h2>
+        <div class="detail-header">
+          <h2 data-cy="clienteProfileDetailsHeading" class="detail-title">
+            <span jhiTranslate="modivaApp.clienteProfile.detail.title">Profil cliente</span>
+            <span class="detail-telephone">{{ clienteProfileRef.telephone ?? '—' }}</span>
+          </h2>
+          <button
+            type="button"
+            class="statut-toggle"
+            [class.actif]="clienteProfileRef.actif"
+            (click)="toggleActif()"
+            [title]="clienteProfileRef.actif ? 'Cliquer pour désactiver' : 'Cliquer pour activer'"
+          >
+            <span class="statut-dot"></span>
+            {{ clienteProfileRef.actif ? 'Actif' : 'Inactif' }}
+          </button>
+        </div>
 
-        <hr />
+        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert></jhi-alert>
 
-        <jhi-alert-error />
+        <div class="info">
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.clienteProfile.telephone">Téléphone</span>
+            <span class="info-value">{{ clienteProfileRef.telephone ?? '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.clienteProfile.user">Compte</span>
+            <span class="info-value">{{ clienteProfileRef.user?.login ?? '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.clienteProfile.actif">Statut</span>
+            <span class="info-value">
+              <span class="statut-badge-inline" [class.actif]="clienteProfileRef.actif">
+                {{ clienteProfileRef.actif ? 'Actif' : 'Inactif' }}
+              </span>
+            </span>
+          </div>
 
-        <jhi-alert />
+          <div class="detail-actions">
+            <button type="submit" (click)="previousState()" class="btn btn-secondary" data-cy="entityDetailsBackButton">
+              <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+            </button>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ clienteProfileRef.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.clienteProfile.telephone">Telephone</span></dt>
-          <dd>
-            <span>{{ clienteProfileRef.telephone }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.clienteProfile.actif">Actif</span></dt>
-          <dd>
-            <span>{{ clienteProfileRef.actif }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.clienteProfile.user">User</span></dt>
-          <dd>
-            <span>{{ clienteProfileRef.user?.login }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.clienteProfile.panier">Panier</span></dt>
-          <dd>
-            @if (clienteProfile()!.panier) {
-              <div>
-                <a [routerLink]="['/panier', clienteProfile()!.panier?.id, 'view']">{{ clienteProfileRef.panier?.id }}</a>
-              </div>
-            }
-          </dd>
-        </dl>
-
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
-        </button>
-
-        <button type="button" [routerLink]="['/cliente-profile', clienteProfileRef.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
-        </button>
+            <a
+              [routerLink]="['/commande']"
+              [queryParams]="{ 'filter[clienteProfileId.in]': clienteProfileRef.id }"
+              class="btn btn-modiva-primary"
+            >
+              <fa-icon icon="receipt"></fa-icon>&nbsp;Voir ses commandes
+            </a>
+          </div>
+        </div>
       </div>
     }
   </div>

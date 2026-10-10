@@ -1,23 +1,20 @@
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, computed, inject } from '@angular/core';
 
 import { AccountService } from 'app/core/auth/account.service';
-import { TranslateDirective } from 'app/shared/language';
+
+import AdminDashboard from './admin-dashboard/admin-dashboard';
+import ShopHome from './shop-home/shop-home';
 
 @Component({
   selector: 'jhi-home',
   templateUrl: './home.html',
-  styleUrl: './home.scss',
-  imports: [TranslateDirective, TranslateModule, RouterLink],
+  imports: [AdminDashboard, ShopHome],
 })
 export default class Home {
-  public readonly account = inject(AccountService).account;
+  private readonly accountService = inject(AccountService);
 
-  private readonly router = inject(Router);
+  readonly account = this.accountService.account;
 
-  login(): void {
-    this.router.navigate(['/login']);
-  }
+  /** Seules les administratrices voient le tableau de bord ; tout le reste va sur la boutique publique. */
+  readonly isAdmin = computed(() => this.accountService.hasAnyAuthority(['ROLE_ADMIN']));
 }

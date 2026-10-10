@@ -12,6 +12,7 @@ import { ICategorie } from '../categorie.model';
 @Component({
   selector: 'jhi-categorie-detail',
   templateUrl: './categorie-detail.html',
+  styleUrl: './categorie-detail.scss',
   imports: [FontAwesomeModule, Alert, AlertError, TranslateDirective, TranslateModule, RouterLink],
 })
 export class CategorieDetail {

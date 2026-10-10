@@ -13,9 +13,11 @@ import { PasswordResetFinishService } from './password-reset-finish.service';
   selector: 'jhi-password-reset-finish',
   imports: [TranslateDirective, TranslateModule, RouterLink, ReactiveFormsModule, PasswordStrengthBar],
   templateUrl: './password-reset-finish.html',
+  styleUrl: './password-reset-finish.scss',
 })
 export default class PasswordResetFinish implements OnInit, AfterViewInit {
-  newPassword = viewChild.required<ElementRef>('newPassword');
+  // Le champ n'existe dans la page que si la clé est présente : la recherche doit donc être optionnelle.
+  newPassword = viewChild<ElementRef>('newPassword');
 
   readonly initialized = signal(false);
   readonly doNotMatch = signal(false);
@@ -47,7 +49,7 @@ export default class PasswordResetFinish implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.newPassword().nativeElement.focus();
+    this.newPassword()?.nativeElement.focus();
   }
 
   finishReset(): void {

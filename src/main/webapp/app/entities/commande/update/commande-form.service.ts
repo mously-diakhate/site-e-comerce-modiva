@@ -6,20 +6,10 @@ import dayjs from 'dayjs/esm';
 import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { ICommande, NewCommande } from '../commande.model';
 
-/**
- * A partial Type with required key is used as form input.
- */
 type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>> & { id: T['id'] };
 
-/**
- * Type for createFormGroup and resetForm argument.
- * It accepts ICommande for edit and NewCommandeFormGroupInput for create.
- */
 type CommandeFormGroupInput = ICommande | PartialWithRequiredKeyOf<NewCommande>;
 
-/**
- * Type that converts some properties for forms.
- */
 type FormValueOf<T extends ICommande | NewCommande> = Omit<T, 'dateCommande'> & {
   dateCommande?: string | null;
 };
@@ -37,8 +27,6 @@ type CommandeFormGroupContent = {
   montantTotal: FormControl<CommandeFormRawValue['montantTotal']>;
   modePaiement: FormControl<CommandeFormRawValue['modePaiement']>;
   statutCommande: FormControl<CommandeFormRawValue['statutCommande']>;
-  paiement: FormControl<CommandeFormRawValue['paiement']>;
-  livraison: FormControl<CommandeFormRawValue['livraison']>;
   clienteProfile: FormControl<CommandeFormRawValue['clienteProfile']>;
 };
 
@@ -70,10 +58,6 @@ export class CommandeFormService {
       }),
       modePaiement: new FormControl(commandeRawValue.modePaiement),
       statutCommande: new FormControl(commandeRawValue.statutCommande, {
-        validators: [Validators.required],
-      }),
-      paiement: new FormControl(commandeRawValue.paiement),
-      livraison: new FormControl(commandeRawValue.livraison, {
         validators: [Validators.required],
       }),
       clienteProfile: new FormControl(commandeRawValue.clienteProfile, {

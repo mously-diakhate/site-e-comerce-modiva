@@ -1,0 +1,921 @@
+// Styles du composant ShopHome — accueil public (visiteur ou cliente connectée).
+// Palette alignée sur celle du dashboard admin (rose vif #E11D74, or/brun #B9895A)
+// pour garder une cohérence visuelle entre les deux univers.
+//
+// RESPONSIVE : ce fichier est autonome (aucun @use / import à configurer).
+// Points de rupture utilisés :
+//   ≤ 991.98px  tablette   → grilles 4 colonnes → 2 colonnes
+//   ≤ 900px     tablette   → hero / "La femme MODIVA" passent en 1 colonne
+//   ≤ 767.98px  mobile     → bandeau infos en 1 colonne, boutons plus grands
+//   ≤ 479.98px  petit mobile → boutons pleine largeur, textes secondaires masqués
+// (Le footer a son propre composant : ses styles ne sont plus ici.)
+
+.modiva-home {
+  --home-noir: #1b1015;
+  --home-creme: #fbf4ef;
+  --home-rose: #e11d74;
+  --home-bordeaux: #7a1c3c;
+  --home-or: #b9895a;
+  --home-rose-poudre: #f1c9d4;
+  --home-texte: #2b1b20;
+
+  // Espacements fluides : s'adaptent tout seuls à la largeur de l'écran
+  --gutter: clamp(16px, 4vw, 24px);
+  --section-y: clamp(48px, 9vw, 90px);
+  --grid-gap: clamp(12px, 2vw, 24px);
+
+  font-family: 'Jost', sans-serif;
+  color: var(--home-texte);
+  background: var(--home-creme);
+  position: relative;
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    color: var(--home-noir);
+  }
+
+  section {
+    padding: var(--section-y) var(--gutter);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  // Liens sans soulignement + héritage de couleur
+  .produit,
+  .voir-collection,
+  .voir-tout,
+  .btn-modiva-primary,
+  .btn-modiva-outline {
+    text-decoration: none;
+  }
+
+  .produit {
+    color: inherit;
+  }
+
+  // Focus clavier visible (accessibilité)
+  .cat-card:focus-visible,
+  .produit:focus-visible,
+  .btn-modiva-primary:focus-visible,
+  .btn-modiva-outline:focus-visible,
+  .voir-collection:focus-visible {
+    outline: 2px solid var(--home-rose);
+    outline-offset: 3px;
+  }
+
+  // ---------- BOUTONS ----------
+  .btn-modiva-primary {
+    background: var(--home-rose);
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: inline-block;
+    border-radius: 2px;
+    transition: background 0.3s;
+
+    &:hover {
+      background: var(--home-bordeaux);
+      color: #fff;
+    }
+  }
+
+  .btn-modiva-outline {
+    border: 1px solid var(--home-noir);
+    color: var(--home-noir);
+    padding: 15px 30px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    display: inline-block;
+    border-radius: 2px;
+    transition: 0.3s;
+
+    &.light {
+      border-color: #fff;
+      color: #fff;
+    }
+
+    &:hover {
+      background: var(--home-noir);
+      color: #fff;
+    }
+    &.light:hover {
+      background: #fff;
+      color: var(--home-bordeaux);
+    }
+  }
+
+  // ---------- HERO ----------
+  // Full-bleed : le texte garde son padding, l'image colle aux bords du viewport
+  // (haut / droite / bas), comme sur la maquette.
+  .home-hero {
+    background: var(--home-creme);
+    max-width: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    min-height: 85vh;
+    min-height: 85svh; // svh : tient compte de la barre d'adresse mobile
+  }
+
+  .home-hero-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: clamp(40px, 6vw, 60px);
+    padding-left: clamp(24px, 6vw, 80px);
+    padding-right: clamp(24px, 5vw, 60px);
+  }
+
+  .home-eyebrow {
+    font-size: 14px;
+    color: var(--home-or);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--home-or);
+      display: inline-block;
+    }
+  }
+
+  .home-title {
+    font-size: clamp(36px, 5.5vw, 66px);
+    line-height: 1.05;
+    margin-bottom: 20px;
+
+    .accent {
+      font-style: italic;
+      color: var(--home-rose);
+    }
+  }
+
+  .home-lead {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #5a4249;
+    max-width: 420px;
+    margin-bottom: 30px;
+  }
+
+  .home-cta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .home-hero-visual {
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      display: block;
+
+      // Fondu progressif sur le bord gauche : la photo ne devient nette qu'à
+      // partir de 40% de sa largeur, donc une bonne partie du côté gauche se
+      // dissout dans le fond crème de la section.
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 40%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 40%);
+    }
+
+    // Tant qu'il n'y a pas de vraie photo (heroImageUrl vide), on retombe
+    // sur l'illustration SVG avec son propre fond dégradé.
+    &:has(svg) {
+      background:
+        radial-gradient(ellipse 70% 60% at 70% 20%, rgba(241, 201, 212, 0.9), transparent 60%),
+        linear-gradient(160deg, #f7e3e4 0%, #f1c9d4 55%, #e7b9c9 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 50%;
+        max-width: 320px;
+      }
+    }
+  }
+
+  // ---------- SECTION HEAD (partagé catégories / nouveautés) ----------
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: clamp(24px, 4vw, 40px);
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--home-rose);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: clamp(28px, 3.5vw, 38px);
+      line-height: 1.15;
+    }
+
+    .voir-tout {
+      font-size: 12px;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--home-noir);
+      padding-bottom: 3px;
+      color: var(--home-noir);
+      white-space: nowrap;
+    }
+  }
+
+  // Variante centrée (section "Nouveautés")
+  .section-head-center {
+    justify-content: center;
+    text-align: center;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  // ---------- CATÉGORIES ----------
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(10px, 1.6vw, 18px);
+  }
+
+  .cat-card {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(14px, 2vw, 20px);
+    border-radius: 3px;
+    overflow: hidden;
+    color: #fff;
+    text-decoration: none;
+    isolation: isolate;
+    transition:
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+
+    // Le survol n'existe que sur les appareils avec une souris
+    // (évite l'effet "collé" après un appui sur écran tactile)
+    @media (hover: hover) {
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 36px rgba(27, 16, 21, 0.22);
+
+        .cat-illustration {
+          opacity: 0.9;
+          transform: scale(1.04);
+        }
+      }
+    }
+
+    // grain texturé partagé, au-dessus du dégradé/photo et sous le texte
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      filter: url(#modiva-grain);
+      mix-blend-mode: overlay;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(27, 16, 21, 0) 35%, rgba(27, 16, 21, 0.78) 100%);
+      z-index: 2;
+    }
+  }
+
+  .cat-illustration {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s ease;
+
+    svg {
+      width: 46%;
+      height: auto;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .cat-copy {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cat-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.4vw, 22px);
+  }
+
+  .cat-tagline {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.4;
+    max-width: 22ch;
+  }
+
+  .cat-1 {
+    background: linear-gradient(155deg, #efd9dd 0%, #c9a8ae 55%, #8a6b70 130%);
+    .sil-fill {
+      fill: rgba(255, 255, 255, 0.16);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: #fff;
+      fill: #fff;
+    }
+  }
+  .cat-2 {
+    background: linear-gradient(155deg, #f1c9d4 0%, var(--home-rose) 65%, var(--home-bordeaux) 140%);
+    .sil-fill {
+      fill: rgba(255, 255, 255, 0.18);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: #fff;
+      fill: #fff;
+    }
+  }
+  .cat-3 {
+    background: linear-gradient(155deg, #2b1620 0%, var(--home-noir) 55%, #3a2129 140%);
+    .sil-fill {
+      fill: rgba(241, 201, 212, 0.14);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: var(--home-rose-poudre);
+      fill: var(--home-rose-poudre);
+    }
+  }
+  .cat-4 {
+    background: linear-gradient(155deg, #e7b9c9 0%, #c9a8ae 50%, var(--home-or) 140%);
+    .sil-fill {
+      fill: rgba(255, 255, 255, 0.16);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: #fff;
+      fill: #fff;
+    }
+  }
+
+  // ---------- NOUVEAUTÉS ----------
+  // Léger changement de ton pour bien séparer cette section de la précédente.
+  .home-nouveautes {
+    background: linear-gradient(180deg, var(--home-creme) 0%, #fbeef0 100%);
+    max-width: none;
+    padding-left: 0;
+    padding-right: 0;
+
+    > * {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--gutter);
+      padding-right: var(--gutter);
+    }
+  }
+
+  .nouveautes-empty {
+    text-align: center;
+    color: #5a4249;
+    font-size: 14px;
+    padding-block: 24px;
+  }
+
+  .produits-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--grid-gap);
+  }
+
+  .produit {
+    min-width: 0; // évite qu'un nom très long élargisse la colonne
+
+    .ph {
+      aspect-ratio: 3 / 4;
+      position: relative;
+      border-radius: 3px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      isolation: isolate;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+
+      @media (hover: hover) {
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 32px rgba(27, 16, 21, 0.2);
+
+          .ph-illustration {
+            opacity: 0.95;
+            transform: translate(-50%, -50%) scale(1.05);
+          }
+
+          .ph-img {
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        filter: url(#modiva-grain);
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        z-index: 1;
+      }
+    }
+
+    .ph-illustration {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.75;
+      transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+      z-index: 0;
+
+      svg {
+        width: clamp(56px, 12vw, 92px);
+        height: auto;
+      }
+    }
+
+    .ph-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      transition: transform 0.35s ease;
+    }
+
+    // ---- Badge "Nouveau" ----
+    .badge-nouveau {
+      position: absolute;
+      top: clamp(8px, 1.5vw, 12px);
+      left: clamp(8px, 1.5vw, 12px);
+      background: #fff;
+      color: var(--home-noir);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 2px;
+      z-index: 2;
+    }
+
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.2vw, 18px);
+      line-height: 1.25;
+      color: var(--home-noir);
+      overflow-wrap: anywhere;
+    }
+
+    .price {
+      font-size: 13px;
+      color: #5a4249;
+      margin-top: 2px;
+    }
+
+    // ---- Couleurs disponibles (pastilles rondes) ----
+    .produit-couleurs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .couleur-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(27, 16, 21, 0.15);
+      box-shadow: 0 0 0 1px #fff;
+      display: inline-block;
+    }
+  }
+
+  .p-tone-1 {
+    background: linear-gradient(155deg, #f1c9d4 0%, var(--home-rose) 65%, var(--home-bordeaux) 140%);
+    .sil-fill {
+      fill: rgba(255, 255, 255, 0.18);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: #fff;
+      fill: #fff;
+    }
+  }
+  .p-tone-2 {
+    background: linear-gradient(155deg, #f7e3e4 0%, #e7b9c9 55%, var(--home-or) 140%);
+    .sil-fill {
+      fill: rgba(122, 28, 60, 0.12);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: var(--home-bordeaux);
+      fill: var(--home-bordeaux);
+    }
+  }
+  .p-tone-3 {
+    background: linear-gradient(155deg, #2b1620 0%, var(--home-noir) 55%, #3a2129 140%);
+    .sil-fill {
+      fill: rgba(241, 201, 212, 0.14);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: var(--home-rose-poudre);
+      fill: var(--home-rose-poudre);
+    }
+  }
+  .p-tone-4 {
+    background: linear-gradient(155deg, #e7b9c9 0%, #c9a8ae 50%, var(--home-bordeaux) 150%);
+    .sil-fill {
+      fill: rgba(255, 255, 255, 0.16);
+    }
+    .sil-line,
+    .sil-dot {
+      stroke: #fff;
+      fill: #fff;
+    }
+  }
+
+  .voir-collection-wrap {
+    text-align: center;
+    margin-top: clamp(28px, 5vw, 40px);
+  }
+
+  .voir-collection {
+    border: 1px solid var(--home-noir);
+    padding: 15px 36px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    display: inline-block;
+    color: var(--home-noir);
+    transition: 0.3s;
+
+    &:hover {
+      background: var(--home-noir);
+      color: #fff;
+    }
+  }
+
+  // ---------- LA FEMME MODIVA ----------
+  .home-femme {
+    max-width: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    min-height: 60vh;
+  }
+
+  .femme-copy {
+    background: var(--home-bordeaux);
+    color: #f3dfe3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: clamp(40px, 6vw, 70px);
+
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--home-rose-poudre);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    h2 {
+      color: #fff;
+      font-size: clamp(28px, 3.4vw, 40px);
+      line-height: 1.2;
+      margin-bottom: 22px;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 400px;
+      margin-bottom: 28px;
+      color: #e6cdd3;
+    }
+  }
+
+  .femme-visual {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    .fv {
+      min-height: 240px;
+      position: relative;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+    .fv-1 {
+      background: linear-gradient(160deg, #f1c9d4, var(--home-rose) 80%);
+    }
+    .fv-2 {
+      background: linear-gradient(160deg, #2b1620, var(--home-noir) 80%);
+    }
+    .fv-3 {
+      background: linear-gradient(160deg, #f7e3e4, var(--home-or) 80%);
+    }
+  }
+
+  // ---------- INFOS PRATIQUES ----------
+  .home-info-band {
+    border-top: 1px solid rgba(27, 16, 21, 0.1);
+    border-bottom: 1px solid rgba(27, 16, 21, 0.1);
+    padding: clamp(28px, 5vw, 40px) var(--gutter);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+  }
+
+  .info-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+
+    fa-icon {
+      color: var(--home-rose);
+      font-size: 22px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    h4 {
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--home-noir);
+      margin-bottom: 3px;
+    }
+
+    p {
+      font-size: 13px;
+      color: #5a4249;
+      margin: 0;
+    }
+  }
+
+  // ---------- NOTE CONNEXION ----------
+  .home-guest-note,
+  .home-welcome-note {
+    text-align: center;
+    padding: 40px var(--gutter) clamp(40px, 8vw, 70px);
+    font-size: 14px;
+    color: #5a4249;
+
+    a {
+      color: var(--home-rose);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  // =====================================================================
+  // RESPONSIVE
+  // =====================================================================
+
+  // ---------- TABLETTE : grilles à 2 colonnes ----------
+  @media (max-width: 991.98px) {
+    .cat-grid,
+    .produits-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  // ---------- TABLETTE ÉTROITE / MOBILE LARGE : hero et "femme" en 1 colonne ----------
+  @media (max-width: 900px) {
+    // HERO : texte au-dessus, image dessous
+    .home-hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .home-hero-copy {
+      padding: 40px var(--gutter) 32px;
+      text-align: center;
+      align-items: center;
+    }
+
+    .home-lead {
+      margin: 0 auto 28px;
+    }
+
+    .home-cta-row {
+      justify-content: center;
+    }
+
+    .home-eyebrow {
+      justify-content: center;
+    }
+
+    // L'image garde un format maitrisé (au lieu de dépendre de la hauteur de l'écran)
+    .home-hero-visual {
+      min-height: 0;
+      aspect-ratio: 4 / 5;
+      max-height: 75vh;
+      max-height: 75svh;
+
+      img {
+        position: absolute;
+        inset: 0;
+
+        // Le fondu horizontal ne marche plus quand l'image passe SOUS le texte :
+        // on le remplace par un fondu vertical (haut de l'image → fond crème)
+        -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 28%);
+        mask-image: linear-gradient(180deg, transparent 0%, #000 28%);
+      }
+    }
+
+    // LA FEMME MODIVA
+    .home-femme {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .femme-visual .fv {
+      min-height: 0;
+      aspect-ratio: 3 / 4;
+    }
+  }
+
+  // ---------- MOBILE ----------
+  @media (max-width: 767.98px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    // En-têtes de section : titre puis lien "Tout voir" en dessous
+    .section-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .section-head-center {
+      align-items: center;
+    }
+
+    // Zones tactiles confortables (≥ 44px)
+    .btn-modiva-primary,
+    .btn-modiva-outline,
+    .voir-collection {
+      min-height: 46px;
+      line-height: 1.3;
+      padding-top: 14px;
+      padding-bottom: 14px;
+    }
+
+    .voir-tout {
+      padding-block: 10px 6px;
+    }
+  }
+
+  // ---------- PETIT MOBILE ----------
+  @media (max-width: 479.98px) {
+    .home-cta-row {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .btn-modiva-primary,
+    .btn-modiva-outline {
+      width: 100%;
+      text-align: center;
+    }
+
+    .femme-copy .btn-modiva-outline {
+      width: 100%;
+      text-align: center;
+    }
+
+    .voir-collection {
+      width: 100%;
+      padding-inline: 16px;
+      text-align: center;
+    }
+
+    // Taglines trop longues pour des cartes sur 2 colonnes
+    .cat-tagline {
+      display: none;
+    }
+
+    .produit .price {
+      font-size: 12.5px;
+    }
+
+    .produit .badge-nouveau {
+      font-size: 9px;
+      padding: 4px 8px;
+    }
+
+    .home-eyebrow {
+      font-size: 13px;
+    }
+
+    .home-lead {
+      font-size: 15px;
+    }
+  }
+}
+
+/* ===== Produit épuisé : image floutée + pastille "Épuisé" centrée ===== */
+.produit .ph {
+  position: relative;
+}
+
+.produit .ph.epuise {
+  .ph-img,
+  .ph-illustration {
+    filter: blur(2px) grayscale(0.25);
+    opacity: 0.75;
+    transition:
+      filter 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .badge-nouveau {
+    background: #9a9a9a;
+    color: #fff;
+    filter: blur(1px);
+  }
+}
+
+.badge-epuise {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  background: #fff;
+  color: #211611;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(33, 22, 17, 0.12);
+  pointer-events: none;
+}

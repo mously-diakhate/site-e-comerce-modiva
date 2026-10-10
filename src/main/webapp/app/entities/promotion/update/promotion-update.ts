@@ -1,5 +1,5 @@
 import { HttpResponse } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -17,9 +17,12 @@ import { PromotionService } from '../service/promotion.service';
 
 import { PromotionFormGroup, PromotionFormService } from './promotion-form.service';
 
+type ProduitOption = Pick<IProduit, 'id' | 'nom'>;
+
 @Component({
   selector: 'jhi-promotion-update',
   templateUrl: './promotion-update.html',
+  styleUrl: './promotion-update.scss',
   imports: [TranslateDirective, TranslateModule, FontAwesomeModule, AlertError, ReactiveFormsModule],
 })
 export class PromotionUpdate implements OnInit {
@@ -27,6 +30,12 @@ export class PromotionUpdate implements OnInit {
   promotion: IPromotion | null = null;
 
   produitsSharedCollection = signal<IProduit[]>([]);
+  /** Produits déjà sélectionnés pour cette promotion. */
+  readonly selectedProduits = signal<ProduitOption[]>([]);
+  /** Produits restants, proposés dans le menu déroulant (on retire ceux déjà choisis). */
+  readonly availableProduits = computed(() =>
+    this.produitsSharedCollection().filter(p => !this.selectedProduits().some(sp => sp.id === p.id)),
+  );
 
   protected promotionService = inject(PromotionService);
   protected promotionFormService = inject(PromotionFormService);
@@ -35,8 +44,6 @@ export class PromotionUpdate implements OnInit {
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PromotionFormGroup = this.promotionFormService.createPromotionFormGroup();
-
-  compareProduit = (o1: IProduit | null, o2: IProduit | null): boolean => this.produitService.compareProduit(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ promotion }) => {
@@ -51,6 +58,30 @@ export class PromotionUpdate implements OnInit {
 
   previousState(): void {
     globalThis.history.back();
+  }
+
+  /** Ajoute le produit choisi dans le menu déroulant à la liste, puis remet le select sur le placeholder. */
+  onProduitSelected(idRaw: string, selectEl: HTMLSelectElement): void {
+    if (!idRaw) {
+      return;
+    }
+    const id = Number(idRaw);
+    const produit = this.produitsSharedCollection().find(p => p.id === id);
+    if (!produit) {
+      return;
+    }
+    const next = [...this.selectedProduits(), { id: produit.id, nom: produit.nom }];
+    this.selectedProduits.set(next);
+    this.editForm.get('produits')!.setValue(next);
+    this.editForm.get('produits')!.markAsDirty();
+    selectEl.value = '';
+  }
+
+  removeProduit(produit: ProduitOption): void {
+    const next = this.selectedProduits().filter(p => p.id !== produit.id);
+    this.selectedProduits.set(next);
+    this.editForm.get('produits')!.setValue(next);
+    this.editForm.get('produits')!.markAsDirty();
   }
 
   save(): void {
@@ -89,6 +120,7 @@ export class PromotionUpdate implements OnInit {
     this.produitsSharedCollection.update(produits =>
       this.produitService.addProduitToCollectionIfMissing<IProduit>(produits, ...(promotion.produits ?? [])),
     );
+    this.selectedProduits.set(promotion.produits ?? []);
   }
 
   protected loadRelationshipsOptions(): void {

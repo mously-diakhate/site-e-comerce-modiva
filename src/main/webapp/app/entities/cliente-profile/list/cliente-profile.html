@@ -1,132 +1,93 @@
-<div>
-  <h2 id="page-heading" data-cy="ClienteProfileHeading">
-    <span jhiTranslate="modivaApp.clienteProfile.home.title">ClienteProfiles</span>
+<div class="modiva-list-wrap">
+  <div class="list-topbar">
+    <h2 id="page-heading" data-cy="ClienteProfileHeading" class="list-title">
+      <span jhiTranslate="modivaApp.clienteProfile.home.title">Clientes</span>
+    </h2>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+    <div class="list-actions">
+      <button class="btn btn-outline-modiva" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
-        <span jhiTranslate="modivaApp.clienteProfile.home.refreshListLabel">Actualiser la liste</span>
-      </button>
-
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-cliente-profile"
-        [routerLink]="['/cliente-profile/new']"
-      >
-        <fa-icon icon="plus" />
-        <span jhiTranslate="modivaApp.clienteProfile.home.createLabel">Créer un nouveau Cliente Profile</span>
+        <span class="d-none d-md-inline" jhiTranslate="modivaApp.clienteProfile.home.refreshListLabel">Actualiser</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
   <jhi-filter [filters]="filters" />
 
   @if (clienteProfiles().length === 0) {
-    <div class="alert alert-warning" id="no-result">
-      <span jhiTranslate="modivaApp.clienteProfile.home.notFound">Aucun Cliente Profile trouvé</span>
+    <div class="empty-state" id="no-result">
+      <fa-icon icon="users" />
+      <span jhiTranslate="modivaApp.clienteProfile.home.notFound">Aucune cliente trouvée</span>
     </div>
   } @else {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
+    <div class="table-card">
+      <table class="modiva-table" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
             <th scope="col" jhiSortBy="telephone">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.clienteProfile.telephone">Telephone</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="actif">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.clienteProfile.actif">Actif</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.clienteProfile.telephone">Téléphone</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="user.login">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.clienteProfile.user">User</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.clienteProfile.user">Compte</span><fa-icon icon="sort" /></div>
             </th>
-            <th scope="col" jhiSortBy="panier.id">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.clienteProfile.panier">Panier</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+            <th scope="col" jhiSortBy="actif">
+              <div class="th-inner"><span jhiTranslate="modivaApp.clienteProfile.actif">Statut</span><fa-icon icon="sort" /></div>
             </th>
+            <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           @for (clienteProfile of clienteProfiles(); track trackId(clienteProfile)) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/cliente-profile', clienteProfile.id, 'view']">{{ clienteProfile.id }}</a>
+              <td class="cell-strong">
+                <a [routerLink]="['/cliente-profile', clienteProfile.id, 'view']">{{ clienteProfile.telephone ?? '—' }}</a>
               </td>
-              <td>{{ clienteProfile.telephone }}</td>
-              <td>{{ clienteProfile.actif }}</td>
+              <td class="cell-muted">{{ clienteProfile.user?.login ?? '—' }}</td>
               <td>
-                {{ clienteProfile.user?.login }}
+                <button
+                  type="button"
+                  class="statut-toggle"
+                  [class.actif]="clienteProfile.actif"
+                  (click)="toggleActif(clienteProfile)"
+                  [title]="clienteProfile.actif ? 'Cliquer pour désactiver' : 'Cliquer pour activer'"
+                >
+                  <span class="statut-dot"></span>
+                  {{ clienteProfile.actif ? 'Actif' : 'Inactif' }}
+                </button>
               </td>
               <td>
-                @if (clienteProfile.panier) {
-                  <div>
-                    <a [routerLink]="['/panier', clienteProfile.panier.id, 'view']">{{ clienteProfile.panier.id }}</a>
-                  </div>
-                }
+                <button
+                  type="button"
+                  [routerLink]="['/commande']"
+                  [queryParams]="{ 'filter[clienteProfileId.in]': clienteProfile.id }"
+                  class="btn-view-commandes"
+                >
+                  <fa-icon icon="receipt" />
+                  Voir ses commandes
+                </button>
               </td>
               <td class="text-end">
-                <div class="btn-group">
-                  <button
-                    type="submit"
-                    [routerLink]="['/commande']"
-                    [queryParams]="{ 'filter[clienteProfileId.in]': clienteProfile.id }"
-                    class="btn btn-info btn-sm"
-                    data-cy="filterOtherEntityButton"
-                  >
-                    <fa-icon icon="eye" />
-                    <span
-                      class="d-none d-md-inline"
-                      jhiTranslate="entity.action.show"
-                      [translateValues]="{ otherEntity: ('modivaApp.clienteProfile.commande' | translate) }"
-                      >Afficher Commande</span
-                    >
-                  </button>
+                <div class="table-actions">
                   <a
                     [routerLink]="['/cliente-profile', clienteProfile.id, 'view']"
-                    class="btn btn-info btn-sm"
+                    class="icon-btn"
                     data-cy="entityDetailsButton"
+                    title="Voir"
                   >
                     <fa-icon icon="eye" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
                   </a>
-
-                  <a
-                    [routerLink]="['/cliente-profile', clienteProfile.id, 'edit']"
-                    class="btn btn-primary btn-sm"
-                    data-cy="entityEditButton"
+                  <button
+                    type="submit"
+                    (click)="delete(clienteProfile)"
+                    class="icon-btn danger"
+                    data-cy="entityDeleteButton"
+                    title="Supprimer"
                   >
-                    <fa-icon icon="pencil-alt" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
-                  </a>
-
-                  <button type="submit" (click)="delete(clienteProfile)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                     <fa-icon icon="times" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
                   </button>
                 </div>
               </td>
@@ -136,6 +97,7 @@
       </table>
     </div>
   }
+
   @if (clienteProfiles().length > 0) {
     <div>
       <div class="d-flex justify-content-center">

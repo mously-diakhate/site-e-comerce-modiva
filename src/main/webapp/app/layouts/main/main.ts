@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2, RendererFactory2, inject } from '@angular/core';
+import { Component, OnInit, Renderer2, RendererFactory2, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import PageRibbon from '../profiles/page-ribbon';
 @Component({
   selector: 'jhi-main',
   templateUrl: './main.html',
+  styleUrl: './main.scss',
   providers: [AppPageTitleStrategy],
   imports: [RouterOutlet, Footer, PageRibbon],
 })
@@ -23,6 +24,14 @@ export default class Main implements OnInit {
   private readonly accountService = inject(AccountService);
   private readonly translateService = inject(TranslateService);
   private readonly rootRenderer = inject(RendererFactory2);
+
+  /**
+   * Permet au template de décaler le contenu principal à droite de la
+   * sidebar administratrice (voir layouts/navbar) et d'enlever le
+   * "jh-card" par défaut, puisque le tableau de bord gère déjà ses
+   * propres panneaux blancs.
+   */
+  readonly isAdmin = computed(() => this.accountService.hasAnyAuthority(['ROLE_ADMIN']));
 
   constructor() {
     this.renderer = this.rootRenderer.createRenderer(document.querySelector('html'), null);

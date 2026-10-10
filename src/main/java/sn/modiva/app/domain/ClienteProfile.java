@@ -2,7 +2,6 @@ package sn.modiva.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -33,8 +32,10 @@ public class ClienteProfile implements Serializable {
     @Column(name = "actif")
     private Boolean actif;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @NotNull
+    // NB : rendu optionnel pour permettre un ClienteProfile "invité" (commande
+    // sans compte utilisateur) — voir la migration Liquibase associée qui
+    // retire la contrainte NOT NULL sur la colonne user_id.
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private User user;
 

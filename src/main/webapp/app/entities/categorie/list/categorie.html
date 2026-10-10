@@ -1,58 +1,45 @@
-<div>
-  <h2 id="page-heading" data-cy="CategorieHeading">
-    <span jhiTranslate="modivaApp.categorie.home.title">Categories</span>
+<div class="modiva-list-wrap">
+  <div class="list-topbar">
+    <h2 id="page-heading" data-cy="CategorieHeading" class="list-title">
+      <span jhiTranslate="modivaApp.categorie.home.title">Categories</span>
+    </h2>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+    <div class="list-actions">
+      <button class="btn btn-outline-modiva" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
-        <span jhiTranslate="modivaApp.categorie.home.refreshListLabel">Actualiser la liste</span>
+        <span class="d-none d-md-inline" jhiTranslate="modivaApp.categorie.home.refreshListLabel">Actualiser</span>
       </button>
 
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-categorie"
+        class="btn btn-modiva-primary create-categorie"
         [routerLink]="['/categorie/new']"
       >
         <fa-icon icon="plus" />
         <span jhiTranslate="modivaApp.categorie.home.createLabel">Créer un nouveau Categorie</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
   @if (categories().length === 0) {
-    <div class="alert alert-warning" id="no-result">
+    <div class="empty-state" id="no-result">
+      <fa-icon icon="list" />
       <span jhiTranslate="modivaApp.categorie.home.notFound">Aucun Categorie trouvé</span>
     </div>
   } @else {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
+    <div class="table-card">
+      <table class="modiva-table" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
             <th scope="col" jhiSortBy="nom">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.categorie.nom">Nom</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.categorie.nom">Nom</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col" jhiSortBy="description">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.categorie.description">Description</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.categorie.description">Description</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col"></th>
           </tr>
@@ -60,41 +47,30 @@
         <tbody>
           @for (categorie of categories(); track trackId(categorie)) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/categorie', categorie.id, 'view']">{{ categorie.id }}</a>
+              <td class="cell-strong">
+                <a [routerLink]="['/categorie', categorie.id, 'view']">{{ categorie.nom }}</a>
               </td>
-              <td>{{ categorie.nom }}</td>
-              <td>{{ categorie.description }}</td>
+              <td class="cell-muted">{{ categorie.description || '—' }}</td>
               <td class="text-end">
-                <div class="btn-group">
+                <div class="table-actions">
                   <button
                     type="submit"
                     [routerLink]="['/produit']"
                     [queryParams]="{ 'filter[categorieId.in]': categorie.id }"
-                    class="btn btn-info btn-sm"
+                    class="icon-btn"
                     data-cy="filterOtherEntityButton"
+                    title="Voir les produits"
                   >
-                    <fa-icon icon="eye" />
-                    <span
-                      class="d-none d-md-inline"
-                      jhiTranslate="entity.action.show"
-                      [translateValues]="{ otherEntity: ('modivaApp.categorie.produit' | translate) }"
-                      >Afficher Produit</span
-                    >
+                    <fa-icon icon="bag-shopping" />
                   </button>
-                  <a [routerLink]="['/categorie', categorie.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                  <a [routerLink]="['/categorie', categorie.id, 'view']" class="icon-btn" data-cy="entityDetailsButton" title="Voir">
                     <fa-icon icon="eye" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
                   </a>
-
-                  <a [routerLink]="['/categorie', categorie.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                  <a [routerLink]="['/categorie', categorie.id, 'edit']" class="icon-btn" data-cy="entityEditButton" title="Éditer">
                     <fa-icon icon="pencil-alt" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
                   </a>
-
-                  <button type="submit" (click)="delete(categorie)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <button type="submit" (click)="delete(categorie)" class="icon-btn danger" data-cy="entityDeleteButton" title="Supprimer">
                     <fa-icon icon="times" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
                   </button>
                 </div>
               </td>
@@ -104,6 +80,7 @@
       </table>
     </div>
   }
+
   @if (categories().length > 0) {
     <div>
       <div class="d-flex justify-content-center">

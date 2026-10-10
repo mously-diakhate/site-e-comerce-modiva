@@ -1,3 +1,49 @@
-<div class="footer">
-  <p jhiTranslate="footer">Ceci est votre pied de page</p>
-</div>
+@if (!isAdmin()) {
+  <!-- FOOTER -->
+  <footer class="home-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">MOD<span>IVA</span></div>
+        <p class="footer-tagline">Élégance au quotidien.</p>
+        <p class="footer-newsletter-text">Inscrivez-vous pour découvrir nos collections et inspirations en avant-première.</p>
+        <form class="footer-newsletter-form" (ngSubmit)="subscribeNewsletter()">
+          <input
+            type="email"
+            name="newsletterEmail"
+            [(ngModel)]="newsletterEmail"
+            placeholder="Votre adresse e-mail"
+            autocomplete="email"
+            inputmode="email"
+            aria-label="Adresse e-mail"
+            required
+          />
+          <button type="submit">S'inscrire</button>
+        </form>
+      </div>
+
+      <div class="footer-col">
+        <h5>Découvrir</h5>
+        <a href="javascript:void(0)" (click)="goToNouveautes()">Nouveautés</a>
+        <a routerLink="/collection">Boutique</a>
+        <a routerLink="/notre-univers">Notre univers</a>
+        <a routerLink="/contact">Contact</a>
+      </div>
+
+      <div class="footer-col">
+        <h5>Nous suivre</h5>
+        <div class="footer-social">
+          @for (social of socialLinks; track social.label) {
+            <a [href]="social.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="social.label">
+              <fa-icon [icon]="social.icon" />
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {{ currentYear }} MODIVA. Tous droits réservés. Fait par Mously </span>
+      <span>Dakar, Sénégal</span>
+    </div>
+  </footer>
+}

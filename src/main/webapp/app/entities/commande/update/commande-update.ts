@@ -1,6 +1,6 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -11,35 +11,53 @@ import { finalize, map } from 'rxjs/operators';
 import { IClienteProfile } from 'app/entities/cliente-profile/cliente-profile.model';
 import { ClienteProfileService } from 'app/entities/cliente-profile/service/cliente-profile.service';
 import { StatutCommande } from 'app/entities/enumerations/statut-commande.model';
-import { ILivraison } from 'app/entities/livraison/livraison.model';
+import { StatutLivraison } from 'app/entities/enumerations/statut-livraison.model';
+import { ILivraison, NewLivraison } from 'app/entities/livraison/livraison.model';
 import { LivraisonService } from 'app/entities/livraison/service/livraison.service';
-import { IPaiement } from 'app/entities/paiement/paiement.model';
 import { AlertError } from 'app/shared/alert/alert-error';
 import { TranslateDirective } from 'app/shared/language';
 
-import { ICommande } from '../commande.model';
+import { ICommande, NewCommande } from '../commande.model';
 import { CommandeService } from '../service/commande.service';
 
 import { CommandeFormGroup, CommandeFormService } from './commande-form.service';
-import { PaiementService } from 'app/entities/paiement/service/paiement.service';
+
+const MODE_PAIEMENT_LABELS: Record<string, string> = {
+  WAVE: 'Wave',
+  ORANGE_MONEY: 'Orange Money',
+  SUR_PLACE: 'Sur place',
+};
+
+interface LivraisonFormValue {
+  adresse: string | null;
+  ville: string | null;
+  quartier: string | null;
+  telephone: string | null;
+  fraisLivraison: number | null;
+  statutLivraison: string | null;
+}
 
 @Component({
   selector: 'jhi-commande-update',
   templateUrl: './commande-update.html',
+  styleUrl: './commande-update.scss',
   imports: [TranslateDirective, TranslateModule, FontAwesomeModule, AlertError, ReactiveFormsModule],
 })
 export class CommandeUpdate implements OnInit {
   readonly isSaving = signal(false);
   commande: ICommande | null = null;
   statutCommandeValues = Object.keys(StatutCommande);
+  statutLivraisonValues = Object.keys(StatutLivraison);
 
-  paiementsCollection = signal<IPaiement[]>([]);
-  livraisonsCollection = signal<ILivraison[]>([]);
   clienteProfilesSharedCollection = signal<IClienteProfile[]>([]);
+
+  /** true si la commande nécessite une livraison (sinon retrait en personne). */
+  readonly needsLivraison = signal(false);
+  /** id de la livraison déjà existante en mode édition (pour update plutôt que create). */
+  protected existingLivraisonId: number | null = null;
 
   protected commandeService = inject(CommandeService);
   protected commandeFormService = inject(CommandeFormService);
-  protected paiementService = inject(PaiementService);
   protected livraisonService = inject(LivraisonService);
   protected clienteProfileService = inject(ClienteProfileService);
   protected activatedRoute = inject(ActivatedRoute);
@@ -47,12 +65,27 @@ export class CommandeUpdate implements OnInit {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: CommandeFormGroup = this.commandeFormService.createCommandeFormGroup();
 
-  comparePaiement = (o1: IPaiement | null, o2: IPaiement | null): boolean => this.paiementService.comparePaiement(o1, o2);
-
-  compareLivraison = (o1: ILivraison | null, o2: ILivraison | null): boolean => this.livraisonService.compareLivraison(o1, o2);
+  /** Sous-formulaire pour les champs de livraison, géré séparément du formulaire principal. */
+  readonly livraisonForm = new FormGroup({
+    adresse: new FormControl<string | null>(null, { validators: [Validators.required] }),
+    ville: new FormControl<string | null>(null, { validators: [Validators.required] }),
+    quartier: new FormControl<string | null>(null),
+    telephone: new FormControl<string | null>(null),
+    fraisLivraison: new FormControl<number | null>(null),
+    statutLivraison: new FormControl<string | null>('EN_ATTENTE', { validators: [Validators.required] }),
+  });
 
   compareClienteProfile = (o1: IClienteProfile | null, o2: IClienteProfile | null): boolean =>
     this.clienteProfileService.compareClienteProfile(o1, o2);
+
+  constructor() {
+    // Par défaut (création), la commande n'a pas besoin de livraison tant que la case n'est pas cochée.
+    this.livraisonForm.disable();
+  }
+
+  modePaiementLabel(mode: string | null | undefined): string {
+    return mode ? (MODE_PAIEMENT_LABELS[mode] ?? mode) : '—';
+  }
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ commande }) => {
@@ -69,9 +102,51 @@ export class CommandeUpdate implements OnInit {
     globalThis.history.back();
   }
 
+  /** Active/désactive le sous-formulaire de livraison. */
+  toggleNeedsLivraison(checked: boolean): void {
+    this.needsLivraison.set(checked);
+    if (checked) {
+      this.livraisonForm.enable();
+    } else {
+      this.livraisonForm.disable();
+    }
+  }
+
   save(): void {
     this.isSaving.set(true);
-    const commande = this.commandeFormService.getCommande(this.editForm);
+    const commande: ICommande | NewCommande = this.commandeFormService.getCommande(this.editForm);
+
+    if (!this.needsLivraison()) {
+      // Retrait en personne : pas de livraison à créer.
+      this.saveCommande({ ...commande, livraison: null });
+      return;
+    }
+
+    const v: LivraisonFormValue = this.livraisonForm.getRawValue();
+    const livraisonPayload = {
+      adresse: v.adresse!,
+      ville: v.ville!,
+      quartier: v.quartier,
+      telephone: v.telephone,
+      fraisLivraison: v.fraisLivraison,
+      statutLivraison: v.statutLivraison as ILivraison['statutLivraison'],
+    };
+
+    const livraisonSave$ = this.existingLivraisonId
+      ? this.livraisonService.update({ id: this.existingLivraisonId, ...livraisonPayload })
+      : this.livraisonService.create({ id: null, ...livraisonPayload } as NewLivraison);
+
+    livraisonSave$.subscribe({
+      next: (savedLivraison: ILivraison) => {
+        this.saveCommande({ ...commande, livraison: { id: savedLivraison.id } });
+      },
+      error: () => {
+        this.isSaving.set(false);
+      },
+    });
+  }
+
+  protected saveCommande(commande: ICommande | NewCommande): void {
     if (commande.id === null) {
       this.subscribeToSaveResponse(this.commandeService.create(commande));
     } else {
@@ -102,38 +177,32 @@ export class CommandeUpdate implements OnInit {
     this.commande = commande;
     this.commandeFormService.resetForm(this.editForm, commande);
 
-    this.paiementsCollection.set(
-      this.paiementService.addPaiementToCollectionIfMissing<IPaiement>(this.paiementsCollection(), commande.paiement),
-    );
-    this.livraisonsCollection.set(
-      this.livraisonService.addLivraisonToCollectionIfMissing<ILivraison>(this.livraisonsCollection(), commande.livraison),
-    );
     this.clienteProfilesSharedCollection.update(clienteProfiles =>
       this.clienteProfileService.addClienteProfileToCollectionIfMissing<IClienteProfile>(clienteProfiles, commande.clienteProfile),
     );
+
+    if (commande.livraison?.id) {
+      this.existingLivraisonId = commande.livraison.id;
+      this.needsLivraison.set(true);
+      this.livraisonForm.enable();
+      // Le Pick partiel de ICommande.livraison n'a pas quartier/telephone/fraisLivraison : on recharge l'objet complet.
+      this.livraisonService.find(commande.livraison.id).subscribe(full => {
+        this.livraisonForm.patchValue({
+          adresse: full.adresse ?? null,
+          ville: full.ville ?? null,
+          quartier: full.quartier ?? null,
+          telephone: full.telephone ?? null,
+          fraisLivraison: full.fraisLivraison ?? null,
+          statutLivraison: full.statutLivraison ?? 'EN_ATTENTE',
+        });
+      });
+    } else {
+      this.needsLivraison.set(false);
+      this.livraisonForm.disable();
+    }
   }
 
   protected loadRelationshipsOptions(): void {
-    this.paiementService
-      .query({ filter: 'commande-is-null' })
-      .pipe(map((res: HttpResponse<IPaiement[]>) => res.body ?? []))
-      .pipe(
-        map((paiements: IPaiement[]) =>
-          this.paiementService.addPaiementToCollectionIfMissing<IPaiement>(paiements, this.commande?.paiement),
-        ),
-      )
-      .subscribe((paiements: IPaiement[]) => this.paiementsCollection.set(paiements));
-
-    this.livraisonService
-      .query({ filter: 'commande-is-null' })
-      .pipe(map((res: HttpResponse<ILivraison[]>) => res.body ?? []))
-      .pipe(
-        map((livraisons: ILivraison[]) =>
-          this.livraisonService.addLivraisonToCollectionIfMissing<ILivraison>(livraisons, this.commande?.livraison),
-        ),
-      )
-      .subscribe((livraisons: ILivraison[]) => this.livraisonsCollection.set(livraisons));
-
     this.clienteProfileService
       .query()
       .pipe(map((res: HttpResponse<IClienteProfile[]>) => res.body ?? []))

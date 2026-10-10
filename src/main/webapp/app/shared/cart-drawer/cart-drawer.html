@@ -1,0 +1,49 @@
+@if (cart.isDrawerOpen()) {
+  <div class="drawer-backdrop" (click)="cart.closeDrawer()"></div>
+  <aside class="drawer-panel" role="dialog" aria-modal="true" aria-label="Votre panier">
+    <div class="drawer-head">
+      <h2>Votre panier</h2>
+      <button type="button" class="drawer-close" (click)="cart.closeDrawer()" aria-label="Fermer">
+        <fa-icon icon="times" />
+      </button>
+    </div>
+
+    @if (cart.items().length === 0) {
+      <p class="drawer-empty">Votre panier est vide pour le moment.</p>
+    } @else {
+      <div class="drawer-lines">
+        @for (line of cart.items(); track line.id) {
+          <div class="drawer-line">
+            @if (line.imageUrl) {
+              <img [src]="line.imageUrl" [alt]="line.nom" class="line-img" />
+            } @else {
+              <div class="line-img line-img-empty"></div>
+            }
+            <div class="line-info">
+              <div class="line-nom">{{ line.nom }}</div>
+              <div class="line-variante">Taille {{ line.taille }} · {{ line.couleur }}</div>
+              <div class="line-prix">{{ cart.formatFcfa(line.prix) }}</div>
+              <div class="line-qty">
+                <button type="button" (click)="cart.updateQuantite(line.id, line.quantite - 1)" aria-label="Diminuer">−</button>
+                <span>{{ line.quantite }}</span>
+                <button type="button" (click)="cart.updateQuantite(line.id, line.quantite + 1)" aria-label="Augmenter">+</button>
+              </div>
+            </div>
+            <button type="button" class="line-remove" (click)="cart.removeLine(line.id)" aria-label="Supprimer">
+              <fa-icon icon="trash" />
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="drawer-footer">
+        <div class="drawer-total-row">
+          <span>Total</span>
+          <span>{{ cart.formatFcfa(cart.total()) }}</span>
+        </div>
+        <p class="drawer-note">Livraison calculée à l'étape suivante.</p>
+        <a routerLink="/panier" class="btn-voir-panier" (click)="cart.closeDrawer()">Voir le panier</a>
+      </div>
+    }
+  </aside>
+}

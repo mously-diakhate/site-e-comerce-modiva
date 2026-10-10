@@ -1,0 +1,267 @@
+<div class="modiva-home">
+  <!-- Filtre de grain partagé — invisible, référencé par les cartes catégories et produits -->
+  <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+    <filter id="modiva-grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise" />
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0" />
+    </filter>
+  </svg>
+
+  <!-- HERO -->
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <div class="home-eyebrow">Prêt-à-porter féminin</div>
+      <h1 class="home-title">Élégance<br /><span class="accent">au quotidien.</span></h1>
+      <p class="home-lead">Des silhouettes modernes et raffinées, pensées pour accompagner chaque femme avec assurance.</p>
+      <div class="home-cta-row">
+        <a routerLink="/collection" class="btn btn-modiva-primary">Découvrir la boutique</a>
+        <a routerLink="/notre-univers" class="btn btn-modiva-outline">Notre univers</a>
+      </div>
+    </div>
+    <div class="home-hero-visual">
+      @if (heroImageUrl) {
+        <!-- fetchpriority : l'image principale se charge en premier (affichage plus rapide sur mobile) -->
+        <img [src]="heroImageUrl" alt="Collection MODIVA" fetchpriority="high" />
+      } @else {
+        <svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="#7A1C3C" stroke-width="1.4">
+            <path
+              d="M150 40 C110 40 90 60 90 90 L85 400 L120 400 L128 130 L150 130 L172 130 L180 400 L215 400 L210 90 C210 60 190 40 150 40 Z"
+              fill="#F7E3E4"
+              opacity=".9"
+            />
+            <path d="M120 60 C130 45 170 45 180 60" fill="#F1C9D4" />
+            <circle cx="150" cy="12" r="4" fill="#D6316C" stroke="none" />
+          </g>
+        </svg>
+      }
+    </div>
+  </section>
+
+  <!-- CATÉGORIES -->
+  <section id="categories" class="home-categories">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Votre style, votre allure</span>
+        <!-- h2 au lieu de h1 : une page ne doit avoir qu'un seul h1 (celui du hero) -->
+        <h2>Une tenue pour chaque moment</h2>
+      </div>
+      <a routerLink="/collection" class="voir-tout">Tout voir</a>
+    </div>
+
+    <div class="cat-grid">
+      @for (cat of categories(); track cat.key) {
+        <a
+          routerLink="/collection"
+          [queryParams]="cat.categorieId ? { categorieId: cat.categorieId } : {}"
+          class="cat-card"
+          [ngClass]="cat.tone"
+        >
+          <div class="cat-illustration">
+            @if (cat.imageUrl) {
+              <img [src]="cat.imageUrl" [alt]="cat.label" loading="lazy" />
+            } @else {
+              @switch (cat.silhouette) {
+                @case ('blazer') {
+                  <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 18 L38 30 L30 38 L22 110 L40 110 L44 55 L50 62 L56 55 L60 110 L78 110 L70 38 L62 30 Z" class="sil-fill" />
+                    <path d="M38 30 L50 46 L62 30" class="sil-line" fill="none" />
+                    <circle cx="50" cy="72" r="2.2" class="sil-dot" />
+                    <circle cx="50" cy="86" r="2.2" class="sil-dot" />
+                  </svg>
+                }
+                @case ('chemise') {
+                  <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M50 20 L40 28 L26 34 L20 60 L30 64 L36 46 L34 112 L66 112 L64 46 L70 64 L80 60 L74 34 L60 28 Z"
+                      class="sil-fill"
+                    />
+                    <path d="M40 28 L50 40 L60 28" class="sil-line" fill="none" />
+                    <line x1="50" y1="46" x2="50" y2="108" class="sil-line" stroke-dasharray="2 4" />
+                  </svg>
+                }
+                @case ('robe') {
+                  <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M50 16 C42 16 36 22 36 30 L32 60 L18 118 L38 118 L44 46 L56 46 L62 118 L82 118 L68 60 L64 30 C64 22 58 16 50 16 Z"
+                      class="sil-fill"
+                    />
+                    <path d="M40 24 C44 18 56 18 60 24" class="sil-line" fill="none" />
+                  </svg>
+                }
+                @case ('ensemble') {
+                  <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M36 18 L28 28 L22 34 L18 66 L28 68 L32 46 L34 66 L28 118 L40 118 L46 66 L44 40 L52 40 L50 66 L56 118 L68 118 L62 66 L64 46 L68 68 L78 66 L74 34 L68 28 L60 18 Z"
+                      class="sil-fill"
+                    />
+                  </svg>
+                }
+              }
+            }
+          </div>
+          <div class="cat-copy">
+            <span class="cat-label">{{ cat.label }}</span>
+            <span class="cat-tagline">{{ cat.tagline }}</span>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- NOUVEAUTÉS -->
+  <section id="nouveautes" class="home-nouveautes">
+    <div class="section-head section-head-center">
+      <div>
+        <span class="eyebrow">Fraîchement arrivé</span>
+        <h2>Nos nouveautés</h2>
+      </div>
+    </div>
+
+    @if (nouveautes().length === 0) {
+      <p class="nouveautes-empty">Aucun produit publié pour le moment — ajoutez-en depuis l'espace administratrice.</p>
+    } @else {
+      <div class="produits-grid">
+        @for (p of nouveautes(); track p.id) {
+          <a [routerLink]="['/produit', p.id, 'view']" class="produit">
+            <div class="ph" [ngClass]="p.tone" [class.epuise]="productEpuise()[p.id]">
+              <span class="badge-nouveau">Nouveau</span>
+              @if (productEpuise()[p.id]) {
+                <span class="badge-epuise">Épuisé</span>
+              }
+              @if (p.imageUrl) {
+                <img class="ph-img" [src]="p.imageUrl" [alt]="p.nom" loading="lazy" />
+              } @else {
+                <div class="ph-illustration">
+                  @switch (p.silhouette) {
+                    @case ('blazer') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 18 L38 30 L30 38 L22 110 L40 110 L44 55 L50 62 L56 55 L60 110 L78 110 L70 38 L62 30 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M38 30 L50 46 L62 30" class="sil-line" fill="none" />
+                        <circle cx="50" cy="72" r="2.2" class="sil-dot" />
+                        <circle cx="50" cy="86" r="2.2" class="sil-dot" />
+                      </svg>
+                    }
+                    @case ('chemise') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 20 L40 28 L26 34 L20 60 L30 64 L36 46 L34 112 L66 112 L64 46 L70 64 L80 60 L74 34 L60 28 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M40 28 L50 40 L60 28" class="sil-line" fill="none" />
+                        <line x1="50" y1="46" x2="50" y2="108" class="sil-line" stroke-dasharray="2 4" />
+                      </svg>
+                    }
+                    @case ('robe') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M50 16 C42 16 36 22 36 30 L32 60 L18 118 L38 118 L44 46 L56 46 L62 118 L82 118 L68 60 L64 30 C64 22 58 16 50 16 Z"
+                          class="sil-fill"
+                        />
+                        <path d="M40 24 C44 18 56 18 60 24" class="sil-line" fill="none" />
+                      </svg>
+                    }
+                    @case ('ensemble') {
+                      <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M36 18 L28 28 L22 34 L18 66 L28 68 L32 46 L34 66 L28 118 L40 118 L46 66 L44 40 L52 40 L50 66 L56 118 L68 118 L62 66 L64 46 L68 68 L78 66 L74 34 L68 28 L60 18 Z"
+                          class="sil-fill"
+                        />
+                      </svg>
+                    }
+                  }
+                </div>
+              }
+            </div>
+            <div class="name">{{ p.nom }}</div>
+            <div class="price">{{ formatFcfa(p.prix) }}</div>
+
+            @if (productCouleurs()[p.id]?.length) {
+              <div class="produit-couleurs">
+                @for (c of productCouleurs()[p.id]; track c.libelle) {
+                  <span class="couleur-swatch" [style.background]="c.codeHex" [title]="c.libelle"></span>
+                }
+              </div>
+            }
+          </a>
+        }
+      </div>
+    }
+    <div class="voir-collection-wrap">
+      <a routerLink="/collection" class="voir-collection">Voir toute la collection</a>
+    </div>
+  </section>
+
+  <!-- LA FEMME MODIVA -->
+  <section class="home-femme">
+    <div class="femme-copy">
+      <span class="eyebrow">La femme MODIVA</span>
+      <h2>Féminine.<br />Sûre d'elle.<br />Naturellement élégante.</h2>
+      <p>
+        MODIVA célèbre une élégance qui se vit, du bureau aux instants précieux. Des lignes soignées, des teintes délicates et une allure
+        qui vous ressemble.
+      </p>
+      <a routerLink="/notre-univers" class="btn btn-modiva-outline light">Découvrir notre histoire</a>
+    </div>
+    <div class="femme-visual">
+      @for (img of femmeImages; track img) {
+        <div class="fv"><img [src]="img" alt="" loading="lazy" /></div>
+      } @empty {
+        <div class="fv fv-1"></div>
+        <div class="fv fv-2"></div>
+        <div class="fv fv-3"></div>
+      }
+    </div>
+  </section>
+
+  <!-- INFOS PRATIQUES -->
+  <section class="home-info-band">
+    <div class="footer-info-band">
+      <div class="info-grid">
+        <div class="info-item">
+          <fa-icon icon="truck" />
+          <div>
+            <h4>Livraison au Sénégal</h4>
+            <p>À Dakar et dans toutes les régions</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <fa-icon icon="mobile-screen" />
+          <div>
+            <h4>Paiement simple</h4>
+            <p>Wave et Orange Money</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <fa-icon icon="headset" />
+          <div>
+            <h4>À votre écoute</h4>
+            <p>Un accompagnement personnalisé</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bloc contextuel selon l'état de connexion -->
+  @if (account() === null) {
+    <section class="home-guest-note">
+      <p>
+        Vous avez déjà un compte ?
+        <a routerLink="/login">Connectez-vous</a>
+        ou
+        <a routerLink="/login" [queryParams]="{ tab: 'register' }">créez-en un</a>.
+      </p>
+    </section>
+  } @else {
+    <section class="home-welcome-note">
+      <p>
+        Bienvenue, {{ account()?.login }} —
+        <a routerLink="/mes-commandes">suivez vos commandes</a>
+      </p>
+    </section>
+  }
+</div>

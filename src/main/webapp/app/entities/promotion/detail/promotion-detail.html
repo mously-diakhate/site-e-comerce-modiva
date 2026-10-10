@@ -1,54 +1,66 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-detail-wrap">
+  <div class="modiva-detail-card">
     @if (promotion(); as promotionRef) {
       <div>
-        <h2 data-cy="promotionDetailsHeading"><span jhiTranslate="modivaApp.promotion.detail.title">Promotion</span></h2>
+        <div class="detail-header">
+          <h2 data-cy="promotionDetailsHeading" class="detail-title">
+            <span jhiTranslate="modivaApp.promotion.detail.title">Promotion</span>
+            <span class="detail-nom">{{ promotionRef.nom }}</span>
+          </h2>
+          @if (isExpired(promotionRef)) {
+            <span class="promo-badge expired">Expirée</span>
+          } @else if (isActive(promotionRef)) {
+            <span class="promo-badge active">Active</span>
+          } @else {
+            <span class="promo-badge upcoming">À venir</span>
+          }
+        </div>
 
-        <hr />
+        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert></jhi-alert>
 
-        <jhi-alert-error />
+        <div class="info">
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.promotion.nom">Nom</span>
+            <span class="info-value">{{ promotionRef.nom }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.promotion.reduction">Réduction</span>
+            <span class="info-value price">-{{ promotionRef.reduction }}%</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.promotion.dateDebut">Date début</span>
+            <span class="info-value">{{ promotionRef.dateDebut | formatMediumDatetime }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.promotion.dateFin">Date fin</span>
+            <span class="info-value">{{ promotionRef.dateFin | formatMediumDatetime }}</span>
+          </div>
+          <div class="info-row produits-row">
+            <span class="info-label" jhiTranslate="modivaApp.promotion.produit">Produits</span>
+            <span class="info-value">
+              @if ((promotionRef.produits?.length ?? 0) === 0) {
+                <span class="text-muted">Aucun produit lié</span>
+              } @else {
+                <div class="produits-chips">
+                  @for (produit of promotionRef.produits; track produit.id) {
+                    <a class="produit-chip" [routerLink]="['/produit', produit.id, 'view']">{{ produit.nom }}</a>
+                  }
+                </div>
+              }
+            </span>
+          </div>
 
-        <jhi-alert />
+          <div class="detail-actions">
+            <button type="submit" (click)="previousState()" class="btn btn-secondary" data-cy="entityDetailsBackButton">
+              <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+            </button>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ promotionRef.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.promotion.nom">Nom</span></dt>
-          <dd>
-            <span>{{ promotionRef.nom }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.promotion.reduction">Reduction</span></dt>
-          <dd>
-            <span>{{ promotionRef.reduction }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.promotion.dateDebut">Date Debut</span></dt>
-          <dd>
-            <span>{{ promotionRef.dateDebut | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.promotion.dateFin">Date Fin</span></dt>
-          <dd>
-            <span>{{ promotionRef.dateFin | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.promotion.produit">Produit</span></dt>
-          <dd>
-            @for (produit of promotionRef.produits; track $index; let last = $last) {
-              <span>
-                <a [routerLink]="['/produit', produit.id, 'view']">{{ produit?.id }}</a
-                >{{ last ? '' : ', ' }}
-              </span>
-            }
-          </dd>
-        </dl>
-
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
-        </button>
-
-        <button type="button" [routerLink]="['/promotion', promotionRef.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
-        </button>
+            <button type="button" [routerLink]="['/promotion', promotionRef.id, 'edit']" class="btn btn-modiva-primary">
+              <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+            </button>
+          </div>
+        </div>
       </div>
     }
   </div>

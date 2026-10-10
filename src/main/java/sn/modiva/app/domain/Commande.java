@@ -56,8 +56,7 @@ public class Commande implements Serializable {
     private Paiement paiement;
 
     @JsonIgnoreProperties(value = { "commande" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @NotNull
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private Livraison livraison;
 

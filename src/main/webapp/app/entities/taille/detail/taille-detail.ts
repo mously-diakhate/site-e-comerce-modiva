@@ -12,6 +12,7 @@ import { ITaille } from '../taille.model';
 @Component({
   selector: 'jhi-taille-detail',
   templateUrl: './taille-detail.html',
+  styleUrl: './taille-detail.scss',
   imports: [FontAwesomeModule, Alert, AlertError, TranslateDirective, TranslateModule, RouterLink],
 })
 export class TailleDetail {

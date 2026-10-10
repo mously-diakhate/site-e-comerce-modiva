@@ -1,0 +1,66 @@
+<div class="mes-commandes">
+  <section class="mc-section">
+    <div class="mc-intro">
+      <span class="eyebrow">Espace client</span>
+      <h1>Mes commandes</h1>
+      <p class="mc-subtitle">Retrouvez ici l'historique et le statut de toutes vos commandes.</p>
+    </div>
+
+    @if (isLoading()) {
+      <p class="mc-loading" role="status">Chargement de vos commandes...</p>
+    } @else if (commandes().length === 0) {
+      <div class="mc-empty">
+        <fa-icon icon="receipt" />
+        <p>Vous n'avez pas encore passé de commande.</p>
+        <a routerLink="/collection" class="btn btn-modiva-primary">Découvrir la boutique</a>
+      </div>
+    } @else {
+      <div class="mc-list">
+        @for (commande of commandes(); track commande.id) {
+          <article class="mc-card">
+            <header class="mc-card-head">
+              <div class="mc-head-info">
+                <div class="mc-numero">Commande {{ commande.numero }}</div>
+                <div class="mc-date">Passée le {{ formatDate(commande.dateCommande) }}</div>
+              </div>
+              <span class="statut-badge" [ngClass]="statutClass(commande.statutCommande)">
+                @if (commande.statutCommande === 'EXPEDIEE') {
+                  <fa-icon icon="truck" />
+                }
+                @if (commande.statutCommande === 'LIVREE') {
+                  <span aria-hidden="true">✓</span>
+                }
+                {{ statutLabel(commande.statutCommande) }}
+              </span>
+            </header>
+
+            @for (ligne of commande.lignes; track ligne.id) {
+              <div class="mc-ligne">
+                @if (images()[ligne.produitId]) {
+                  <img class="mc-img" [src]="images()[ligne.produitId]" [alt]="ligne.nom" loading="lazy" />
+                } @else {
+                  <div class="mc-img mc-img-empty"></div>
+                }
+                <div class="mc-ligne-info">
+                  <div class="mc-ligne-nom">{{ ligne.nom }}</div>
+                  <div class="mc-ligne-detail">Taille {{ ligne.taille }} · {{ ligne.couleur }} · Quantité {{ ligne.quantite }}</div>
+                </div>
+                <div class="mc-ligne-prix">{{ formatFcfa(ligne.prixUnitaire * ligne.quantite) }}</div>
+              </div>
+            }
+
+            <footer class="mc-card-foot">
+              <div class="mc-foot-info">
+                <div>{{ modePaiementLabel(commande.modePaiement) }}</div>
+                @if (commande.livraison) {
+                  <div>{{ adresseLivraison(commande.livraison) }}</div>
+                }
+              </div>
+              <div class="mc-total">Total : {{ formatFcfa(commande.montantTotal) }}</div>
+            </footer>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</div>

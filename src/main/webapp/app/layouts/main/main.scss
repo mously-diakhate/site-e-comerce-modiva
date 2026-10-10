@@ -1,0 +1,18 @@
+.container-fluid.has-admin-sidebar {
+  margin-left: 236px;
+  padding: 0;
+  background: #fbf4f1;
+  min-height: 100vh;
+
+  @media (max-width: 991px) {
+    margin-left: 0;
+  }
+}
+
+.card.jh-card.borderless {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+}

@@ -25,6 +25,7 @@ public class ImageProduit implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Lob
     @NotNull
     @Column(name = "url", nullable = false)
     private String url;

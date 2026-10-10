@@ -25,6 +25,7 @@ public interface ProduitMapper extends EntityMapper<ProduitDTO, Produit> {
     @Named("promotionId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "nom", source = "nom")
     PromotionDTO toDtoPromotionId(Promotion promotion);
 
     @Named("promotionIdSet")
@@ -35,5 +36,6 @@ public interface ProduitMapper extends EntityMapper<ProduitDTO, Produit> {
     @Named("categorieId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "nom", source = "nom")
     CategorieDTO toDtoCategorieId(Categorie categorie);
 }

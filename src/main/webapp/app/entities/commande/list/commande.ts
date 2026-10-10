@@ -9,6 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap/modal';
 import { NgbPagination } from '@ng-bootstrap/ng-bootstrap/pagination';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription, combineLatest, filter, tap } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { ITEMS_PER_PAGE, PAGE_HEADER, TOTAL_COUNT_RESPONSE_HEADER } from 'app/config/pagination.constants';
@@ -23,10 +24,26 @@ import { ICommande } from '../commande.model';
 import { CommandeDeleteDialog } from '../delete/commande-delete-dialog';
 import { CommandeService } from '../service/commande.service';
 
+const STATUT_LABELS: Record<string, string> = {
+  EN_ATTENTE: 'En attente',
+  CONFIRMEE: 'Confirmée',
+  EN_PREPARATION: 'En préparation',
+  EXPEDIEE: 'Expédiée',
+  LIVREE: 'Livrée',
+  ANNULEE: 'Annulée',
+};
+const MODE_PAIEMENT_LABELS: Record<string, string> = {
+  WAVE: 'Wave',
+  ORANGE_MONEY: 'Orange Money',
+  SUR_PLACE: 'Sur place',
+};
+
 @Component({
   selector: 'jhi-commande',
   templateUrl: './commande.html',
+  styleUrl: './commande.scss',
   imports: [
+    NgClass,
     RouterLink,
     FormsModule,
     FontAwesomeModule,
@@ -45,6 +62,7 @@ import { CommandeService } from '../service/commande.service';
 export class Commande implements OnInit {
   subscription: Subscription | null = null;
   readonly commandes = signal<ICommande[]>([]);
+  readonly cameFromCliente = signal<number | null>(null);
 
   sortState = sortStateSignal({});
   filters: IFilterOptions = new FilterOptions();
@@ -77,7 +95,6 @@ export class Commande implements OnInit {
       const filterOptions = this.filterOptions();
       if (filterOptions) {
         untracked(() => {
-          // Only watch for filter changes. Other signals should be ignored.
           this.handleNavigation(1, this.sortState(), filterOptions);
         });
       }
@@ -98,7 +115,6 @@ export class Commande implements OnInit {
   delete(commande: ICommande): void {
     const modalRef = this.modalService.open(CommandeDeleteDialog, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.commande = commande;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
@@ -109,6 +125,17 @@ export class Commande implements OnInit {
 
   load(): void {
     this.queryBackend();
+  }
+
+  statutLabel(statut: string | null | undefined): string {
+    return statut ? (STATUT_LABELS[statut] ?? statut) : '—';
+  }
+  modePaiementLabel(mode: string | null | undefined): string {
+    return mode ? (MODE_PAIEMENT_LABELS[mode] ?? mode) : '—';
+  }
+
+  statutClass(statut: string | null | undefined): string {
+    return statut ? `statut-${statut.toLowerCase().replace(/_/g, '-')}` : '';
   }
 
   navigateToWithComponentValues(event: SortState): void {
@@ -124,6 +151,9 @@ export class Commande implements OnInit {
     this.page.set(+(page ?? 1));
     this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data[DEFAULT_SORT_DATA]));
     this.filters.initializeFromParams(params);
+
+    const clienteFilter = params.get('filter[clienteProfileId.in]');
+    this.cameFromCliente.set(clienteFilter ? +clienteFilter : null);
   }
 
   protected fillComponentAttributesFromResponseBody(data: ICommande[]): ICommande[] {

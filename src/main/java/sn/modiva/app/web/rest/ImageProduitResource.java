@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import sn.modiva.app.repository.ImageProduitRepository;
 import sn.modiva.app.service.ImageProduitService;
 import sn.modiva.app.service.dto.ImageProduitDTO;
+import sn.modiva.app.service.mapper.ImageProduitMapper; // NEW
 import sn.modiva.app.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -42,18 +43,18 @@ public class ImageProduitResource {
 
     private final ImageProduitRepository imageProduitRepository;
 
-    public ImageProduitResource(ImageProduitService imageProduitService, ImageProduitRepository imageProduitRepository) {
+    private final ImageProduitMapper imageProduitMapper; // NEW
+
+    public ImageProduitResource(
+        ImageProduitService imageProduitService,
+        ImageProduitRepository imageProduitRepository,
+        ImageProduitMapper imageProduitMapper // NEW
+    ) {
         this.imageProduitService = imageProduitService;
         this.imageProduitRepository = imageProduitRepository;
+        this.imageProduitMapper = imageProduitMapper; // NEW
     }
 
-    /**
-     * {@code POST  /image-produits} : Create a new imageProduit.
-     *
-     * @param imageProduitDTO the imageProduitDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new imageProduitDTO, or with status {@code 400 (Bad Request)} if the imageProduit has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
     public ResponseEntity<ImageProduitDTO> createImageProduit(@Valid @RequestBody ImageProduitDTO imageProduitDTO)
         throws URISyntaxException {
@@ -67,16 +68,6 @@ public class ImageProduitResource {
             .body(imageProduitDTO);
     }
 
-    /**
-     * {@code PUT  /image-produits/:id} : Updates an existing imageProduit.
-     *
-     * @param id the id of the imageProduitDTO to save.
-     * @param imageProduitDTO the imageProduitDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated imageProduitDTO,
-     * or with status {@code 400 (Bad Request)} if the imageProduitDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the imageProduitDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
     public ResponseEntity<ImageProduitDTO> updateImageProduit(
         @PathVariable(value = "id", required = false) final Long id,
@@ -100,17 +91,6 @@ public class ImageProduitResource {
             .body(imageProduitDTO);
     }
 
-    /**
-     * {@code PATCH  /image-produits/:id} : Partial updates given fields of an existing imageProduit, field will ignore if it is null
-     *
-     * @param id the id of the imageProduitDTO to save.
-     * @param imageProduitDTO the imageProduitDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated imageProduitDTO,
-     * or with status {@code 400 (Bad Request)} if the imageProduitDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the imageProduitDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the imageProduitDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ImageProduitDTO> partialUpdateImageProduit(
         @PathVariable(value = "id", required = false) final Long id,
@@ -136,12 +116,6 @@ public class ImageProduitResource {
         );
     }
 
-    /**
-     * {@code GET  /image-produits} : get all the Image Produits.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Image Produits in body.
-     */
     @GetMapping("")
     public ResponseEntity<List<ImageProduitDTO>> getAllImageProduits(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of ImageProduits");
@@ -151,11 +125,17 @@ public class ImageProduitResource {
     }
 
     /**
-     * {@code GET  /image-produits/:id} : get the "id" imageProduit.
+     * {@code GET  /image-produits/by-produit/:produitId} : get all images for a given produit, ordered by 'ordre'.
      *
-     * @param id the id of the imageProduitDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the imageProduitDTO, or with status {@code 404 (Not Found)}.
+     * @param produitId the id of the produit.
+     * @return the list of ImageProduitDTO belonging to that produit.
      */
+    @GetMapping("/by-produit/{produitId}") // NEW
+    public List<ImageProduitDTO> getImagesByProduit(@PathVariable("produitId") Long produitId) {
+        LOG.debug("REST request to get ImageProduits for produit : {}", produitId);
+        return imageProduitRepository.findByProduitIdOrderByOrdreAsc(produitId).stream().map(imageProduitMapper::toDto).toList();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ImageProduitDTO> getImageProduit(@PathVariable("id") Long id) {
         LOG.debug("REST request to get ImageProduit : {}", id);
@@ -163,12 +143,6 @@ public class ImageProduitResource {
         return ResponseUtil.wrapOrNotFound(imageProduitDTO);
     }
 
-    /**
-     * {@code DELETE  /image-produits/:id} : delete the "id" imageProduit.
-     *
-     * @param id the id of the imageProduitDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteImageProduit(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete ImageProduit : {}", id);

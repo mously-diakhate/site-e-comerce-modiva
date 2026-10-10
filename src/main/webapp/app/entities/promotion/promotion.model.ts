@@ -8,7 +8,7 @@ export interface IPromotion {
   reduction?: number | null;
   dateDebut?: dayjs.Dayjs | null;
   dateFin?: dayjs.Dayjs | null;
-  produits?: Pick<IProduit, 'id'>[] | null;
+  produits?: Pick<IProduit, 'id' | 'nom'>[] | null;
 }
 
 export type NewPromotion = Omit<IPromotion, 'id'> & { id: null };

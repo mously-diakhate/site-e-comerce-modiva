@@ -37,4 +37,12 @@ public interface ClienteProfileRepository extends JpaRepository<ClienteProfile, 
 
     @Query("select clienteProfile from ClienteProfile clienteProfile left join fetch clienteProfile.user where clienteProfile.id =:id")
     Optional<ClienteProfile> findOneWithToOneRelationships(@Param("id") Long id);
+
+    /**
+     * Retrouve le profil client lié au compte utilisateur connecté (via son
+     * login). Utilisé par l'endpoint self-service GET /api/cliente-profiles/me,
+     * pour qu'une cliente puisse consulter son propre profil sans passer par
+     * l'API de recherche générale (réservée à l'admin).
+     */
+    Optional<ClienteProfile> findOneByUserLogin(String login);
 }

@@ -17,6 +17,7 @@ import { CategorieFormGroup, CategorieFormService } from './categorie-form.servi
 @Component({
   selector: 'jhi-categorie-update',
   templateUrl: './categorie-update.html',
+  styleUrl: './categorie-update.scss',
   imports: [TranslateDirective, TranslateModule, FontAwesomeModule, AlertError, ReactiveFormsModule],
 })
 export class CategorieUpdate implements OnInit {

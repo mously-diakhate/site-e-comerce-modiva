@@ -1,0 +1,191 @@
+<div class="panier-page">
+  <section class="panier-section">
+    @if (orderPlaced()) {
+      <div class="panier-message" role="status">
+        <h1>Merci, votre commande est enregistrée !</h1>
+        <p>Nous vous contacterons rapidement au {{ telephone }} pour confirmer les détails de la livraison.</p>
+        <a routerLink="/collection" class="btn-retour-boutique">Continuer mes achats</a>
+      </div>
+    } @else if (cart.items().length === 0) {
+      <div class="panier-message">
+        <h1>Votre panier est vide</h1>
+        <p>Découvrez nos dernières pièces et trouvez votre prochaine tenue.</p>
+        <a routerLink="/collection" class="btn-retour-boutique">Aller à la boutique</a>
+      </div>
+    } @else if (etape() === 'panier') {
+      <!-- ÉTAPE 1 : ARTICLES -->
+      <h1>Mon panier</h1>
+
+      <div class="panier-grid">
+        <div class="panier-articles">
+          @for (line of cart.items(); track line.id) {
+            <div class="article-line">
+              @if (line.imageUrl) {
+                <img [src]="line.imageUrl" [alt]="line.nom" class="article-img" />
+              } @else {
+                <div class="article-img article-img-empty"></div>
+              }
+
+              <div class="article-info">
+                <div class="article-nom">{{ line.nom }}</div>
+                <div class="article-variante">Taille {{ line.taille }} · {{ line.couleur }}</div>
+                <div class="article-prix">{{ cart.formatFcfa(line.prix) }}</div>
+                <div class="article-row">
+                  <div class="article-qty">
+                    <button type="button" (click)="cart.updateQuantite(line.id, line.quantite - 1)" aria-label="Diminuer la quantité">
+                      −
+                    </button>
+                    <span>{{ line.quantite }}</span>
+                    <button type="button" (click)="cart.updateQuantite(line.id, line.quantite + 1)" aria-label="Augmenter la quantité">
+                      +
+                    </button>
+                  </div>
+                  <button type="button" class="article-remove" (click)="cart.removeLine(line.id)">
+                    <fa-icon icon="trash-alt" />
+                    Retirer
+                  </button>
+                </div>
+              </div>
+
+              <div class="article-sous-total">{{ cart.formatFcfa(line.prix * line.quantite) }}</div>
+            </div>
+          }
+        </div>
+
+        <div class="panier-recap">
+          <h2>Récapitulatif</h2>
+          <div class="recap-totaux">
+            <div class="recap-row">
+              <span>Sous-total</span>
+              <span>{{ cart.formatFcfa(cart.total()) }}</span>
+            </div>
+            <div class="recap-row recap-livraison">
+              <span>Livraison</span>
+              <span>Calculée à la confirmation</span>
+            </div>
+            <div class="recap-row recap-total">
+              <span>Total</span>
+              <span>{{ cart.formatFcfa(cart.total()) }}</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-commander" (click)="allerAuxInfos()">Commander</button>
+          <a routerLink="/collection" class="btn-continuer">Continuer mes achats</a>
+
+          <p class="recap-note">Paiement Wave ou Orange Money à la confirmation. Livraison partout au Sénégal.</p>
+        </div>
+      </div>
+    } @else {
+      <!-- ÉTAPE 2 : COORDONNÉES + LIVRAISON + PAIEMENT -->
+      <h1>Vos informations</h1>
+
+      <div class="panier-grid">
+        <div class="infos-form">
+          <div class="form-field">
+            <label for="panier-nom">Nom complet</label>
+            <input id="panier-nom" type="text" name="nomComplet" autocomplete="name" [(ngModel)]="nomComplet" placeholder="Awa Ndiaye" />
+          </div>
+
+          <div class="form-field">
+            <label for="panier-telephone">Numéro de téléphone</label>
+            <!-- inputmode="tel" : affiche le clavier numérique sur téléphone -->
+            <input
+              id="panier-telephone"
+              type="tel"
+              name="telephone"
+              autocomplete="tel"
+              inputmode="tel"
+              [(ngModel)]="telephone"
+              placeholder="+221 77 000 00 00"
+            />
+          </div>
+
+          <div class="form-field">
+            <span class="field-label" id="paiement-label">Mode de paiement</span>
+            <div class="paiement-options" role="radiogroup" aria-labelledby="paiement-label">
+              @for (option of paiementOptions; track option.value) {
+                <button
+                  type="button"
+                  class="paiement-option"
+                  role="radio"
+                  [attr.aria-checked]="modePaiement() === option.value"
+                  [class.active]="modePaiement() === option.value"
+                  (click)="selectPaiement(option.value)"
+                >
+                  <span class="radio-dot" [class.checked]="modePaiement() === option.value"></span>
+                  <img [src]="option.iconUrl" alt="" class="pay-icon-img" />
+                  <span class="pay-label">{{ option.label }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <h2>Livraison</h2>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label for="panier-pays">Pays</label>
+              <input id="panier-pays" type="text" name="pays" autocomplete="country-name" [(ngModel)]="pays" placeholder="Sénégal" />
+            </div>
+            <div class="form-field">
+              <label for="panier-region">Région</label>
+              <input id="panier-region" type="text" name="region" autocomplete="address-level1" [(ngModel)]="region" placeholder="Dakar" />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="panier-quartier">Quartier</label>
+            <input id="panier-quartier" type="text" name="quartier" [(ngModel)]="quartier" placeholder="Sacré-Cœur 3" />
+          </div>
+
+          <div class="form-field">
+            <label for="panier-message">Message (optionnel)</label>
+            <textarea
+              id="panier-message"
+              name="message"
+              rows="3"
+              [(ngModel)]="message"
+              placeholder="Précisions pour la livraison..."
+            ></textarea>
+          </div>
+
+          @if (showValidationError()) {
+            <p class="validation-error" role="alert">Merci de renseigner vos coordonnées et de choisir un mode de paiement.</p>
+          }
+          @if (submissionError()) {
+            <p class="validation-error" role="alert">{{ submissionErrorDetail() }}</p>
+          }
+
+          <div class="infos-actions">
+            <button type="button" class="btn-commander" [disabled]="isSubmitting()" (click)="passerCommande()">
+              {{ isSubmitting() ? 'Envoi en cours...' : 'Valider ma commande' }}
+            </button>
+            <button type="button" class="btn-continuer" [disabled]="isSubmitting()" (click)="retourAuPanier()">Retour au panier</button>
+          </div>
+        </div>
+
+        <div class="panier-recap">
+          <h2>Récapitulatif</h2>
+          <div class="recap-totaux">
+            <div class="recap-row">
+              <span>Sous-total</span>
+              <span>{{ cart.formatFcfa(cart.total()) }}</span>
+            </div>
+            <div class="recap-row recap-livraison">
+              <span>Livraison</span>
+              <span>Calculée à la confirmation</span>
+            </div>
+            <div class="recap-row recap-total">
+              <span>Total</span>
+              <span>{{ cart.formatFcfa(cart.total()) }}</span>
+            </div>
+          </div>
+
+          <a routerLink="/collection" class="btn-continuer">Continuer mes achats</a>
+
+          <p class="recap-note">Paiement Wave, Orange Money ou carte à la confirmation. Livraison partout au Sénégal.</p>
+        </div>
+      </div>
+    }
+  </section>
+</div>

@@ -12,6 +12,7 @@ import { ICouleur } from '../couleur.model';
 @Component({
   selector: 'jhi-couleur-detail',
   templateUrl: './couleur-detail.html',
+  styleUrl: './couleur-detail.scss',
   imports: [FontAwesomeModule, Alert, AlertError, TranslateDirective, TranslateModule, RouterLink],
 })
 export class CouleurDetail {

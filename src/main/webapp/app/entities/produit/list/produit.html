@@ -1,127 +1,123 @@
-<div>
-  <h2 id="page-heading" data-cy="ProduitHeading">
-    <span jhiTranslate="modivaApp.produit.home.title">Produits</span>
+<div class="modiva-list-wrap">
+  <div class="list-topbar">
+    <h2 id="page-heading" data-cy="ProduitHeading" class="list-title">
+      <span jhiTranslate="modivaApp.produit.home.title">Produits</span>
+    </h2>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+    <div class="list-actions">
+      <select class="sort-select" (change)="onSortOptionChange($event)">
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+
+      <button class="btn btn-outline-modiva" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
-        <span jhiTranslate="modivaApp.produit.home.refreshListLabel">Actualiser la liste</span>
+        <span class="d-none d-md-inline" jhiTranslate="modivaApp.produit.home.refreshListLabel">Actualiser</span>
       </button>
 
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-produit"
+        class="btn btn-modiva-primary create-produit"
         [routerLink]="['/produit/new']"
       >
         <fa-icon icon="plus" />
         <span jhiTranslate="modivaApp.produit.home.createLabel">Créer un nouveau Produit</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
   <jhi-filter [filters]="filters" />
 
   @if (produits().length === 0) {
-    <div class="alert alert-warning" id="no-result">
+    <div class="empty-state" id="no-result">
+      <fa-icon icon="bag-shopping" />
       <span jhiTranslate="modivaApp.produit.home.notFound">Aucun Produit trouvé</span>
     </div>
   } @else {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
-        <thead>
-          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
+    <div class="product-grid" id="entities">
+      @for (produit of produits(); track trackId(produit)) {
+        <div class="product-card" data-cy="entityTable">
+          <div
+            class="product-thumb"
+            (mouseenter)="onThumbEnter(produit.id)"
+            (mousemove)="onThumbMove($event, produit.id)"
+            (mouseleave)="onThumbLeave()"
+          >
+            @if (currentThumbUrl(produit); as url) {
+              <img [src]="url" alt="{{ produit.nom }}" class="product-thumb-img" />
+            } @else {
+              <fa-icon icon="bag-shopping" />
+            }
 
-                <fa-icon class="p-1" icon="sort" />
+            @if ((productImages()[produit.id!]?.length ?? 0) > 1) {
+              <div class="thumb-dots">
+                @for (img of productImages()[produit.id!]; track $index; let i = $index) {
+                  <span class="thumb-dot" [class.active]="hoveredProductId() === produit.id && hoverImageIndex() === i"></span>
+                }
               </div>
-            </th>
-            <th scope="col" jhiSortBy="nom">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.produit.nom">Nom</span>
+            }
+          </div>
 
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="description">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.produit.description">Description</span>
+          <div class="product-body">
+            <div class="product-name">
+              <a [routerLink]="['/produit', produit.id, 'view']">{{ produit.nom }}</a>
+            </div>
+            <div class="product-desc">{{ produit.description }}</div>
 
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="prix">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.produit.prix">Prix</span>
+            @if (produit.categorie) {
+              <a class="cat-badge" [routerLink]="['/categorie', produit.categorie.id, 'view']">
+                {{ produit.categorie.nom }}
+              </a>
+            }
 
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="statut">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.produit.statut">Statut</span>
+            <div class="product-price">{{ produit.prix }} F</div>
 
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="categorie.id">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.produit.categorie">Categorie</span>
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (produit of produits(); track trackId(produit)) {
-            <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/produit', produit.id, 'view']">{{ produit.id }}</a>
-              </td>
-              <td>{{ produit.nom }}</td>
-              <td>{{ produit.description }}</td>
-              <td>{{ produit.prix }}</td>
-              <td [jhiTranslate]="'modivaApp.StatutProduit.' + (produit.statut ?? 'null')">
-                {{ { null: '', ACTIF: 'ACTIF', INACTIF: 'INACTIF' }[produit.statut ?? 'null'] }}
-              </td>
-              <td>
-                @if (produit.categorie) {
-                  <div>
-                    <a [routerLink]="['/categorie', produit.categorie.id, 'view']">{{ produit.categorie.id }}</a>
+            @if (productSwatches()[produit.id!]; as extra) {
+              @if (extra.couleurs.length > 0) {
+                <div class="color-dots">
+                  @for (c of extra.couleurs; track c.id) {
+                    <span class="color-dot" [style.background]="c.codeHex" [title]="c.libelle"></span>
+                  }
+                </div>
+              }
+              @if (extra.tailles.length > 0) {
+                <div class="size-chips">
+                  @for (t of extra.tailles; track t.id) {
+                    <span class="size-chip">{{ t.libelle }}</span>
+                  }
+                </div>
+                @if (extra.promotions.length > 0) {
+                  <div class="promo-badges">
+                    @for (promo of extra.promotions; track promo.id) {
+                      <span class="promo-badge">{{ promo.nom }}</span>
+                    }
                   </div>
                 }
-              </td>
-              <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/produit', produit.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                    <fa-icon icon="eye" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
-                  </a>
+              }
+            }
+          </div>
 
-                  <a [routerLink]="['/produit', produit.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-                    <fa-icon icon="pencil-alt" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
-                  </a>
-
-                  <button type="submit" (click)="delete(produit)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                    <fa-icon icon="times" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+          <div class="product-actions">
+            <a [routerLink]="['/produit', produit.id, 'view']" class="icon-btn" data-cy="entityDetailsButton" title="Voir">
+              <fa-icon icon="eye" />
+            </a>
+            <a [routerLink]="['/produit', produit.id, 'edit']" class="icon-btn" data-cy="entityEditButton" title="Éditer">
+              <fa-icon icon="pencil-alt" />
+            </a>
+            <button type="submit" (click)="delete(produit)" class="icon-btn danger" data-cy="entityDeleteButton" title="Supprimer">
+              <fa-icon icon="times" />
+            </button>
+          </div>
+        </div>
+      }
     </div>
   }
+
   @if (produits().length > 0) {
     <div>
       <div class="d-flex justify-content-center">

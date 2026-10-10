@@ -1,37 +1,38 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-detail-wrap">
+  <div class="modiva-detail-card">
     @if (couleur(); as couleurRef) {
       <div>
-        <h2 data-cy="couleurDetailsHeading"><span jhiTranslate="modivaApp.couleur.detail.title">Couleur</span></h2>
-
-        <hr />
+        <h2 data-cy="couleurDetailsHeading" class="detail-title">
+          <span jhiTranslate="modivaApp.couleur.detail.title">Couleur</span>
+          <span class="detail-nom">
+            <span class="color-dot-lg" [style.background]="couleurRef.codeHex"></span>
+            {{ couleurRef.libelle }}
+          </span>
+        </h2>
 
         <jhi-alert-error />
-
         <jhi-alert />
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ couleurRef.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.couleur.libelle">Libelle</span></dt>
-          <dd>
-            <span>{{ couleurRef.libelle }}</span>
-          </dd>
-          <dt><span jhiTranslate="modivaApp.couleur.codeHex">Code Hex</span></dt>
-          <dd>
-            <span>{{ couleurRef.codeHex }}</span>
-          </dd>
-        </dl>
+        <div class="info">
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.couleur.libelle">Libelle</span>
+            <span class="info-value">{{ couleurRef.libelle }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label" jhiTranslate="modivaApp.couleur.codeHex">Code Hex</span>
+            <span class="info-value">{{ couleurRef.codeHex || '—' }}</span>
+          </div>
 
-        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
-          <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
-        </button>
+          <div class="detail-actions">
+            <button type="submit" (click)="previousState()" class="btn btn-secondary" data-cy="entityDetailsBackButton">
+              <fa-icon icon="arrow-left" />&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+            </button>
 
-        <button type="button" [routerLink]="['/couleur', couleurRef.id, 'edit']" class="btn btn-primary">
-          <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
-        </button>
+            <button type="button" [routerLink]="['/couleur', couleurRef.id, 'edit']" class="btn btn-modiva-primary">
+              <fa-icon icon="pencil-alt" />&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+            </button>
+          </div>
+        </div>
       </div>
     }
   </div>

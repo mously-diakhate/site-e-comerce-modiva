@@ -1,136 +1,150 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-form-wrap">
+  <div class="modiva-form-card">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-promotion-heading" data-cy="PromotionCreateUpdateHeading" jhiTranslate="modivaApp.promotion.home.createOrEditLabel">
-        Créer ou éditer un Promotion
+      <h2 id="jhi-promotion-heading" data-cy="PromotionCreateUpdateHeading" class="form-title">
+        <span jhiTranslate="modivaApp.promotion.home.createOrEditLabel">Créer ou éditer une Promotion</span>
       </h2>
 
-      <div>
-        <jhi-alert-error />
+      <jhi-alert-error></jhi-alert-error>
 
-        @if (editForm.controls.id.value !== null) {
+      <div class="form-grid">
+        <div class="form-col">
+          @let nomRef = editForm.get('nom')!;
           <div class="mb-3">
-            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-          </div>
-        }
-
-        @let nomRef = editForm.get('nom')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_nom" jhiTranslate="modivaApp.promotion.nom">Nom</label>
-          <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
-          @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
-            <div>
-              @if (editForm.get('nom')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-            </div>
-          }
-        </div>
-
-        @let reductionRef = editForm.get('reduction')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_reduction" jhiTranslate="modivaApp.promotion.reduction">Reduction</label>
-          <input type="number" class="form-control" name="reduction" id="field_reduction" data-cy="reduction" formControlName="reduction" />
-          @if (reductionRef.invalid && (reductionRef.dirty || reductionRef.touched)) {
-            <div>
-              @if (editForm.get('reduction')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-              @if (editForm.get('reduction')?.errors?.min) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
-                  >Ce champ doit être supérieur à 0.</small
-                >
-              }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('reduction')?.errors?.number"
-                jhiTranslate="entity.validation.number"
-                >Ce champ doit être un nombre.</small
-              >
-            </div>
-          }
-        </div>
-
-        @let dateDebutRef = editForm.get('dateDebut')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_dateDebut" jhiTranslate="modivaApp.promotion.dateDebut">Date Debut</label>
-          <div class="d-flex">
-            <input
-              id="field_dateDebut"
-              data-cy="dateDebut"
-              type="datetime-local"
-              class="form-control"
-              name="dateDebut"
-              formControlName="dateDebut"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-          @if (dateDebutRef.invalid && (dateDebutRef.dirty || dateDebutRef.touched)) {
-            <div>
-              @if (editForm.get('dateDebut')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('dateDebut')?.errors?.datetimelocal"
-                jhiTranslate="entity.validation.datetimelocal"
-                >Ce champ doit être une date et une heure.</small
-              >
-            </div>
-          }
-        </div>
-
-        @let dateFinRef = editForm.get('dateFin')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_dateFin" jhiTranslate="modivaApp.promotion.dateFin">Date Fin</label>
-          <div class="d-flex">
-            <input
-              id="field_dateFin"
-              data-cy="dateFin"
-              type="datetime-local"
-              class="form-control"
-              name="dateFin"
-              formControlName="dateFin"
-              placeholder="YYYY-MM-DD HH:mm"
-            />
-          </div>
-          @if (dateFinRef.invalid && (dateFinRef.dirty || dateFinRef.touched)) {
-            <div>
-              @if (editForm.get('dateFin')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('dateFin')?.errors?.datetimelocal"
-                jhiTranslate="entity.validation.datetimelocal"
-                >Ce champ doit être une date et une heure.</small
-              >
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label for="field_produits" jhiTranslate="modivaApp.promotion.produit">Produit</label>
-          <select
-            class="form-control"
-            id="field_produits"
-            data-cy="produit"
-            multiple
-            name="produits"
-            formControlName="produits"
-            [compareWith]="compareProduit"
-          >
-            @for (produitOption of produitsSharedCollection(); track $index) {
-              <option [ngValue]="produitOption">{{ produitOption.id }}</option>
+            <label class="form-label" for="field_nom" jhiTranslate="modivaApp.promotion.nom">Nom</label>
+            <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
+            @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
+              <div>
+                @if (nomRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+              </div>
             }
-          </select>
+          </div>
+
+          @let reductionRef = editForm.get('reduction')!;
+          <div class="mb-3">
+            <label class="form-label" for="field_reduction" jhiTranslate="modivaApp.promotion.reduction">Réduction (%)</label>
+            <input
+              type="number"
+              class="form-control"
+              name="reduction"
+              id="field_reduction"
+              data-cy="reduction"
+              formControlName="reduction"
+            />
+            @if (reductionRef.invalid && (reductionRef.dirty || reductionRef.touched)) {
+              <div>
+                @if (reductionRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+                @if (reductionRef.errors?.min) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                    >Ce champ doit être supérieur à 0.</small
+                  >
+                }
+                <small class="form-text text-danger" [hidden]="!reductionRef.errors?.number" jhiTranslate="entity.validation.number"
+                  >Ce champ doit être un nombre.</small
+                >
+              </div>
+            }
+          </div>
+
+          <div class="mb-3 row-2">
+            @let dateDebutRef = editForm.get('dateDebut')!;
+            <div>
+              <label class="form-label" for="field_dateDebut" jhiTranslate="modivaApp.promotion.dateDebut">Date début</label>
+              <input
+                id="field_dateDebut"
+                data-cy="dateDebut"
+                type="datetime-local"
+                class="form-control"
+                name="dateDebut"
+                formControlName="dateDebut"
+                placeholder="YYYY-MM-DD HH:mm"
+              />
+              @if (dateDebutRef.invalid && (dateDebutRef.dirty || dateDebutRef.touched)) {
+                <div>
+                  @if (dateDebutRef.errors?.required) {
+                    <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                  }
+                  <small
+                    class="form-text text-danger"
+                    [hidden]="!dateDebutRef.errors?.datetimelocal"
+                    jhiTranslate="entity.validation.datetimelocal"
+                    >Ce champ doit être une date et une heure.</small
+                  >
+                </div>
+              }
+            </div>
+
+            @let dateFinRef = editForm.get('dateFin')!;
+            <div>
+              <label class="form-label" for="field_dateFin" jhiTranslate="modivaApp.promotion.dateFin">Date fin</label>
+              <input
+                id="field_dateFin"
+                data-cy="dateFin"
+                type="datetime-local"
+                class="form-control"
+                name="dateFin"
+                formControlName="dateFin"
+                placeholder="YYYY-MM-DD HH:mm"
+              />
+              @if (dateFinRef.invalid && (dateFinRef.dirty || dateFinRef.touched)) {
+                <div>
+                  @if (dateFinRef.errors?.required) {
+                    <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                  }
+                  <small
+                    class="form-text text-danger"
+                    [hidden]="!dateFinRef.errors?.datetimelocal"
+                    jhiTranslate="entity.validation.datetimelocal"
+                    >Ce champ doit être une date et une heure.</small
+                  >
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="form-col">
+          <!-- ======================= Produits — select fermé pour ajouter, chips en dessous ======================= -->
+          <div class="mb-3">
+            <label class="form-label" for="field_produit_add" jhiTranslate="modivaApp.promotion.produit">Produits concernés</label>
+
+            @if (produitsSharedCollection().length === 0) {
+              <div class="produit-empty">Aucun produit disponible pour le moment.</div>
+            } @else {
+              <select
+                class="form-control"
+                id="field_produit_add"
+                #produitSelect
+                (change)="onProduitSelected(produitSelect.value, produitSelect)"
+              >
+                <option value="" selected>— Sélectionner —</option>
+                @for (produitOption of availableProduits(); track produitOption.id) {
+                  <option [value]="produitOption.id">{{ produitOption.nom }}</option>
+                }
+              </select>
+
+              @if (selectedProduits().length > 0) {
+                <div class="produit-tags">
+                  @for (produit of selectedProduits(); track produit.id) {
+                    <span class="produit-tag selected">
+                      {{ produit.nom }}
+                      <fa-icon icon="times" class="produit-tag-remove" (click)="removeProduit(produit)"></fa-icon>
+                    </span>
+                  }
+                </div>
+              }
+            }
+          </div>
         </div>
       </div>
 
-      <div>
+      <div class="form-actions">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
 
         <button
@@ -138,9 +152,9 @@
           id="save-entity"
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
-          class="btn btn-primary"
+          class="btn btn-modiva-primary"
         >
-          <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
       </div>
     </form>

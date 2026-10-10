@@ -1,6 +1,5 @@
 package sn.modiva.app.service.dto;
 
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -16,7 +15,9 @@ public class ClienteProfileDTO implements Serializable {
 
     private Boolean actif;
 
-    @NotNull
+    // NB : @NotNull retiré pour permettre un ClienteProfile "invité" (commande
+    // sans compte utilisateur) — voir la migration Liquibase associée qui
+    // retire la contrainte NOT NULL sur la colonne user_id.
     private UserDTO user;
 
     private PanierDTO panier;

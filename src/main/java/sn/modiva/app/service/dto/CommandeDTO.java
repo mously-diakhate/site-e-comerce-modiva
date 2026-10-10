@@ -31,7 +31,6 @@ public class CommandeDTO implements Serializable {
 
     private PaiementDTO paiement;
 
-    @NotNull
     private LivraisonDTO livraison;
 
     @NotNull

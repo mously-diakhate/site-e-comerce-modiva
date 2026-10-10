@@ -1,51 +1,42 @@
-<div>
-  <h2 id="page-heading" data-cy="TailleHeading">
-    <span jhiTranslate="modivaApp.taille.home.title">Tailles</span>
+<div class="modiva-list-wrap">
+  <div class="list-topbar">
+    <h2 id="page-heading" data-cy="TailleHeading" class="list-title">
+      <span jhiTranslate="modivaApp.taille.home.title">Tailles</span>
+    </h2>
 
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading()">
+    <div class="list-actions">
+      <button class="btn btn-outline-modiva" (click)="load()" [disabled]="isLoading()">
         <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined" />
-        <span jhiTranslate="modivaApp.taille.home.refreshListLabel">Actualiser la liste</span>
+        <span class="d-none d-md-inline" jhiTranslate="modivaApp.taille.home.refreshListLabel">Actualiser</span>
       </button>
 
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-taille"
+        class="btn btn-modiva-primary create-taille"
         [routerLink]="['/taille/new']"
       >
         <fa-icon icon="plus" />
         <span jhiTranslate="modivaApp.taille.home.createLabel">Créer un nouveau Taille</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
   @if (tailles().length === 0) {
-    <div class="alert alert-warning" id="no-result">
+    <div class="empty-state" id="no-result">
+      <fa-icon icon="list" />
       <span jhiTranslate="modivaApp.taille.home.notFound">Aucun Taille trouvé</span>
     </div>
   } @else {
-    <div class="table-responsive table-entities" id="entities">
-      <table class="table table-striped" aria-describedby="page-heading">
+    <div class="table-card">
+      <table class="modiva-table" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
-            </th>
             <th scope="col" jhiSortBy="libelle">
-              <div class="d-flex">
-                <span jhiTranslate="modivaApp.taille.libelle">Libelle</span>
-
-                <fa-icon class="p-1" icon="sort" />
-              </div>
+              <div class="th-inner"><span jhiTranslate="modivaApp.taille.libelle">Libelle</span><fa-icon icon="sort" /></div>
             </th>
             <th scope="col"></th>
           </tr>
@@ -53,25 +44,19 @@
         <tbody>
           @for (taille of tailles(); track trackId(taille)) {
             <tr data-cy="entityTable">
-              <td>
-                <a [routerLink]="['/taille', taille.id, 'view']">{{ taille.id }}</a>
+              <td class="cell-strong">
+                <a [routerLink]="['/taille', taille.id, 'view']">{{ taille.libelle }}</a>
               </td>
-              <td>{{ taille.libelle }}</td>
               <td class="text-end">
-                <div class="btn-group">
-                  <a [routerLink]="['/taille', taille.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <div class="table-actions">
+                  <a [routerLink]="['/taille', taille.id, 'view']" class="icon-btn" data-cy="entityDetailsButton" title="Voir">
                     <fa-icon icon="eye" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
                   </a>
-
-                  <a [routerLink]="['/taille', taille.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                  <a [routerLink]="['/taille', taille.id, 'edit']" class="icon-btn" data-cy="entityEditButton" title="Éditer">
                     <fa-icon icon="pencil-alt" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
                   </a>
-
-                  <button type="submit" (click)="delete(taille)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <button type="submit" (click)="delete(taille)" class="icon-btn danger" data-cy="entityDeleteButton" title="Supprimer">
                     <fa-icon icon="times" />
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
                   </button>
                 </div>
               </td>

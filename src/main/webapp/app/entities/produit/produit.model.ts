@@ -8,8 +8,8 @@ export interface IProduit {
   description?: string | null;
   prix?: number | null;
   statut?: keyof typeof StatutProduit | null;
-  promotions?: Pick<IPromotion, 'id'>[] | null;
-  categorie?: Pick<ICategorie, 'id'> | null;
+  promotions?: Pick<IPromotion, 'id' | 'nom'>[] | null;
+  categorie?: Pick<ICategorie, 'id' | 'nom'> | null;
 }
 
 export type NewProduit = Omit<IProduit, 'id'> & { id: null };

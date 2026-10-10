@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <!--
+      Rend la colonne user_id de cliente_profile optionnelle (nullable),
+      pour permettre un ClienteProfile "invité" (commande passée sans
+      compte utilisateur). La contrainte d'unicité existante
+      (ux_cliente_profile__user_id) est conservée : elle continue
+      d'empêcher qu'un même user soit lié à plusieurs ClienteProfile, tout
+      en autorisant plusieurs lignes avec user_id = NULL (comportement
+      standard des contraintes UNIQUE vis-à-vis de NULL).
+
+      dropNotNullConstraint est un changeType Liquibase natif : il génère
+      le bon SQL quel que soit le SGBD (H2, PostgreSQL, MySQL...), donc
+      rien à adapter ici selon l'environnement.
+  -->
+  <changeSet id="20260927120000-1" author="claude">
+    <dropNotNullConstraint tableName="cliente_profile" columnName="user_id" columnDataType="bigint"/>
+  </changeSet>
+</databaseChangeLog>

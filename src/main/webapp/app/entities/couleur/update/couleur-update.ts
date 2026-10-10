@@ -17,6 +17,7 @@ import { CouleurFormGroup, CouleurFormService } from './couleur-form.service';
 @Component({
   selector: 'jhi-couleur-update',
   templateUrl: './couleur-update.html',
+  styleUrl: './couleur-update.scss',
   imports: [TranslateDirective, TranslateModule, FontAwesomeModule, AlertError, ReactiveFormsModule],
 })
 export class CouleurUpdate implements OnInit {

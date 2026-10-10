@@ -1,40 +1,47 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-form-wrap">
+  <div class="modiva-form-card">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-couleur-heading" data-cy="CouleurCreateUpdateHeading" jhiTranslate="modivaApp.couleur.home.createOrEditLabel">
-        Créer ou éditer un Couleur
+      <h2 id="jhi-couleur-heading" data-cy="CouleurCreateUpdateHeading" class="form-title">
+        <span jhiTranslate="modivaApp.couleur.home.createOrEditLabel">Créer ou éditer un Couleur</span>
       </h2>
 
-      <div>
-        <jhi-alert-error />
+      <jhi-alert-error />
 
-        @if (editForm.controls.id.value !== null) {
-          <div class="mb-3">
-            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+      @let libelleRef = editForm.get('libelle')!;
+      <div class="mb-3">
+        <label class="form-label" for="field_libelle" jhiTranslate="modivaApp.couleur.libelle">Libelle</label>
+        <input type="text" class="form-control" name="libelle" id="field_libelle" data-cy="libelle" formControlName="libelle" />
+        @if (libelleRef.invalid && (libelleRef.dirty || libelleRef.touched)) {
+          <div>
+            @if (libelleRef.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            }
           </div>
         }
+      </div>
 
-        @let libelleRef = editForm.get('libelle')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_libelle" jhiTranslate="modivaApp.couleur.libelle">Libelle</label>
-          <input type="text" class="form-control" name="libelle" id="field_libelle" data-cy="libelle" formControlName="libelle" />
-          @if (libelleRef.invalid && (libelleRef.dirty || libelleRef.touched)) {
-            <div>
-              @if (editForm.get('libelle')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_codeHex" jhiTranslate="modivaApp.couleur.codeHex">Code Hex</label>
-          <input type="text" class="form-control" name="codeHex" id="field_codeHex" data-cy="codeHex" formControlName="codeHex" />
+      <div class="mb-3">
+        <label class="form-label" for="field_codeHex" jhiTranslate="modivaApp.couleur.codeHex">Code Hex</label>
+        <div class="color-input-row">
+          <input
+            type="color"
+            class="color-picker"
+            [value]="editForm.get('codeHex')?.value || '#000000'"
+            (input)="editForm.get('codeHex')?.setValue($any($event.target).value)"
+          />
+          <input
+            type="text"
+            class="form-control"
+            name="codeHex"
+            id="field_codeHex"
+            data-cy="codeHex"
+            formControlName="codeHex"
+            placeholder="#RRGGBB"
+          />
         </div>
       </div>
 
-      <div>
+      <div class="form-actions">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
@@ -44,7 +51,7 @@
           id="save-entity"
           data-cy="entityCreateSaveButton"
           [disabled]="editForm.invalid || isSaving()"
-          class="btn btn-primary"
+          class="btn btn-modiva-primary"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>

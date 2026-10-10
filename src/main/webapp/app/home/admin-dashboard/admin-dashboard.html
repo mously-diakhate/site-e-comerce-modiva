@@ -1,0 +1,226 @@
+<div class="modiva-dashboard">
+  <div class="topbar">
+    <div>
+      <h1 class="dash-title">Tableau de bord</h1>
+      <div class="dash-sub">Vue d'ensemble des 30 derniers jours</div>
+    </div>
+  </div>
+
+  @if (hasError()) {
+    <div class="alert alert-danger" role="alert">Impossible de charger les données du tableau de bord.</div>
+  }
+  @if (isLoading()) {
+    <div class="dash-sub" role="status">Chargement…</div>
+  }
+
+  <!-- Hero : chiffre d'affaires + statistiques clés -->
+  <div class="hero-row">
+    <div class="hero-card">
+      <div class="hero-eyebrow">Chiffre d'affaires — 30 derniers jours</div>
+      <div class="hero-value">{{ formatFcfa(stats().ca) }}</div>
+      <span class="hero-delta">
+        <fa-icon [icon]="deltaIcon(deltas().ca)" />
+        {{ formatDelta(deltas().ca) }} vs période précédente
+      </span>
+      <svg
+        class="hero-chart"
+        viewBox="0 0 300 80"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label="Courbe du chiffre d'affaires sur 30 jours"
+      >
+        <defs>
+          <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#E11D74" stop-opacity="0.55" />
+            <stop offset="100%" stop-color="#E11D74" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path [attr.d]="heroChart().area" fill="url(#heroFill)" />
+        <path [attr.d]="heroChart().line" fill="none" stroke="#F09BBE" stroke-width="2" />
+      </svg>
+    </div>
+
+    <div class="stat-strip">
+      <div class="sparkstat">
+        <span class="sparkstat-label">Commandes</span>
+        <span class="sparkstat-value">{{ stats().count }}</span>
+        <span class="sparkstat-delta" [class]="deltaClass(deltas().commandes)">
+          <fa-icon [icon]="deltaIcon(deltas().commandes)" />{{ formatDelta(deltas().commandes) }}
+        </span>
+      </div>
+      <div class="sparkstat">
+        <span class="sparkstat-label">Clientes actives</span>
+        <span class="sparkstat-value">{{ stats().clientes }}</span>
+        <span class="sparkstat-delta" [class]="deltaClass(deltas().clientes)">
+          <fa-icon [icon]="deltaIcon(deltas().clientes)" />{{ formatDelta(deltas().clientes) }}
+        </span>
+      </div>
+      <div class="sparkstat">
+        <span class="sparkstat-label">Panier moyen</span>
+        <span class="sparkstat-value">{{ formatFcfa(stats().panier) }}</span>
+        <span class="sparkstat-delta" [class]="deltaClass(deltas().panier)">
+          <fa-icon [icon]="deltaIcon(deltas().panier)" />{{ formatDelta(deltas().panier) }}
+        </span>
+      </div>
+      <div class="sparkstat">
+        <span class="sparkstat-label">Commandes annulées</span>
+        <span class="sparkstat-value">{{ stats().annulees }}</span>
+        <span class="sparkstat-delta" [class]="deltaClass(deltas().annulees, true)">
+          <fa-icon [icon]="deltaIcon(deltas().annulees)" />{{ formatDelta(deltas().annulees) }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Courbe des ventes + répartition des commandes -->
+  <div class="row2">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Évolution des ventes</div>
+        <a class="panel-link" routerLink="/commande">
+          Voir le détail
+          <fa-icon icon="chevron-right" />
+        </a>
+      </div>
+      <svg class="trend-chart" viewBox="0 0 620 170" preserveAspectRatio="none" role="img" aria-label="Évolution des ventes sur 30 jours">
+        <defs>
+          <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#E11D74" stop-opacity="0.28" />
+            <stop offset="100%" stop-color="#E11D74" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <path [attr.d]="trendChart().area" fill="url(#trendFill)" />
+        <path [attr.d]="trendChart().line" fill="none" stroke="#E11D74" stroke-width="2.5" />
+      </svg>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Commandes par statut</div>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut" [style.background]="donutGradient()" role="img" aria-label="Répartition des commandes par statut"></div>
+        <div class="legend">
+          @for (item of commandesParStatut(); track item.key) {
+            <div class="legend-item">
+              <span class="dot-lg" [style.background]="statutColor(item.key)"></span>
+              {{ statutLabel(item.key) }}
+              <b>{{ statutPart(item) }}%</b>
+            </div>
+          } @empty {
+            <div class="legend-item">Aucune commande sur la période</div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Produits les plus vendus + état des stocks -->
+  <div class="row3">
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Produits les plus vendus</div>
+        <a class="panel-link" routerLink="/produit">
+          Catalogue
+          <fa-icon icon="chevron-right" />
+        </a>
+      </div>
+      @for (produit of topProduits(); track produit.nom; let i = $index) {
+        <div class="prod-row">
+          <span class="prod-rank">{{ (i + 1).toString().padStart(2, '0') }}</span>
+          <div class="prod-thumb"><fa-icon icon="bag-shopping" /></div>
+          <div class="prod-info">
+            <div class="prod-name">{{ produit.nom }}</div>
+            <div class="prod-cat">{{ produit.categorie }}</div>
+            <div class="prod-bar-track">
+              <div class="prod-bar-fill" [style.width.%]="produit.part"></div>
+            </div>
+          </div>
+          <div class="prod-nums">
+            <div class="prod-revenu">{{ formatFcfa(produit.revenu) }}</div>
+            <div class="prod-ventes">{{ produit.ventes }} ventes</div>
+          </div>
+        </div>
+      } @empty {
+        <div class="stock-var">Aucune vente sur la période.</div>
+      }
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">État des stocks</div>
+        <a class="panel-link" routerLink="/variante-produit">
+          Gérer
+          <fa-icon icon="chevron-right" />
+        </a>
+      </div>
+      @for (alerte of stocksFaibles(); track $index) {
+        <div class="stock-row">
+          <fa-icon icon="triangle-exclamation" class="stock-icon" [class.out]="alerte.stock === 0" />
+          <div class="stock-info">
+            <div class="stock-prod">{{ alerte.produit }}</div>
+            <div class="stock-var">{{ alerte.variante }}</div>
+          </div>
+          <span class="stock-count" [class.out]="alerte.stock === 0">
+            {{ alerte.stock === 0 ? 'Rupture' : alerte.stock + ' restants' }}
+          </span>
+        </div>
+      } @empty {
+        <div class="stock-var">Aucune alerte de stock 🎉</div>
+      }
+    </div>
+  </div>
+
+  <!-- Commandes récentes -->
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-title">Commandes récentes</div>
+      <a class="panel-link" routerLink="/commande">
+        Toutes les commandes
+        <fa-icon icon="chevron-right" />
+      </a>
+    </div>
+    <!-- .table-scroll : filet de sécurité, le tableau défile au lieu de déborder de l'écran.
+         Sur petit écran, les lignes deviennent des cartes (voir admin-dashboard.scss). -->
+    <div class="table-scroll">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th scope="col">Numéro</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Date</th>
+            <th scope="col">Montant</th>
+            <th scope="col">Paiement</th>
+            <th scope="col">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (commande of commandesRecentes(); track commande.numero) {
+            <tr>
+              <td class="c-num num-mono">{{ commande.numero }}</td>
+              <td class="c-cli">
+                <div class="cli-cell">
+                  <div class="cli-avatar">{{ initiales(commande.cliente) }}</div>
+                  {{ commande.cliente }}
+                </div>
+              </td>
+              <td class="c-date">{{ commande.date }}</td>
+              <td class="c-montant num-mono">{{ formatFcfa(commande.montant) }}</td>
+              <td class="c-paiement">{{ commande.paiement }}</td>
+              <td class="c-statut">
+                <span class="badge" [style.--c]="statutColor(commande.statut)">
+                  <span class="badge-dot" [style.background]="statutColor(commande.statut)"></span>
+                  {{ statutLabel(commande.statut) }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="dash-empty">Aucune commande pour le moment.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

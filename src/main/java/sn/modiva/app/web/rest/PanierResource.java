@@ -8,11 +8,16 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sn.modiva.app.domain.Panier;
 import sn.modiva.app.repository.PanierRepository;
+import sn.modiva.app.security.SecurityUtils;
+import sn.modiva.app.service.MonPanierService;
 import sn.modiva.app.service.PanierService;
 import sn.modiva.app.service.dto.PanierDTO;
+import sn.modiva.app.service.mapper.PanierMapper;
 import sn.modiva.app.web.rest.errors.BadRequestAlertException;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,17 +40,24 @@ public class PanierResource {
 
     private final PanierRepository panierRepository;
 
-    public PanierResource(PanierService panierService, PanierRepository panierRepository) {
+    private final MonPanierService monPanierService;
+
+    private final PanierMapper panierMapper;
+
+    public PanierResource(
+        PanierService panierService,
+        PanierRepository panierRepository,
+        MonPanierService monPanierService,
+        PanierMapper panierMapper
+    ) {
         this.panierService = panierService;
         this.panierRepository = panierRepository;
+        this.monPanierService = monPanierService;
+        this.panierMapper = panierMapper;
     }
 
     /**
-     * {@code POST  /paniers} : Create a new panier.
-     *
-     * @param panierDTO the panierDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new panierDTO, or with status {@code 400 (Bad Request)} if the panier has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * {@code POST  /paniers} : Create a new panier. (Réservé à l'admin — voir SecurityConfiguration.)
      */
     @PostMapping("")
     public ResponseEntity<PanierDTO> createPanier(@RequestBody PanierDTO panierDTO) throws URISyntaxException {
@@ -61,13 +73,6 @@ public class PanierResource {
 
     /**
      * {@code PUT  /paniers/:id} : Updates an existing panier.
-     *
-     * @param id the id of the panierDTO to save.
-     * @param panierDTO the panierDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated panierDTO,
-     * or with status {@code 400 (Bad Request)} if the panierDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the panierDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
     public ResponseEntity<PanierDTO> updatePanier(
@@ -94,14 +99,6 @@ public class PanierResource {
 
     /**
      * {@code PATCH  /paniers/:id} : Partial updates given fields of an existing panier, field will ignore if it is null
-     *
-     * @param id the id of the panierDTO to save.
-     * @param panierDTO the panierDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated panierDTO,
-     * or with status {@code 400 (Bad Request)} if the panierDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the panierDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the panierDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<PanierDTO> partialUpdatePanier(
@@ -129,10 +126,26 @@ public class PanierResource {
     }
 
     /**
-     * {@code GET  /paniers} : get all the Paniers.
+     * {@code GET  /paniers/me} : renvoie le Panier de l'utilisatrice connectée, en le créant
+     * (ainsi que son ClienteProfile) s'il n'existe pas encore.
      *
-     * @param filter the filter of the request.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of Paniers in body.
+     * Self-service : la résolution se fait uniquement via le login du token JWT.
+     * Grâce au "get-or-create", une cliente qui vient de s'inscrire a tout de suite un
+     * panier serveur, donc le retrouve sur n'importe quel navigateur ou appareil.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<PanierDTO> getMyPanier() {
+        LOG.debug("REST request to get, or create, the current user's own Panier");
+        Optional<String> login = SecurityUtils.getCurrentUserLogin();
+        if (login.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Panier panier = monPanierService.getOrCreatePanier(login.get());
+        return ResponseEntity.ok(panierMapper.toDto(panier));
+    }
+
+    /**
+     * {@code GET  /paniers} : get all the Paniers. (Admin uniquement.)
      */
     @GetMapping("")
     public List<PanierDTO> getAllPaniers(@RequestParam(name = "filter", required = false) String filter) {
@@ -145,10 +158,7 @@ public class PanierResource {
     }
 
     /**
-     * {@code GET  /paniers/:id} : get the "id" panier.
-     *
-     * @param id the id of the panierDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the panierDTO, or with status {@code 404 (Not Found)}.
+     * {@code GET  /paniers/:id} : get the "id" panier. (Admin uniquement.)
      */
     @GetMapping("/{id}")
     public ResponseEntity<PanierDTO> getPanier(@PathVariable("id") Long id) {
@@ -158,10 +168,7 @@ public class PanierResource {
     }
 
     /**
-     * {@code DELETE  /paniers/:id} : delete the "id" panier.
-     *
-     * @param id the id of the panierDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     * {@code DELETE  /paniers/:id} : delete the "id" panier. (Admin uniquement.)
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePanier(@PathVariable("id") Long id) {

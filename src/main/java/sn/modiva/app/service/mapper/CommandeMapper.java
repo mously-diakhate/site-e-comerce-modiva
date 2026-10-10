@@ -23,15 +23,21 @@ public interface CommandeMapper extends EntityMapper<CommandeDTO, Commande> {
     @Named("paiementId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "moyenPaiement", source = "moyenPaiement")
+    @Mapping(target = "montant", source = "montant")
     PaiementDTO toDtoPaiementId(Paiement paiement);
 
     @Named("livraisonId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "adresse", source = "adresse")
+    @Mapping(target = "ville", source = "ville")
+    @Mapping(target = "statutLivraison", source = "statutLivraison")
     LivraisonDTO toDtoLivraisonId(Livraison livraison);
 
     @Named("clienteProfileId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "telephone", source = "telephone")
     ClienteProfileDTO toDtoClienteProfileId(ClienteProfile clienteProfile);
 }

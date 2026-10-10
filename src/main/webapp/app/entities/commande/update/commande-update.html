@@ -1,37 +1,30 @@
-<div class="d-flex justify-content-center">
-  <div class="col-8">
+<div class="modiva-form-wrap">
+  <div class="modiva-form-card">
     <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-commande-heading" data-cy="CommandeCreateUpdateHeading" jhiTranslate="modivaApp.commande.home.createOrEditLabel">
-        Créer ou éditer un Commande
+      <h2 id="jhi-commande-heading" data-cy="CommandeCreateUpdateHeading" class="form-title">
+        <span jhiTranslate="modivaApp.commande.home.createOrEditLabel">Créer ou éditer un Commande</span>
       </h2>
 
-      <div>
-        <jhi-alert-error />
+      <jhi-alert-error />
 
-        @if (editForm.controls.id.value !== null) {
+      <div class="form-grid">
+        <div class="form-col">
+          @let numeroRef = editForm.get('numero')!;
           <div class="mb-3">
-            <label class="form-label" for="field_id" jhiTranslate="global.field.id">ID</label>
-            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+            <label class="form-label" for="field_numero" jhiTranslate="modivaApp.commande.numero">Numero</label>
+            <input type="text" class="form-control" name="numero" id="field_numero" data-cy="numero" formControlName="numero" />
+            @if (numeroRef.invalid && (numeroRef.dirty || numeroRef.touched)) {
+              <div>
+                @if (numeroRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+              </div>
+            }
           </div>
-        }
 
-        @let numeroRef = editForm.get('numero')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_numero" jhiTranslate="modivaApp.commande.numero">Numero</label>
-          <input type="text" class="form-control" name="numero" id="field_numero" data-cy="numero" formControlName="numero" />
-          @if (numeroRef.invalid && (numeroRef.dirty || numeroRef.touched)) {
-            <div>
-              @if (editForm.get('numero')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-            </div>
-          }
-        </div>
-
-        @let dateCommandeRef = editForm.get('dateCommande')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_dateCommande" jhiTranslate="modivaApp.commande.dateCommande">Date Commande</label>
-          <div class="d-flex">
+          @let dateCommandeRef = editForm.get('dateCommande')!;
+          <div class="mb-3">
+            <label class="form-label" for="field_dateCommande" jhiTranslate="modivaApp.commande.dateCommande">Date Commande</label>
             <input
               id="field_dateCommande"
               data-cy="dateCommande"
@@ -41,158 +34,180 @@
               formControlName="dateCommande"
               placeholder="YYYY-MM-DD HH:mm"
             />
+            @if (dateCommandeRef.invalid && (dateCommandeRef.dirty || dateCommandeRef.touched)) {
+              <div>
+                @if (dateCommandeRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+                <small
+                  class="form-text text-danger"
+                  [hidden]="!dateCommandeRef.errors?.datetimelocal"
+                  jhiTranslate="entity.validation.datetimelocal"
+                  >Ce champ doit être une date et une heure.</small
+                >
+              </div>
+            }
           </div>
-          @if (dateCommandeRef.invalid && (dateCommandeRef.dirty || dateCommandeRef.touched)) {
+
+          <div class="mb-3 row-2">
+            @let montantTotalRef = editForm.get('montantTotal')!;
             <div>
-              @if (editForm.get('dateCommande')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              <label class="form-label" for="field_montantTotal" jhiTranslate="modivaApp.commande.montantTotal">Montant Total</label>
+              <input
+                type="number"
+                class="form-control"
+                name="montantTotal"
+                id="field_montantTotal"
+                data-cy="montantTotal"
+                formControlName="montantTotal"
+              />
+              @if (montantTotalRef.invalid && (montantTotalRef.dirty || montantTotalRef.touched)) {
+                <div>
+                  @if (montantTotalRef.errors?.required) {
+                    <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                  }
+                  <small class="form-text text-danger" [hidden]="!montantTotalRef.errors?.number" jhiTranslate="entity.validation.number"
+                    >Ce champ doit être un nombre.</small
+                  >
+                </div>
               }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('dateCommande')?.errors?.datetimelocal"
-                jhiTranslate="entity.validation.datetimelocal"
-                >Ce champ doit être une date et une heure.</small
+            </div>
+
+            <div>
+              <label class="form-label" for="field_modePaiement" jhiTranslate="modivaApp.commande.modePaiement">Mode Paiement</label>
+              <select
+                class="form-control"
+                name="modePaiement"
+                id="field_modePaiement"
+                data-cy="modePaiement"
+                formControlName="modePaiement"
               >
+                <option [ngValue]="null">— Sélectionner —</option>
+                <option value="WAVE">Wave</option>
+                <option value="ORANGE_MONEY">Orange Money</option>
+                <option value="SUR_PLACE">Sur place</option>
+              </select>
             </div>
-          }
-        </div>
+          </div>
 
-        @let montantTotalRef = editForm.get('montantTotal')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_montantTotal" jhiTranslate="modivaApp.commande.montantTotal">Montant Total</label>
-          <input
-            type="number"
-            class="form-control"
-            name="montantTotal"
-            id="field_montantTotal"
-            data-cy="montantTotal"
-            formControlName="montantTotal"
-          />
-          @if (montantTotalRef.invalid && (montantTotalRef.dirty || montantTotalRef.touched)) {
-            <div>
-              @if (editForm.get('montantTotal')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+          @let statutCommandeRef = editForm.get('statutCommande')!;
+          <div class="mb-3">
+            <label class="form-label" for="field_statutCommande" jhiTranslate="modivaApp.commande.statutCommande">Statut Commande</label>
+            <select
+              class="form-control"
+              name="statutCommande"
+              formControlName="statutCommande"
+              id="field_statutCommande"
+              data-cy="statutCommande"
+            >
+              <option [ngValue]="null">{{ 'modivaApp.StatutCommande.null' | translate }}</option>
+              @for (statutCommande of statutCommandeValues; track $index) {
+                <option [value]="statutCommande">{{ 'modivaApp.StatutCommande.' + statutCommande | translate }}</option>
               }
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('montantTotal')?.errors?.number"
-                jhiTranslate="entity.validation.number"
-                >Ce champ doit être un nombre.</small
-              >
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_modePaiement" jhiTranslate="modivaApp.commande.modePaiement">Mode Paiement</label>
-          <input
-            type="text"
-            class="form-control"
-            name="modePaiement"
-            id="field_modePaiement"
-            data-cy="modePaiement"
-            formControlName="modePaiement"
-          />
-        </div>
-
-        @let statutCommandeRef = editForm.get('statutCommande')!;
-        <div class="mb-3">
-          <label class="form-label" for="field_statutCommande" jhiTranslate="modivaApp.commande.statutCommande">Statut Commande</label>
-          <select
-            class="form-control"
-            name="statutCommande"
-            formControlName="statutCommande"
-            id="field_statutCommande"
-            data-cy="statutCommande"
-          >
-            <option [ngValue]="null">{{ 'modivaApp.StatutCommande.null' | translate }}</option>
-            @for (statutCommande of statutCommandeValues; track $index) {
-              <option [value]="statutCommande">{{ 'modivaApp.StatutCommande.' + statutCommande | translate }}</option>
-            }
-          </select>
-          @if (statutCommandeRef.invalid && (statutCommandeRef.dirty || statutCommandeRef.touched)) {
-            <div>
-              @if (editForm.get('statutCommande')?.errors?.required) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_paiement" jhiTranslate="modivaApp.commande.paiement">Paiement</label>
-          <select
-            class="form-control"
-            id="field_paiement"
-            data-cy="paiement"
-            name="paiement"
-            formControlName="paiement"
-            [compareWith]="comparePaiement"
-          >
-            <option [ngValue]="null"></option>
-            @for (paiementOption of paiementsCollection(); track $index) {
-              <option [ngValue]="paiementOption">{{ paiementOption.id }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="field_livraison" jhiTranslate="modivaApp.commande.livraison">Livraison</label>
-          <select
-            class="form-control"
-            id="field_livraison"
-            data-cy="livraison"
-            name="livraison"
-            formControlName="livraison"
-            [compareWith]="compareLivraison"
-          >
-            @if (editForm.get(['livraison'])!.value === null) {
-              <option [ngValue]="null" selected></option>
-            }
-            @for (livraisonOption of livraisonsCollection(); track $index) {
-              <option [ngValue]="livraisonOption">{{ livraisonOption.id }}</option>
-            }
-          </select>
-        </div>
-        @if (editForm.get(['livraison'])!.invalid && (editForm.get(['livraison'])!.dirty || editForm.get(['livraison'])!.touched)) {
-          <div>
-            @if (editForm.get(['livraison'])?.errors?.required) {
-              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+            </select>
+            @if (statutCommandeRef.invalid && (statutCommandeRef.dirty || statutCommandeRef.touched)) {
+              <div>
+                @if (statutCommandeRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+              </div>
             }
           </div>
-        }
-
-        <div class="mb-3">
-          <label class="form-label" for="field_clienteProfile" jhiTranslate="modivaApp.commande.clienteProfile">Cliente Profile</label>
-          <select
-            class="form-control"
-            id="field_clienteProfile"
-            data-cy="clienteProfile"
-            name="clienteProfile"
-            formControlName="clienteProfile"
-            [compareWith]="compareClienteProfile"
-          >
-            @if (editForm.get(['clienteProfile'])!.value === null) {
-              <option [ngValue]="null" selected></option>
-            }
-            @for (clienteProfileOption of clienteProfilesSharedCollection(); track $index) {
-              <option [ngValue]="clienteProfileOption">{{ clienteProfileOption.id }}</option>
-            }
-          </select>
         </div>
-        @if (
-          editForm.get(['clienteProfile'])!.invalid &&
-          (editForm.get(['clienteProfile'])!.dirty || editForm.get(['clienteProfile'])!.touched)
-        ) {
-          <div>
-            @if (editForm.get(['clienteProfile'])?.errors?.required) {
-              <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+
+        <div class="form-col">
+          <div class="mb-3">
+            <label class="form-label" for="field_clienteProfile" jhiTranslate="modivaApp.commande.clienteProfile">Cliente Profile</label>
+            <select
+              class="form-control"
+              id="field_clienteProfile"
+              data-cy="clienteProfile"
+              name="clienteProfile"
+              formControlName="clienteProfile"
+              [compareWith]="compareClienteProfile"
+            >
+              @if (editForm.get(['clienteProfile'])!.value === null) {
+                <option [ngValue]="null" selected>— Sélectionner —</option>
+              }
+              @for (clienteProfileOption of clienteProfilesSharedCollection(); track $index) {
+                <option [ngValue]="clienteProfileOption">{{ clienteProfileOption.telephone ?? '#' + clienteProfileOption.id }}</option>
+              }
+            </select>
+            @let clienteProfileRef = editForm.get(['clienteProfile'])!;
+            @if (clienteProfileRef.invalid && (clienteProfileRef.dirty || clienteProfileRef.touched)) {
+              <div>
+                @if (clienteProfileRef.errors?.required) {
+                  <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+                }
+              </div>
             }
           </div>
-        }
+
+          <!-- ======================= Livraison : sous-formulaire optionnel ======================= -->
+          <div class="mb-3">
+            <label class="form-check livraison-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [checked]="needsLivraison()"
+                (change)="toggleNeedsLivraison($any($event.target).checked)"
+              />
+              <span class="form-check-label">Cette commande nécessite une livraison</span>
+            </label>
+            <small class="form-text text-muted">Décochez si la cliente vient récupérer sa commande en personne.</small>
+          </div>
+
+          @if (needsLivraison()) {
+            <div class="livraison-subform" [formGroup]="livraisonForm">
+              @let adresseRef = livraisonForm.get('adresse')!;
+              <div class="mb-3">
+                <label class="form-label" for="field_livraisonAdresse">Adresse</label>
+                <input type="text" class="form-control" id="field_livraisonAdresse" formControlName="adresse" />
+                @if (adresseRef.invalid && (adresseRef.dirty || adresseRef.touched)) {
+                  <small class="form-text text-danger">Ce champ est obligatoire.</small>
+                }
+              </div>
+
+              <div class="mb-3 row-2">
+                @let villeRef = livraisonForm.get('ville')!;
+                <div>
+                  <label class="form-label" for="field_livraisonVille">Ville</label>
+                  <input type="text" class="form-control" id="field_livraisonVille" formControlName="ville" />
+                  @if (villeRef.invalid && (villeRef.dirty || villeRef.touched)) {
+                    <small class="form-text text-danger">Ce champ est obligatoire.</small>
+                  }
+                </div>
+                <div>
+                  <label class="form-label" for="field_livraisonQuartier">Quartier</label>
+                  <input type="text" class="form-control" id="field_livraisonQuartier" formControlName="quartier" />
+                </div>
+              </div>
+
+              <div class="mb-3 row-2">
+                <div>
+                  <label class="form-label" for="field_livraisonTelephone">Téléphone</label>
+                  <input type="text" class="form-control" id="field_livraisonTelephone" formControlName="telephone" />
+                </div>
+                <div>
+                  <label class="form-label" for="field_livraisonFrais">Frais de livraison</label>
+                  <input type="number" class="form-control" id="field_livraisonFrais" formControlName="fraisLivraison" />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label" for="field_livraisonStatut">Statut Livraison</label>
+                <select class="form-control" id="field_livraisonStatut" formControlName="statutLivraison">
+                  @for (statut of statutLivraisonValues; track $index) {
+                    <option [value]="statut">{{ 'modivaApp.StatutLivraison.' + statut | translate }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          }
+        </div>
       </div>
 
-      <div>
+      <div class="form-actions">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban" />&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
@@ -201,8 +216,8 @@
           type="submit"
           id="save-entity"
           data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving()"
-          class="btn btn-primary"
+          [disabled]="editForm.invalid || isSaving() || (needsLivraison() && livraisonForm.invalid)"
+          class="btn btn-modiva-primary"
         >
           <fa-icon icon="save" />&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
         </button>
